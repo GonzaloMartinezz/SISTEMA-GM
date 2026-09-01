@@ -1,157 +1,133 @@
+// ============================================================================
+// SISTEMA GM · NOTARIO 360° · PESTAÑA 6 · HISTORIALES
+// ----------------------------------------------------------------------------
+// Trazabilidad completa: llamados al titular, notas grabadas y visitas físicas.
+// ============================================================================
+
 import React from 'react';
+import { PhoneCall, StickyNote, MapPinned, Plus } from 'lucide-react';
+import { useCuenta } from '../../../shared/cuentas/CuentaContext';
+import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
 
-export default function TabHistoriales() {
+const colorTipoNota = (tipo = '') => {
+  const t = tipo.toLowerCase();
+  if (t.includes('alerta')) return 'border-rose-500/40 bg-rose-500/10 text-rose-400';
+  if (t.includes('operativa')) return 'border-gray-600 bg-gray-800 text-gray-400';
+  return 'border-amber-500/40 bg-amber-500/10 text-amber-400';
+};
+
+export default function TabHistoriales({ onRegistrarLlamado, onNuevaNota }) {
+  const { cuenta } = useCuenta();
+  if (!cuenta) return null;
+
+  const { llamados = [], notas = [], visitas = [] } = cuenta.historial || {};
+
+  const botonAgregar = (onClick, label) => (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] text-gray-500 transition-colors hover:text-cyan-400"
+    >
+      <Plus className="h-3 w-3" />
+      {label}
+    </button>
+  );
+
   return (
-    <div className="h-full flex flex-col gap-3 font-mono text-[10px] overflow-auto">
-      
-      {/* Fila 1: Historial de Estados / Bloqueos */}
-      <div className="bg-gray-900 border border-gray-700 flex-none h-32 flex flex-col">
-        <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase tracking-widest">
-          HISTORIAL DE ESTADOS / BLOQUEOS DE TITULARES / ADICIONALES
-        </div>
-        <div className="flex-1 overflow-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 text-gray-400">
-              <tr>
-                <th className="p-1 border-r border-gray-700">Tipo</th>
-                <th className="p-1 border-r border-gray-700">Nº</th>
-                <th className="p-1 border-r border-gray-700">Descripción del Estado ó Bloqueo</th>
-                <th className="p-1 border-r border-gray-700">Día y Hora de Creación</th>
-                <th className="p-1">Día y Hora de Cancelación</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-300">
-              <tr className="border-b border-gray-800 hover:bg-gray-800">
-                <td className="p-1 border-r border-gray-800">Estado</td>
-                <td className="p-1 border-r border-gray-800">00</td>
-                <td className="p-1 border-r border-gray-800">CORRIENTE RENEGOCIADA</td>
-                <td className="p-1 border-r border-gray-800 text-cyan-300">09/05/2011 18:05:39</td>
-                <td className="p-1 text-gray-500">18/06/2011 12:35:44</td>
-              </tr>
-              <tr className="bg-blue-900/20 text-cyan-400 font-bold border-b border-gray-800 hover:bg-gray-800">
-                <td className="p-1 border-r border-gray-800">Estado</td>
-                <td className="p-1 border-r border-gray-800">00</td>
-                <td className="p-1 border-r border-gray-800">CORRIENTE</td>
-                <td className="p-1 border-r border-gray-800">18/06/2011 12:35:44</td>
-                <td className="p-1 text-gray-500">/ / : :</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div className="grid h-full min-h-0 grid-cols-1 gap-3 xl:grid-cols-3">
+      {/* ---------- Llamados ---------- */}
+      <PanelTerminal
+        titulo="Historial de llamados al titular"
+        className="min-h-[220px]"
+        acciones={onRegistrarLlamado ? botonAgregar(onRegistrarLlamado, 'Grabar') : null}
+      >
+        {llamados.length ? (
+          <ul className="divide-y divide-gray-800">
+            {llamados.map((ll, i) => (
+              <li key={i} className="space-y-1.5 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-400">
+                    <PhoneCall className="h-3 w-3" />
+                    {ll.contacto}
+                  </span>
+                  <span className="font-mono text-[10px] text-gray-600">{ll.fecha}</span>
+                </div>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-gray-500">
+                  Atendió: <span className="text-gray-300">{ll.quienAtiende || '—'}</span>
+                </p>
+                <p className="text-xs leading-relaxed text-gray-200">{ll.respuesta}</p>
+                {ll.proximoEvento && (
+                  <p className="rounded border border-gray-800 bg-gray-950/60 px-2 py-1 font-mono text-[10px] text-amber-400">
+                    Próximo: {ll.proximoEvento}
+                  </p>
+                )}
+                <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-700">
+                  Op. {ll.operador}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <SinDatos mensaje="Sin llamados registrados" />
+        )}
+      </PanelTerminal>
 
-      {/* Fila 2: Plásticos y Márgenes (Split) */}
-      <div className="grid grid-cols-2 gap-3 flex-none h-40">
-        
-        {/* Historial de Embozado */}
-        <div className="bg-gray-900 border border-gray-700 flex flex-col">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase">
-            HISTORIAL DE EMBOZADO DE PLASTICOS
-          </div>
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 text-gray-400">
-                <tr>
-                  <th className="p-1 border-r border-gray-700">Nº</th>
-                  <th className="p-1 border-r border-gray-700">Numero de Tarjeta</th>
-                  <th className="p-1">Día y Hora Activación</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-300">
-                <tr className="bg-blue-900/20 text-cyan-400 font-bold border-b border-gray-800">
-                  <td className="p-1 border-r border-gray-800">00</td>
-                  <td className="p-1 border-r border-gray-800">62764904548200030</td>
-                  <td className="p-1">/ / : :</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* ---------- Notas ---------- */}
+      <PanelTerminal
+        titulo="Notas grabadas"
+        acento="ambar"
+        className="min-h-[220px]"
+        acciones={onNuevaNota ? botonAgregar(onNuevaNota, 'Nueva') : null}
+      >
+        {notas.length ? (
+          <ul className="divide-y divide-gray-800">
+            {notas.map((n, i) => (
+              <li key={i} className="space-y-2 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${colorTipoNota(n.tipo)}`}
+                  >
+                    <StickyNote className="h-2.5 w-2.5" />
+                    {n.tipo}
+                  </span>
+                  <span className="font-mono text-[10px] text-gray-600">{n.fecha}</span>
+                </div>
+                <p className="text-xs leading-relaxed text-gray-200">{n.texto}</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-700">
+                  Op. {n.operador}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <SinDatos mensaje="Sin notas cargadas" />
+        )}
+      </PanelTerminal>
 
-        {/* Historial de Márgenes */}
-        <div className="bg-gray-900 border border-gray-700 flex flex-col">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase">
-            HISTORIAL DE CAMBIOS DE MARGENES
-          </div>
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-left text-center">
-              <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 text-gray-400">
-                <tr>
-                  <th className="p-1 border-r border-gray-700">Mensual</th>
-                  <th className="p-1 border-r border-gray-700">Crédito</th>
-                  <th className="p-1 border-r border-gray-700">Día Creación</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-300">
-                <tr className="bg-blue-900/20 text-cyan-400 font-bold border-b border-gray-800">
-                  <td className="p-1 border-r border-gray-800">650</td>
-                  <td className="p-1 border-r border-gray-800">1550</td>
-                  <td className="p-1">27/04/2010</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Fila 3: Intimaciones y Renegociaciones (Split) */}
-      <div className="grid grid-cols-2 gap-3 flex-none h-40">
-        
-        {/* Intimaciones */}
-        <div className="bg-gray-900 border border-gray-700 flex flex-col">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase">
-            HISTORIAL DE INTIMACIONES
-          </div>
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 text-gray-400">
-                <tr>
-                  <th className="p-1 border-r border-gray-700">Día Emisión</th>
-                  <th className="p-1">Tipo de Intimación</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-300">
-                <tr className="border-b border-gray-800">
-                  <td className="p-1 border-r border-gray-800">05/05/2011</td>
-                  <td className="p-1 text-gray-400">Llamado Tel.</td>
-                </tr>
-                <tr className="bg-blue-900/20 text-cyan-400 font-bold border-b border-gray-800">
-                  <td className="p-1 border-r border-gray-800">23/08/2011</td>
-                  <td className="p-1">Carta 1er. Aviso</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Renegociaciones */}
-        <div className="bg-gray-900 border border-gray-700 flex flex-col">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase">
-            HISTORIAL DE RENEG. / REFINANC.
-          </div>
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-center">
-              <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 text-gray-400">
-                <tr>
-                  <th className="p-1 border-r border-gray-700">Día Efectuada</th>
-                  <th className="p-1 border-r border-gray-700">Anticipo</th>
-                  <th className="p-1">Monto c/Cuota</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-300">
-                <tr className="bg-blue-900/20 text-cyan-400 font-bold border-b border-gray-800">
-                  <td className="p-1 border-r border-gray-800">09/05/2011</td>
-                  <td className="p-1 border-r border-gray-800 text-green-400">300.00</td>
-                  <td className="p-1 text-red-400">203.27</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
+      {/* ---------- Visitas ---------- */}
+      <PanelTerminal titulo="Últimas visitas físicas" acento="verde" className="min-h-[220px]">
+        {visitas.length ? (
+          <ul className="divide-y divide-gray-800">
+            {visitas.map((v, i) => (
+              <li key={i} className="space-y-1.5 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                    <MapPinned className="h-3 w-3" />
+                    {v.motivo}
+                  </span>
+                  <span className="font-mono text-[10px] text-gray-600">{v.fecha}</span>
+                </div>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-gray-500">
+                  {v.lugar}
+                </p>
+                <p className="text-xs leading-relaxed text-gray-200">{v.resultado}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <SinDatos mensaje="Sin visitas registradas" />
+        )}
+      </PanelTerminal>
     </div>
   );
 }

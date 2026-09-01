@@ -1,123 +1,103 @@
-import React, { useState } from 'react';
-import { MessageCircle, Mail, Filter, Zap } from 'lucide-react';
+// ============================================================================
+// SISTEMA GM · MÓDULO 4 · SEGUIMIENTOS (Fase 3)
+// ----------------------------------------------------------------------------
+// Tablero Kanban de conversión: filtros por nivel de proceso, marcadores de
+// avance, arrastre entre etapas y acción inmediata por WhatsApp / mail.
+// ============================================================================
 
-export default function SeguimientosDashboard() {
-  const [filtroNivel, setFiltroNivel] = useState('todos');
+import React, { useMemo, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
-  // Datos mockeados de clientes potenciales
-  const leads = [
-    { id: 1, nombre: 'Dr. Alejandro Ríos', clinica: 'OdontoSalud', nivel: 'Convencer Más', equipo: 'Sillón Premium', tel: '+5493815551234', email: 'arios@mail.com' },
-    { id: 2, nombre: 'Dra. Sofía Mendez', clinica: 'Vet Central', nivel: 'Posible Venta', equipo: 'Ecógrafo Portátil', tel: '+5493815559876', email: 'smendez@mail.com' },
-  ];
+import { PipelineProvider, usePipeline } from '../context/PipelineContext';
+import { ETAPAS } from '../config/pipeline.config';
+import PipelineToolbar from '../components/PipelineToolbar';
+import PipelineColumn from '../components/PipelineColumn';
+import EnviarMensajeModal from '../components/EnviarMensajeModal';
+
+function Tablero() {
+  const { leads, cargando, etapasVisibles, cambiarEtapa, marcarContacto } = usePipeline();
+  const [mensaje, setMensaje] = useState(null); // { lead, canal }
+
+  const columnas = useMemo(
+    () => ETAPAS.filter((e) => etapasVisibles.includes(e.id)),
+    [etapasVisibles]
+  );
+
+  const porEtapa = useMemo(() => {
+    const mapa = {};
+    ETAPAS.forEach((e) => {
+      mapa[e.id] = [];
+    });
+    leads.forEach((l) => {
+      if (mapa[l.etapa]) mapa[l.etapa].push(l);
+    });
+    return mapa;
+  }, [leads]);
+
+  const onDragStart = (e, leadId) => {
+    e.dataTransfer.setData('text/plain', leadId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const onDrop = (e, etapaId) => {
+    const leadId = e.dataTransfer.getData('text/plain');
+    if (leadId) cambiarEtapa(leadId, etapaId);
+  };
+
+  if (cargando) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-500">
+            Cargando pipeline
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-950 p-4 font-sans flex flex-col h-screen">
-      <div className="flex justify-between items-end mb-6">
-        <div>
-          <h1 className="text-green-400 font-bold tracking-widest uppercase text-xl flex items-center gap-2">
-            <Zap className="w-6 h-6" /> Seguimientos y Mensajes
-          </h1>
-          <p className="text-gray-500 text-xs font-mono uppercase mt-1">Gestión de Clientes Potenciales y Respuestas Rápidas</p>
-        </div>
-        
-        {/* Filtros de Nivel de Proceso de Venta */}
-        <div className="flex items-center gap-2 bg-gray-900 border border-gray-800 p-1">
-          <Filter className="w-4 h-4 text-gray-500 mx-2" />
-          {['Todos', 'Comienzo', 'En Proceso', 'Convencer Más', 'Posible Venta'].map(nivel => (
-            <button
-              key={nivel}
-              onClick={() => setFiltroNivel(nivel.toLowerCase())}
-              className={`px-3 py-1 text-xs font-mono uppercase transition-colors ${
-                filtroNivel === nivel.toLowerCase() || (filtroNivel === 'todos' && nivel === 'Todos')
-                  ? 'bg-gray-800 text-green-400 border border-gray-700' 
-                  : 'text-gray-500 hover:text-gray-300'
-              }`}
-            >
-              {nivel}
-            </button>
-          ))}
-        </div>
-      </div>
+    <>
+      <div className="flex min-h-0 flex-1 gap-2.5 overflow-x-auto p-2.5 md:p-3">
+        {columnas.map((etapa) => (
+          <PipelineColumn
+            key={etapa.id}
+            etapa={etapa}
+            leads={porEtapa[etapa.id] || []}
+            onDrop={onDrop}
+            onDragStart={onDragStart}
+            onEnviarMensaje={(lead, canal) => setMensaje({ lead, canal })}
+            onMarcarContacto={marcarContacto}
+          />
+        ))}
 
-      <div className="flex gap-4 flex-1 min-h-0">
-        {/* Lista de Leads */}
-        <div className="w-2/3 flex flex-col gap-3 min-h-0 overflow-auto pr-2">
-          {leads.map(lead => (
-            <div key={lead.id} className="bg-gray-900 border border-gray-800 p-4 flex justify-between items-center group hover:border-green-500/30 transition-colors">
-              <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-gray-200 font-bold uppercase text-sm">{lead.nombre}</h3>
-                  <span className={`text-[10px] px-2 py-0.5 border font-mono uppercase ${
-                    lead.nivel === 'Posible Venta' ? 'border-green-500 text-green-400 bg-green-950/30' : 
-                    lead.nivel === 'Convencer Más' ? 'border-yellow-500 text-yellow-400 bg-yellow-950/30' : 
-                    'border-gray-600 text-gray-400'
-                  }`}>
-                    {lead.nivel}
-                  </span>
-                </div>
-                <p className="text-gray-500 text-xs font-mono">{lead.clinica} • Interés: <span className="text-gray-300">{lead.equipo}</span></p>
-              </div>
-              
-              {/* Botones de Contacto Directo */}
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => window.open(`https://wa.me/${lead.tel}`, '_blank')}
-                  className="bg-[#075E54]/20 border border-[#25D366] text-[#25D366] hover:bg-[#075E54]/40 p-2 rounded flex items-center justify-center transition-colors"
-                  title="WhatsApp"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => window.location.href = `mailto:${lead.email}`}
-                  className="bg-blue-900/20 border border-blue-500 text-blue-400 hover:bg-blue-900/40 p-2 rounded flex items-center justify-center transition-colors"
-                  title="Mail"
-                >
-                  <Mail className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Panel de Respuestas Rápidas */}
-        <div className="w-1/3 bg-gray-900 border border-gray-800 p-4 flex flex-col min-h-0">
-          <h2 className="text-gray-400 font-bold text-xs uppercase mb-4 border-b border-gray-800 pb-2 flex items-center gap-2">
-            <MessageCircle className="w-4 h-4" /> Plantillas de Mensajes
-          </h2>
-          <div className="overflow-auto space-y-3 flex-1 font-mono text-xs pr-2">
-            <PlantillaItem 
-              titulo="Saludo Inicial" 
-              texto="¡Hola! ¿Cómo estás? Soy Gonzalo de Titanio. Te envío el catálogo actualizado de equipos para el consultorio."
-            />
-            <PlantillaItem 
-              titulo="Seguimiento / Convencer" 
-              texto="¿Pudiste revisar el presupuesto? Avisame si querés que te congele el precio con una seña mínima."
-            />
-            <PlantillaItem 
-              titulo="Coordinar Visita" 
-              texto="Este jueves ando por tu zona. ¿Te parece si paso 10 minutitos a dejarte folletería nueva sin compromiso?"
-            />
-            <PlantillaItem 
-              titulo="Promoción Insumos" 
-              texto="¡Ingresó stock de kits quirúrgicos! Tenemos una promo especial por pago de contado esta semana."
-            />
+        {!columnas.length && (
+          <div className="flex flex-1 items-center justify-center font-mono text-[11px] uppercase tracking-[0.2em] text-gray-700">
+            No hay etapas seleccionadas
           </div>
-        </div>
+        )}
       </div>
-    </div>
+
+      {mensaje && (
+        <EnviarMensajeModal
+          lead={mensaje.lead}
+          canalInicial={mensaje.canal}
+          onCerrar={() => setMensaje(null)}
+          onEnviado={marcarContacto}
+        />
+      )}
+    </>
   );
 }
 
-function PlantillaItem({ titulo, texto }) {
+export default function SeguimientosDashboard() {
   return (
-    <div className="border border-gray-800 bg-gray-950 p-3 hover:border-gray-600 transition-colors group">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-cyan-400 font-bold uppercase">{titulo}</span>
-        <button className="text-[10px] text-gray-500 border border-gray-700 px-2 py-0.5 hover:bg-gray-800 hover:text-gray-300 uppercase transition-colors">
-          Copiar
-        </button>
-      </div>
-      <p className="text-gray-400 leading-relaxed">{texto}</p>
+    <div className="flex h-screen min-h-screen flex-col bg-gray-950 font-sans">
+      <PipelineProvider>
+        <PipelineToolbar />
+        <Tablero />
+      </PipelineProvider>
     </div>
   );
 }

@@ -1,60 +1,128 @@
-import React, { useState } from 'react';
+// ============================================================================
+// SISTEMA GM · NOTARIO 360° · PESTAÑA 5 · MOVIMIENTOS
+// ----------------------------------------------------------------------------
+// Corte estricto por período (actual / próximo), bimonetario ARS + USD.
+// ============================================================================
+
+import React, { useMemo, useState } from 'react';
+import { useCuenta } from '../../../shared/cuentas/CuentaContext';
+import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
+import { num } from '../../../shared/utils/format';
+
+const FILTROS = [
+  { id: 'TODOS', label: 'Todos' },
+  { id: 'ACTUAL', label: 'Período actual' },
+  { id: 'PROXIMO', label: 'Período próximo' },
+];
 
 export default function TabMovimientos() {
-  const [subTab, setSubTab] = useState('actual');
+  const { cuenta } = useCuenta();
+  const [filtro, setFiltro] = useState('TODOS');
 
-  const subTabs = [
-    { id: 'actual', label: 'Movimientos Período Actual' },
-    { id: 'proximo', label: 'Movimientos Próximo Período' },
-    { id: 'siguientes', label: 'Movimientos Períodos Siguientes' },
-    { id: 'historicos', label: 'Movimientos Históricos' },
-  ];
+  const movimientos = cuenta?.movimientos || [];
+
+  const visibles = useMemo(
+    () => (filtro === 'TODOS' ? movimientos : movimientos.filter((m) => m.periodo === filtro)),
+    [movimientos, filtro]
+  );
+
+  const totales = useMemo(
+    () =>
+      visibles.reduce(
+        (acc, m) => ({
+          ars: acc.ars + Number(m.importeArs || 0),
+          usd: acc.usd + Number(m.importeUsd || 0),
+        }),
+        { ars: 0, usd: 0 }
+      ),
+    [visibles]
+  );
+
+  if (!cuenta) return null;
 
   return (
-    <div className="h-full flex flex-col font-mono text-sm">
-      {/* Sub-Navegación Interna */}
-      <div className="flex border-b border-gray-700 bg-gray-800 overflow-x-auto hide-scrollbar">
-        {subTabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setSubTab(tab.id)}
-            className={`px-3 py-1.5 text-[11px] font-bold tracking-wide uppercase transition-colors border-r border-gray-700 whitespace-nowrap ${
-              subTab === tab.id 
-                ? 'bg-gray-900 text-cyan-400 border-t border-cyan-500' 
-                : 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tabla de Movimientos */}
-      <div className="flex-1 bg-gray-950 border border-t-0 border-gray-700 overflow-auto">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-gray-800 sticky top-0 border-b border-gray-700">
-            <tr className="text-[10px] text-gray-400 uppercase tracking-wider">
-              <th className="p-2 border-r border-gray-700 font-semibold">Nº Tarj.</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Día Oper.</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Día Pres.</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Descripción del Concepto</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Comercio</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-right">Capital</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-center">Cuota</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-right">Imp. Cuota</th>
-              <th className="p-2 font-semibold text-center">Estado</th>
+    <PanelTerminal
+      titulo="Movimientos de la cuenta"
+      className="h-full"
+      acciones={
+        <div className="flex items-center gap-1">
+          {FILTROS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setFiltro(f.id)}
+              className={`rounded px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em] transition-colors ${
+                filtro === f.id
+                  ? 'bg-cyan-500/15 text-cyan-400'
+                  : 'text-gray-600 hover:text-gray-300'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      }
+    >
+      {visibles.length ? (
+        <table className="w-full border-collapse whitespace-nowrap text-left font-mono text-[10px]">
+          <thead className="sticky top-0 z-10 border-b border-gray-800 bg-gray-800/90">
+            <tr className="uppercase text-gray-500">
+              <th className="border-r border-gray-800 p-2 font-semibold">Fecha</th>
+              <th className="border-r border-gray-800 p-2 font-semibold">Comprobante</th>
+              <th className="border-r border-gray-800 p-2 font-semibold">Detalle</th>
+              <th className="border-r border-gray-800 p-2 text-center font-semibold">Cuota</th>
+              <th className="border-r border-gray-800 p-2 text-center font-semibold">Período</th>
+              <th className="border-r border-gray-800 p-2 text-right font-semibold">Importe ARS</th>
+              <th className="p-2 text-right font-semibold">Importe USD</th>
             </tr>
           </thead>
-          <tbody className="text-gray-300 text-xs">
-            {/* Ejemplo de Fila Vacía (Aquí iterarás los datos de tu API) */}
-            <tr className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
-              <td colSpan="9" className="p-4 text-center text-gray-600 italic">
-                No se registraron movimientos en este período.
-              </td>
-            </tr>
+          <tbody className="text-gray-300">
+            {visibles.map((m, i) => (
+              <tr
+                key={`${m.comprobante}-${i}`}
+                className="border-b border-gray-800/60 transition-colors hover:bg-gray-800/60"
+              >
+                <td className="border-r border-gray-800 p-1.5 text-center">{m.fecha}</td>
+                <td className="border-r border-gray-800 p-1.5">{m.comprobante}</td>
+                <td className="max-w-[280px] truncate border-r border-gray-800 p-1.5 text-gray-200">
+                  {m.detalle}
+                </td>
+                <td className="border-r border-gray-800 p-1.5 text-center text-cyan-300">{m.cuota}</td>
+                <td className="border-r border-gray-800 p-1.5 text-center">
+                  <span
+                    className={`rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      m.periodo === 'ACTUAL'
+                        ? 'bg-cyan-500/10 text-cyan-400'
+                        : 'bg-amber-500/10 text-amber-400'
+                    }`}
+                  >
+                    {m.periodo}
+                  </span>
+                </td>
+                <td className="border-r border-gray-800 p-1.5 text-right tabular-nums">
+                  {num(m.importeArs)}
+                </td>
+                <td className="p-1.5 text-right font-bold tabular-nums text-emerald-400">
+                  {num(m.importeUsd)}
+                </td>
+              </tr>
+            ))}
           </tbody>
+          <tfoot className="sticky bottom-0 border-t border-gray-700 bg-gray-900">
+            <tr className="font-bold uppercase text-gray-400">
+              <td colSpan="5" className="p-2 text-right text-[9px] tracking-[0.2em]">
+                Total {filtro === 'TODOS' ? 'general' : filtro.toLowerCase()}
+              </td>
+              <td className="border-l border-gray-800 p-2 text-right tabular-nums text-gray-200">
+                {num(totales.ars)}
+              </td>
+              <td className="p-2 text-right tabular-nums text-emerald-400">{num(totales.usd)}</td>
+            </tr>
+          </tfoot>
         </table>
-      </div>
-    </div>
+      ) : (
+        <SinDatos mensaje="Sin movimientos para el filtro seleccionado" />
+      )}
+    </PanelTerminal>
   );
 }

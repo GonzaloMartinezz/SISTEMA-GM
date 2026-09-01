@@ -1,72 +1,75 @@
+// ============================================================================
+// SISTEMA GM · TESORERÍA · PROYECCIONES DE CRECIMIENTO
+// ----------------------------------------------------------------------------
+// Resultado acumulado esperado a 1, 3, 6, 12 meses y 5 años, sobre la tasa de
+// crecimiento real de los últimos meses.
+// ============================================================================
+
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LabelList,
+} from 'recharts';
+import PanelTerminal from '../../../shared/ui/PanelTerminal';
+import ChartTooltip from '../../../shared/ui/ChartTooltip';
+import { SERIES, EJE, ejeProps, usdCorto, pct } from '../../../shared/ui/viz';
+import { useTesoreria } from '../context/TesoreriaContext';
 
 export default function PanelProyecciones() {
-  const roiData = [
-    { name: '1 Mes', inversion: 1000, retorno: 1200 },
-    { name: '3 Meses', inversion: 3000, retorno: 4500 },
-    { name: '6 Meses', inversion: 6000, retorno: 10500 },
-    { name: '12 Meses', inversion: 12000, retorno: 24000 },
-    { name: '5 Años', inversion: 60000, retorno: 150000 },
-  ];
+  const { datos } = useTesoreria();
+  if (!datos) return null;
 
-  const cashflowData = [
-    { mes: 'Ene', ingresos: 4000, egresos: 2400 },
-    { mes: 'Feb', ingresos: 3000, egresos: 1398 },
-    { mes: 'Mar', ingresos: 2000, egresos: 9800 },
-    { mes: 'Abr', ingresos: 2780, egresos: 3908 },
-    { mes: 'May', ingresos: 1890, egresos: 4800 },
-    { mes: 'Jun', ingresos: 2390, egresos: 3800 },
-  ];
+  const { proyecciones, crecimientoMensual } = datos;
 
   return (
-    <div className="bg-gray-900 border border-gray-800 flex flex-col h-full font-sans overflow-auto">
-      <div className="bg-gray-800 text-yellow-400 font-bold text-center py-2 border-b border-gray-800 uppercase tracking-widest text-xs">
-        Analíticas Avanzadas y Proyecciones ROI
-      </div>
-      
-      <div className="p-4 grid grid-rows-2 gap-4 flex-1">
-        
-        {/* Gráfico de Flujo de Caja */}
-        <div className="border border-gray-700 bg-gray-950 p-4 flex flex-col">
-          <h3 className="text-gray-400 font-bold text-xs uppercase mb-4 text-center">Evolución de Caja (Últimos 6 Meses)</h3>
-          <div className="flex-1 min-h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={cashflowData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="mes" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', fontSize: '12px' }}
-                  itemStyle={{ color: '#F3F4F6' }}
-                />
-                <Bar dataKey="ingresos" fill="#34D399" name="Ingresos" />
-                <Bar dataKey="egresos" fill="#F87171" name="Egresos" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+    <PanelTerminal
+      titulo="Proyección de resultado acumulado"
+      className="min-h-[260px] flex-1"
+      acciones={
+        <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-500">
+          Crecimiento medido: {pct(crecimientoMensual * 100)} mensual
+        </span>
+      }
+      bodyClassName="p-2"
+    >
+      <ResponsiveContainer width="100%" height="100%" minHeight={210}>
+        <BarChart data={proyecciones} margin={{ top: 20, right: 12, bottom: 4, left: 4 }}>
+          <CartesianGrid stroke={EJE.grid} vertical={false} />
+          <XAxis dataKey="etiqueta" {...ejeProps} />
+          <YAxis tickFormatter={usdCorto} width={44} {...ejeProps} />
+          <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+          <Bar
+            isAnimationActive={false}
+            dataKey="resultadoAcumuladoUsd"
+            name="Resultado acumulado"
+            fill={SERIES.neto}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={54}
+          >
+            <LabelList
+              dataKey="resultadoAcumuladoUsd"
+              position="top"
+              formatter={usdCorto}
+              style={{
+                fill: '#9ca3af',
+                fontSize: 10,
+                fontFamily: 'ui-monospace, monospace',
+              }}
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
 
-        {/* Proyecciones ROI */}
-        <div className="border border-gray-700 bg-gray-950 p-4 flex flex-col">
-          <h3 className="text-gray-400 font-bold text-xs uppercase mb-4 text-center">Proyecciones de Rentabilidad (ROI)</h3>
-          <div className="flex-1 min-h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={roiData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="name" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', fontSize: '12px' }}
-                />
-                <Line type="monotone" dataKey="retorno" stroke="#FBBF24" strokeWidth={3} name="Retorno Estimado" />
-                <Line type="monotone" dataKey="inversion" stroke="#60A5FA" strokeWidth={2} strokeDasharray="5 5" name="Inversión Acumulada" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-      </div>
-    </div>
+      <p className="px-2 pb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
+        Serie única en USD, sin impuestos · más de 12 meses se proyecta con tasa
+        amortiguada al {pct(Math.min(crecimientoMensual, 0.015) * 100)} mensual
+      </p>
+    </PanelTerminal>
   );
 }

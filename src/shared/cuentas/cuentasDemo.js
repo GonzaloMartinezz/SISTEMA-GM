@@ -1,0 +1,227 @@
+// ============================================================================
+// SISTEMA GM · NOTARIO 360° · DATOS DE DEMOSTRACIÓN
+// ----------------------------------------------------------------------------
+// Estructura canónica de una cuenta. Mientras Supabase no tenga las tablas
+// cargadas, el servicio devuelve estos registros. La forma del objeto NO debe
+// cambiar: las 6 pestañas y la cabecera dependen de ella.
+// ============================================================================
+
+export const CUENTAS_DEMO = [
+  {
+    id: 'CTA-000483',
+    titular: {
+      nombre: 'Marcela',
+      apellido: 'Torres',
+      dni: '27.845.112',
+      cuit: '27-27845112-4',
+      clasificacion: 'Clínica',
+      razonSocial: 'Odontología Torres',
+      telefono: '0381-4943494',
+      celular: '381-5551234',
+      email: 'marcela@odontologiatorres.com',
+      clienteDesde: '21/08/2019',
+    },
+    cuenta: {
+      numero: '6276 4904 5482 0003',
+      tipo: 'TITANIO',
+      alta: '21/08/2019',
+      vencimiento: '31/05/2027',
+      ciclo: { cierra: '25', factura: '30', vence: '10' },
+      diaVto: '10/09',
+      sucursal: 'TUCUMÁN',
+      convenio: 'CLÍNICAS Y PROFESIONALES',
+      estado: 'CORRIENTE',
+      bloqueos: 'SIN RESTRICCIÓN',
+      avisos: [],
+    },
+    comercial: {
+      progreso: 78,
+      etapa: 'Negociación',
+      responsable: 'G. Martínez',
+      montoNegociado: 15900,
+      moneda: 'USD',
+      ultimaVisita: '26/08/2026',
+      proximoPaso: 'Cerrar financiación del sillón odontológico',
+    },
+    domicilios: [
+      {
+        tipo: 'Particular',
+        calle: 'Pasaje Domingo Corbalán',
+        numero: '50',
+        referencia: 'Altura Av. Rivadavia al 1300',
+        cp: '4178',
+        localidad: 'Alderetes',
+        provincia: 'Tucumán',
+        telefono: '0381-4943494',
+        telefonoRef: '0381-4943494',
+        email: null,
+      },
+      {
+        tipo: 'Postal',
+        calle: 'Pasaje Domingo Corbalán',
+        numero: '50',
+        referencia: null,
+        cp: '4178',
+        localidad: 'Alderetes',
+        provincia: 'Tucumán',
+        telefono: null,
+        telefonoRef: null,
+        email: null,
+      },
+      {
+        tipo: 'Laboral',
+        empresa: 'Odontología Torres S.R.L.',
+        calle: 'Calle Balcarce',
+        numero: '171',
+        referencia: 'Consultorio planta baja',
+        cp: '4000',
+        localidad: 'San Miguel de Tucumán',
+        provincia: 'Tucumán',
+        telefono: '0381-4311717',
+        telefonoRef: null,
+        email: 'admin@odontologiatorres.com',
+      },
+    ],
+    margenes: {
+      asignados: { mensual: 650, credito: 1550, adelMensual: 0, adelCredito: 0 },
+      libres: { mensual: 412.35, credito: 1180.4, adelMensual: 0, adelCredito: 0 },
+      noFinanciable: 0,
+      minimoElegido: 258.57,
+      periodoActual: {
+        etiqueta: 'Período Actual',
+        saldo: 1237.65,
+        cuotas: 6,
+        pagosEfectuados: 3,
+        creditoDisponible: 1180.4,
+        vencimiento: '10/09/2026',
+      },
+      periodoProximo: {
+        etiqueta: 'Período Próximo',
+        saldo: 824.4,
+        cuotas: 6,
+        pagosEfectuados: 0,
+        creditoDisponible: 1180.4,
+        vencimiento: '10/10/2026',
+      },
+    },
+    pagos: [
+      { cierre: '25/06/2026', vencimiento: '10/07/2026', minimoElegido: 258.57, pl: '01', pn: '01', minImpago: 0, diaPago: '08/07/2026', recibo: '05007456', importe: 258.57, lugar: 'BANCOEMP' },
+      { cierre: '25/07/2026', vencimiento: '10/08/2026', minimoElegido: 258.57, pl: '01', pn: '01', minImpago: 0, diaPago: '09/08/2026', recibo: '05011902', importe: 300.0, lugar: 'RAPIPAGO' },
+      { cierre: '25/08/2026', vencimiento: '10/09/2026', minimoElegido: 258.57, pl: '01', pn: '00', minImpago: 258.57, diaPago: null, recibo: null, importe: 0, lugar: null },
+    ],
+    movimientos: [
+      { fecha: '02/07/2026', comprobante: '00012845', detalle: 'Compra equipo — Sillón odontológico', cuota: '01/06', importeArs: 412000, importeUsd: 320, periodo: 'ACTUAL' },
+      { fecha: '02/08/2026', comprobante: '00013011', detalle: 'Cuota financiada', cuota: '02/06', importeArs: 412000, importeUsd: 320, periodo: 'ACTUAL' },
+      { fecha: '18/08/2026', comprobante: '00013244', detalle: 'Insumos descartables — Kit cirugía', cuota: '01/01', importeArs: 96500, importeUsd: 75, periodo: 'ACTUAL' },
+      { fecha: '02/09/2026', comprobante: '00013390', detalle: 'Cuota financiada', cuota: '03/06', importeArs: 412000, importeUsd: 320, periodo: 'PROXIMO' },
+    ],
+    historial: {
+      llamados: [
+        { fecha: '26/08/2026 10:12', quienAtiende: 'Marcela Torres', contacto: 'Celular', respuesta: 'Pide reprogramar el pago para el 12/09', proximoEvento: '12/09/2026 · Llamado de control', operador: 'G. Martínez' },
+        { fecha: '14/08/2026 16:40', quienAtiende: 'Recepción', contacto: 'Fijo consultorio', respuesta: 'La titular estaba en cirugía. Rellamar', proximoEvento: '15/08/2026 · Rellamar', operador: 'G. Martínez' },
+      ],
+      notas: [
+        { fecha: '26/08/2026', texto: 'Muy interesada en el segundo sillón si mejoramos plazo a 9 cuotas.', operador: 'G. Martínez', tipo: 'Estratégica' },
+        { fecha: '10/08/2026', texto: 'Trabaja con obra social provincial: los cobros le entran los días 10.', operador: 'G. Martínez', tipo: 'Operativa' },
+      ],
+      visitas: [
+        { fecha: '26/08/2026', lugar: 'Consultorio Balcarce 171', motivo: 'Demostración de equipo', resultado: 'Positiva — pidió cotización formal' },
+        { fecha: '02/07/2026', lugar: 'Consultorio Balcarce 171', motivo: 'Entrega de sillón', resultado: 'Entregado y facturado' },
+      ],
+    },
+  },
+  {
+    id: 'CTA-000512',
+    titular: {
+      nombre: 'Rodrigo',
+      apellido: 'Paz',
+      dni: '31.220.874',
+      cuit: '20-31220874-9',
+      clasificacion: 'Particular',
+      razonSocial: null,
+      telefono: '0381-4225566',
+      celular: '381-5559090',
+      email: 'rodri.paz@gmail.com',
+      clienteDesde: '05/03/2024',
+    },
+    cuenta: {
+      numero: '6276 4904 5482 0117',
+      tipo: 'TITANIO',
+      alta: '05/03/2024',
+      vencimiento: '31/03/2028',
+      ciclo: { cierra: '25', factura: '30', vence: '10' },
+      diaVto: '10/09',
+      sucursal: 'TUCUMÁN',
+      convenio: 'CLIENTES PARTICULARES',
+      estado: 'EN MORA',
+      bloqueos: 'COMPRAS SUSPENDIDAS',
+      avisos: ['No se emitió resumen en el período para la cuenta'],
+    },
+    comercial: {
+      progreso: 35,
+      etapa: 'Recupero',
+      responsable: 'G. Martínez',
+      montoNegociado: 3200,
+      moneda: 'USD',
+      ultimaVisita: '12/07/2026',
+      proximoPaso: 'Acordar plan de pago en 3 cuotas',
+    },
+    domicilios: [
+      {
+        tipo: 'Particular',
+        calle: 'Av. Mate de Luna',
+        numero: '2140',
+        referencia: 'Dpto 4B',
+        cp: '4000',
+        localidad: 'San Miguel de Tucumán',
+        provincia: 'Tucumán',
+        telefono: '0381-4225566',
+        telefonoRef: null,
+        email: 'rodri.paz@gmail.com',
+      },
+    ],
+    margenes: {
+      asignados: { mensual: 300, credito: 700, adelMensual: 0, adelCredito: 0 },
+      libres: { mensual: 0, credito: 0, adelMensual: 0, adelCredito: 0 },
+      noFinanciable: 148.2,
+      minimoElegido: 120,
+      periodoActual: {
+        etiqueta: 'Período Actual',
+        saldo: 688.2,
+        cuotas: 3,
+        pagosEfectuados: 1,
+        creditoDisponible: 0,
+        vencimiento: '10/09/2026',
+      },
+      periodoProximo: {
+        etiqueta: 'Período Próximo',
+        saldo: 458.8,
+        cuotas: 3,
+        pagosEfectuados: 0,
+        creditoDisponible: 0,
+        vencimiento: '10/10/2026',
+      },
+    },
+    pagos: [
+      { cierre: '25/06/2026', vencimiento: '10/07/2026', minimoElegido: 120, pl: '01', pn: '01', minImpago: 0, diaPago: '10/07/2026', recibo: '05008812', importe: 120, lugar: 'PAGOFACIL' },
+      { cierre: '25/07/2026', vencimiento: '10/08/2026', minimoElegido: 120, pl: '01', pn: '00', minImpago: 120, diaPago: null, recibo: null, importe: 0, lugar: null },
+    ],
+    movimientos: [
+      { fecha: '15/06/2026', comprobante: '00012600', detalle: 'Autoclave 12L', cuota: '01/03', importeArs: 190000, importeUsd: 148, periodo: 'ACTUAL' },
+      { fecha: '15/07/2026', comprobante: '00012901', detalle: 'Cuota financiada', cuota: '02/03', importeArs: 190000, importeUsd: 148, periodo: 'ACTUAL' },
+    ],
+    historial: {
+      llamados: [
+        { fecha: '20/08/2026 09:05', quienAtiende: 'Rodrigo Paz', contacto: 'Celular', respuesta: 'Promete pagar el 05/09', proximoEvento: '05/09/2026 · Verificar acreditación', operador: 'G. Martínez' },
+      ],
+      notas: [
+        { fecha: '20/08/2026', texto: 'Cambió de trabajo, cobra los días 5. Ajustar el día de vencimiento.', operador: 'G. Martínez', tipo: 'Estratégica' },
+      ],
+      visitas: [
+        { fecha: '12/07/2026', lugar: 'Domicilio particular', motivo: 'Gestión de mora', resultado: 'Compromiso de pago' },
+      ],
+    },
+  },
+];
+
+export default CUENTAS_DEMO;

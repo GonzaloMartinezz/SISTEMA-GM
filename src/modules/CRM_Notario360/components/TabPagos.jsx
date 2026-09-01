@@ -1,60 +1,93 @@
+// ============================================================================
+// SISTEMA GM · NOTARIO 360° · PESTAÑA 4 · PAGOS
+// ============================================================================
+
 import React from 'react';
+import { useCuenta } from '../../../shared/cuentas/CuentaContext';
+import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
+import { num } from '../../../shared/utils/format';
 
 export default function TabPagos() {
+  const { cuenta } = useCuenta();
+  if (!cuenta) return null;
+
+  const pagos = cuenta.pagos || [];
+  const totalPagado = pagos.reduce((acc, p) => acc + Number(p.importe || 0), 0);
+  const impagos = pagos.filter((p) => Number(p.minImpago || 0) > 0).length;
+
   return (
-    <div className="h-full flex flex-col font-mono text-sm bg-gray-900 border border-gray-700 rounded-sm">
-      <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1.5 border-b border-gray-700 uppercase tracking-widest text-xs">
-        PAGOS MINIMOS ELEGIDOS Y PAGOS EFECTUADOS
-      </div>
-      
-      <div className="flex-1 overflow-auto">
-        <table className="w-full text-left border-collapse text-[10px] whitespace-nowrap">
-          <thead className="bg-gray-800 sticky top-0 border-b border-gray-700 shadow-sm">
-            <tr className="text-gray-400 uppercase">
-              <th className="p-2 border-r border-gray-700 font-semibold">Día de Cierre</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Día de Vencto.</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-right">Minimo Elegido</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-center">PL</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-center">PN</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-right">Min. Impago</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-center">Día de Pago</th>
-              <th className="p-2 border-r border-gray-700 font-semibold">Nº Recibo</th>
-              <th className="p-2 border-r border-gray-700 font-semibold text-right">Impte. Pago</th>
-              <th className="p-2 font-semibold">Lugar de Pago</th>
+    <PanelTerminal
+      titulo="Pagos mínimos elegidos y pagos efectuados"
+      className="h-full"
+      acciones={
+        <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.15em]">
+          <span className="text-gray-500">
+            Total pagado <b className="text-emerald-400">{num(totalPagado)}</b>
+          </span>
+          <span className={impagos ? 'text-rose-400' : 'text-gray-600'}>
+            {impagos} impago{impagos === 1 ? '' : 's'}
+          </span>
+        </div>
+      }
+    >
+      {pagos.length ? (
+        <table className="w-full border-collapse whitespace-nowrap text-left font-mono text-[10px]">
+          <thead className="sticky top-0 z-10 border-b border-gray-800 bg-gray-800/90 shadow-sm">
+            <tr className="uppercase text-gray-500">
+              <th className="border-r border-gray-800 p-2 font-semibold">Cierre</th>
+              <th className="border-r border-gray-800 p-2 font-semibold">Vencimiento</th>
+              <th className="border-r border-gray-800 p-2 text-right font-semibold">Mín. elegido</th>
+              <th className="border-r border-gray-800 p-2 text-center font-semibold">PL</th>
+              <th className="border-r border-gray-800 p-2 text-center font-semibold">PN</th>
+              <th className="border-r border-gray-800 p-2 text-right font-semibold">Mín. impago</th>
+              <th className="border-r border-gray-800 p-2 text-center font-semibold">Día de pago</th>
+              <th className="border-r border-gray-800 p-2 font-semibold">Nº recibo</th>
+              <th className="border-r border-gray-800 p-2 text-right font-semibold">Importe</th>
+              <th className="p-2 font-semibold">Lugar</th>
             </tr>
           </thead>
           <tbody className="text-gray-300">
-            {/* Ejemplo de registro iterativo */}
-            <tr className="border-b border-gray-800/50 hover:bg-gray-800 transition-colors">
-              <td className="p-1.5 border-r border-gray-800 text-center">25/08/2011</td>
-              <td className="p-1.5 border-r border-gray-800 text-center text-cyan-300">12/09/2011</td>
-              <td className="p-1.5 border-r border-gray-800 text-right text-cyan-400 font-bold">258.57</td>
-              <td className="p-1.5 border-r border-gray-800 text-center">01</td>
-              <td className="p-1.5 border-r border-gray-800 text-center">01</td>
-              <td className="p-1.5 border-r border-gray-800 text-right text-gray-500">0.00</td>
-              <td className="p-1.5 border-r border-gray-800 text-center text-blue-300">20/09/2011</td>
-              <td className="p-1.5 border-r border-gray-800 font-mono">05007456</td>
-              <td className="p-1.5 border-r border-gray-800 text-right text-green-400 font-bold">258.57</td>
-              <td className="p-1.5 text-gray-400 uppercase">BANCOEMP</td>
-            </tr>
-            {/* Fila vacía para simular scroll continuo */}
-            {Array.from({ length: 15 }).map((_, i) => (
-              <tr key={i} className="border-b border-gray-800/50">
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5 border-r border-gray-800">&nbsp;</td>
-                <td className="p-1.5">&nbsp;</td>
-              </tr>
-            ))}
+            {pagos.map((p, i) => {
+              const impago = Number(p.minImpago || 0) > 0;
+              return (
+                <tr
+                  key={`${p.cierre}-${i}`}
+                  className={`border-b border-gray-800/60 transition-colors hover:bg-gray-800/60 ${
+                    impago ? 'bg-rose-950/20' : ''
+                  }`}
+                >
+                  <td className="border-r border-gray-800 p-1.5 text-center">{p.cierre}</td>
+                  <td className="border-r border-gray-800 p-1.5 text-center text-cyan-300">
+                    {p.vencimiento}
+                  </td>
+                  <td className="border-r border-gray-800 p-1.5 text-right font-bold text-cyan-400 tabular-nums">
+                    {num(p.minimoElegido)}
+                  </td>
+                  <td className="border-r border-gray-800 p-1.5 text-center">{p.pl || '—'}</td>
+                  <td className="border-r border-gray-800 p-1.5 text-center">{p.pn || '—'}</td>
+                  <td
+                    className={`border-r border-gray-800 p-1.5 text-right tabular-nums ${
+                      impago ? 'font-bold text-rose-400' : 'text-gray-600'
+                    }`}
+                  >
+                    {num(p.minImpago)}
+                  </td>
+                  <td className="border-r border-gray-800 p-1.5 text-center text-blue-300">
+                    {p.diaPago || '—'}
+                  </td>
+                  <td className="border-r border-gray-800 p-1.5">{p.recibo || '—'}</td>
+                  <td className="border-r border-gray-800 p-1.5 text-right font-bold tabular-nums text-emerald-400">
+                    {num(p.importe)}
+                  </td>
+                  <td className="p-1.5 uppercase text-gray-400">{p.lugar || '—'}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </div>
-    </div>
+      ) : (
+        <SinDatos mensaje="Sin pagos registrados para la cuenta" />
+      )}
+    </PanelTerminal>
   );
 }

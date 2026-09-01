@@ -1,74 +1,101 @@
+// ============================================================================
+// SISTEMA GM · TESORERÍA · FLUJO DE CAJA
+// ----------------------------------------------------------------------------
+// Ingresos proyectados contra egresos próximos, para anticipar la falta de
+// liquidez. Una sola escala (USD) y una sola unidad en todo el gráfico.
+// ============================================================================
+
 import React from 'react';
+import {
+  ComposedChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  ReferenceLine,
+} from 'recharts';
+import PanelTerminal from '../../../shared/ui/PanelTerminal';
+import ChartTooltip from '../../../shared/ui/ChartTooltip';
+import { SERIES, EJE, ejeProps, usdCorto, usd } from '../../../shared/ui/viz';
+import { useTesoreria } from '../context/TesoreriaContext';
 
 export default function PanelFlujoCaja() {
+  const { datos } = useTesoreria();
+  if (!datos) return null;
+
+  const { flujo } = datos;
+  const enRojo = flujo.filter((f) => f.netoUsd < 0);
+
   return (
-    <div className="bg-gray-900 border border-gray-800 flex flex-col h-full font-mono text-sm overflow-auto">
-      <div className="bg-gray-800 text-yellow-400 font-bold text-center py-2 border-b border-gray-800 uppercase tracking-widest text-xs">
-        Ingresos, Egresos y Ahorros
-      </div>
-      
-      <div className="p-2 flex flex-col gap-2 flex-1">
-        
-        {/* Ingresos */}
-        <div className="border border-gray-700 bg-gray-950 p-3">
-          <h3 className="text-green-400 font-bold text-xs uppercase border-b border-gray-800 pb-1 mb-2">
-            Ingresos (Mensual)
-          </h3>
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Sueldo Fijo</span>
-              <span className="text-gray-300">500,000.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Comisiones</span>
-              <span className="text-gray-300">125,500.00</span>
-            </div>
-            <div className="flex justify-between border-t border-gray-800 pt-1 mt-1 font-bold">
-              <span className="text-gray-400">TOTAL INGRESOS</span>
-              <span className="text-green-400">625,500.00</span>
-            </div>
-          </div>
-        </div>
+    <PanelTerminal
+      titulo="Flujo de caja · próximas 6 semanas"
+      className="min-h-[280px] flex-1"
+      acciones={
+        <span
+          className={`font-mono text-[9px] uppercase tracking-[0.15em] ${enRojo.length ? 'text-orange-400' : 'text-emerald-400'}`}
+        >
+          {enRojo.length
+            ? `${enRojo.length} semana${enRojo.length === 1 ? '' : 's'} con saldo negativo`
+            : 'Sin semanas en rojo'}
+        </span>
+      }
+      bodyClassName="p-2"
+    >
+      <ResponsiveContainer width="100%" height="100%" minHeight={230}>
+        <ComposedChart data={flujo} margin={{ top: 12, right: 12, bottom: 4, left: 4 }}>
+          <CartesianGrid stroke={EJE.grid} vertical={false} />
+          <XAxis dataKey="etiqueta" {...ejeProps} />
+          <YAxis tickFormatter={usdCorto} width={44} {...ejeProps} />
+          <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+          <Legend
+            wrapperStyle={{
+              fontSize: 10,
+              fontFamily: 'ui-monospace, monospace',
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              color: '#9ca3af',
+              paddingTop: 6,
+            }}
+          />
+          <ReferenceLine y={0} stroke="rgba(255,255,255,0.18)" />
 
-        {/* Egresos */}
-        <div className="border border-gray-700 bg-gray-950 p-3">
-          <h3 className="text-red-400 font-bold text-xs uppercase border-b border-gray-800 pb-1 mb-2">
-            Egresos
-          </h3>
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Gastos Semanales</span>
-              <span className="text-gray-300">45,000.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Gastos Fijos Mensuales</span>
-              <span className="text-gray-300">210,000.00</span>
-            </div>
-            <div className="flex justify-between border-t border-gray-800 pt-1 mt-1 font-bold">
-              <span className="text-gray-400">TOTAL EGRESOS</span>
-              <span className="text-red-400">255,000.00</span>
-            </div>
-          </div>
-        </div>
+          <Bar
 
-        {/* Ahorros y Saldo */}
-        <div className="border border-yellow-700/50 bg-gray-950 p-3 mt-auto">
-          <h3 className="text-yellow-400 font-bold text-xs uppercase border-b border-gray-800 pb-1 mb-2">
-            Control de Ahorros / Saldo Neto
-          </h3>
-          <div className="space-y-1">
-            <div className="flex justify-between font-bold text-lg">
-              <span className="text-gray-400">FLUJO NETO</span>
-              <span className="text-cyan-400">370,500.00</span>
-            </div>
-            <div className="flex justify-between text-xs mt-2 border-t border-gray-800 pt-2">
-              <span className="text-gray-500">Objetivo Ahorro (20%)</span>
-              <span className="text-yellow-500">125,100.00</span>
-            </div>
-          </div>
-        </div>
+            isAnimationActive={false}
+            dataKey="ingresosUsd"
+            name="Ingresos"
+            fill={SERIES.ingresos}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={26}
+          />
+          <Bar
+            isAnimationActive={false}
+            dataKey="egresosUsd"
+            name="Egresos"
+            fill={SERIES.egresos}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={26}
+          />
+          <Line
+            isAnimationActive={false}
+            type="monotone"
+            dataKey="acumuladoUsd"
+            name="Saldo acumulado"
+            stroke={SERIES.neto}
+            strokeWidth={2}
+            dot={{ r: 4, fill: EJE.superficie, stroke: SERIES.neto, strokeWidth: 2 }}
+            activeDot={{ r: 6 }}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
 
-      </div>
-    </div>
+      <p className="px-2 pb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
+        Saldo acumulado al cierre del período: {usd(flujo[flujo.length - 1]?.acumuladoUsd)}
+      </p>
+    </PanelTerminal>
   );
 }

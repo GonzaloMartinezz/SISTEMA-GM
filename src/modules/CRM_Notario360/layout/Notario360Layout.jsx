@@ -2,14 +2,15 @@ import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { 
   Search, Bell, LayoutDashboard, Users, FileText, 
-  MessageSquare, Calendar, HelpCircle, Settings
+  MessageSquare, Calendar, HelpCircle, Settings, ScanFace
 } from 'lucide-react';
 
 export default function Notario360Layout() {
   const location = useLocation();
 
   const getPageTitle = () => {
-    if (location.pathname.includes('/padron')) return 'Padrón de Clientes / Leads';
+    if (location.pathname.includes('/ficha')) return 'Ficha 360° de la Cuenta';
+    if (location.pathname.includes('/padron')) return 'Padrón de Cuentas';
     if (location.pathname.includes('/dashboard')) return 'Dashboard Analytics';
     if (location.pathname.includes('/mensajes')) return 'Historial de Mensajes';
     if (location.pathname.includes('/deals')) return 'Deals & Proyectos';
@@ -46,6 +47,7 @@ export default function Notario360Layout() {
           
           <SidebarItem to="/notario-360/dashboard" icon={LayoutDashboard} label="Dashboard" />
           <SidebarItem to="/notario-360/padron" icon={Users} label="Padrón Completo" />
+          <SidebarItem to="/notario-360/ficha" icon={ScanFace} label="Ficha 360°" />
           <SidebarItem to="/notario-360/deals" icon={FileText} label="Deals & Proyectos" />
           <SidebarItem to="/notario-360/mensajes" icon={MessageSquare} label="Mensajes" />
           

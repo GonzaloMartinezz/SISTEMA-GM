@@ -24,3 +24,25 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* ---------------------------------------------------------------------------
+   SISTEMA GM · Contenedor de módulo (ModuleGuard)
+   Los dashboards heredados usan h-screen/min-h-screen. Dentro del shell del
+   módulo la altura de referencia es el contenedor, no el viewport.
+--------------------------------------------------------------------------- */
+.gm-module-content > .h-screen,
+.gm-module-content > .min-h-screen {
+  height: 100%;
+  min-height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   SISTEMA GM · Portal Hub compacto
+   En pantallas bajas (portátiles chicos, mobile apaisado) se sacrifica primero
+   la descripción de la tarjeta para que la grilla nunca genere scroll.
+--------------------------------------------------------------------------- */
+@media (max-height: 620px) {
+  .gm-hub .gm-card-desc {
+    display: none;
+  }
+}

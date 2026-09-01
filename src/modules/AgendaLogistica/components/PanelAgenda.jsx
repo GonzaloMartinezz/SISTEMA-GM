@@ -1,54 +1,165 @@
-import React from 'react';
-import { Calendar, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+// ============================================================================
+// SISTEMA GM · AGENDA INTELIGENTE · TABLERO DIARIO
+// ----------------------------------------------------------------------------
+// Visitas programadas y llamadas agendadas, en línea de tiempo.
+// ============================================================================
 
-export default function PanelAgenda({ onSelectEvent, selectedEvent }) {
-  const eventos = [
-    { id: 1, hora: '09:00', cliente: 'TORRES, MARCELA', tipo: 'Cobranza', estado: 'completado', dir: 'Balcarce 171' },
-    { id: 2, hora: '11:30', cliente: 'CLINICA SANTA FE', tipo: 'Venta', estado: 'pendiente', dir: 'Av. Mate de Luna 2000' },
-    { id: 3, hora: '15:00', cliente: 'ODONTOSALUD', tipo: 'Demostración', estado: 'pendiente', dir: 'San Martín 550' },
-    { id: 4, hora: '17:45', cliente: 'RUIZ, CARLOS', tipo: 'Cobranza', estado: 'reprogramado', dir: 'Barrio Sur' },
-  ];
+import React from 'react';
+import {
+  MapPin,
+  Phone,
+  Check,
+  X,
+  CalendarPlus,
+  Clock,
+  ExternalLink,
+} from 'lucide-react';
+import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
+import { linkGoogleCalendar } from '../../../shared/agenda/agendaService';
+import { useAgenda } from '../context/AgendaContext';
+
+const ESTADOS = {
+  pendiente: { label: 'Pendiente', color: 'text-gray-400', punto: 'bg-gray-500' },
+  cumplido: { label: 'Cumplido', color: 'text-emerald-400', punto: 'bg-emerald-400' },
+  cancelado: { label: 'Cancelado', color: 'text-rose-400', punto: 'bg-rose-400' },
+};
+
+const PRIORIDAD = {
+  alta: 'border-rose-500/40 text-rose-400',
+  media: 'border-amber-500/40 text-amber-400',
+  baja: 'border-gray-700 text-gray-500',
+};
+
+export default function PanelAgenda({ onNuevoEvento }) {
+  const { delDia, marcarEstado, metricas } = useAgenda();
 
   return (
-    <div className="bg-gray-900 border border-gray-800 flex flex-col h-full">
-      <div className="bg-gray-800 text-purple-400 font-bold text-center py-2 border-b border-gray-800 uppercase tracking-widest text-xs flex justify-center items-center gap-2">
-        <Calendar className="w-4 h-4" />
-        Cronograma del Día
-      </div>
-      
-      <div className="flex-1 overflow-auto p-2 space-y-2">
-        {eventos.map((evento) => (
-          <div 
-            key={evento.id}
-            onClick={() => onSelectEvent(evento)}
-            className={`border p-3 cursor-pointer transition-colors ${
-              selectedEvent?.id === evento.id 
-                ? 'bg-gray-800 border-purple-500' 
-                : 'bg-gray-950 border-gray-800 hover:border-gray-600'
-            }`}
+    <PanelTerminal
+      titulo="Tablero del día"
+      className="min-h-0 flex-1"
+      acciones={
+        <div className="flex items-center gap-3">
+          <span className="hidden font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600 sm:inline">
+            {metricas.visitas} visitas · {metricas.llamadas} llamadas ·{' '}
+            {Math.round(metricas.minutos / 60)}h
+          </span>
+          <button
+            type="button"
+            onClick={onNuevoEvento}
+            className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] text-gray-500 transition-colors hover:text-teal-400"
           >
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex items-center gap-2">
-                <Clock className="w-3 h-3 text-gray-500" />
-                <span className="text-gray-300 font-bold text-sm font-mono">{evento.hora}</span>
-              </div>
-              <EstadoIcon estado={evento.estado} />
-            </div>
-            
-            <h3 className="text-gray-200 font-bold uppercase text-xs mb-1">{evento.cliente}</h3>
-            <div className="flex justify-between items-center text-[10px] font-mono">
-              <span className="text-gray-500 uppercase">{evento.tipo}</span>
-              <span className="text-gray-400">{evento.dir}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+            <CalendarPlus className="h-3 w-3" />
+            Nuevo
+          </button>
+        </div>
+      }
+    >
+      {delDia.length ? (
+        <ul className="divide-y divide-gray-800">
+          {delDia.map((ev) => {
+            const estado = ESTADOS[ev.estado] || ESTADOS.pendiente;
+            const Icono = ev.tipo === 'visita' ? MapPin : Phone;
+            const cerrado = ev.estado !== 'pendiente';
 
-function EstadoIcon({ estado }) {
-  if (estado === 'completado') return <CheckCircle className="w-4 h-4 text-green-500" />;
-  if (estado === 'reprogramado') return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-  return <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse mt-1"></div>;
+            return (
+              <li
+                key={ev.id}
+                className={`flex gap-3 p-3 transition-colors hover:bg-gray-900/60 ${cerrado ? 'opacity-60' : ''}`}
+              >
+                {/* Hora */}
+                <div className="w-14 shrink-0 text-right">
+                  <p className="font-mono text-sm font-bold tabular-nums text-white">{ev.hora}</p>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-gray-600">
+                    {ev.duracion}′
+                  </p>
+                </div>
+
+                {/* Línea de tiempo */}
+                <div className="flex w-4 shrink-0 flex-col items-center">
+                  <span className={`mt-1.5 h-2 w-2 rounded-full ${estado.punto}`} />
+                  <span className="mt-1 w-px flex-1 bg-gray-800" />
+                </div>
+
+                {/* Contenido */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p
+                        className={`truncate text-sm font-semibold text-gray-100 ${cerrado ? 'line-through' : ''}`}
+                      >
+                        {ev.titulo}
+                      </p>
+                      <p className="truncate font-mono text-[10px] uppercase tracking-wider text-gray-500">
+                        {ev.cliente}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 rounded border px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest ${PRIORIDAD[ev.prioridad] || PRIORIDAD.baja}`}
+                    >
+                      {ev.prioridad}
+                    </span>
+                  </div>
+
+                  <p className="mt-1 flex items-center gap-1.5 font-mono text-[10px] text-gray-500">
+                    <Icono className="h-3 w-3 shrink-0 text-gray-600" />
+                    <span className="truncate">{ev.direccion}</span>
+                  </p>
+
+                  {ev.nota && (
+                    <p className="mt-1.5 rounded border border-gray-800 bg-gray-950/60 px-2 py-1 text-[10px] leading-snug text-gray-400">
+                      {ev.nota}
+                    </p>
+                  )}
+
+                  {/* Acciones */}
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => marcarEstado(ev.id, cerrado ? 'pendiente' : 'cumplido')}
+                      className={`inline-flex items-center gap-1 rounded border px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest transition-colors ${
+                        ev.estado === 'cumplido'
+                          ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
+                          : 'border-gray-700 text-gray-400 hover:border-emerald-500/50 hover:text-emerald-400'
+                      }`}
+                    >
+                      <Check className="h-3 w-3" />
+                      Cumplido
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => marcarEstado(ev.id, 'cancelado')}
+                      className="inline-flex items-center gap-1 rounded border border-gray-700 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-gray-500 transition-colors hover:border-rose-500/50 hover:text-rose-400"
+                    >
+                      <X className="h-3 w-3" />
+                      Cancelar
+                    </button>
+
+                    <a
+                      href={linkGoogleCalendar(ev)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded border border-gray-700 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-gray-500 transition-colors hover:border-teal-500/50 hover:text-teal-400"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      Calendar
+                    </a>
+
+                    <span
+                      className={`ml-auto inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${estado.color}`}
+                    >
+                      <Clock className="h-3 w-3" />
+                      {estado.label}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <SinDatos mensaje="No hay compromisos para este día" />
+      )}
+    </PanelTerminal>
+  );
 }

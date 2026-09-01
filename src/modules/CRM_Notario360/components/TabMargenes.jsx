@@ -1,86 +1,94 @@
+// ============================================================================
+// SISTEMA GM · NOTARIO 360° · PESTAÑA 3 · MÁRGENES
+// ----------------------------------------------------------------------------
+// Split-screen: a la izquierda lo asignado y lo libre; a la derecha el corte
+// estricto entre Período Actual y Período Próximo.
+// ============================================================================
+
 import React from 'react';
+import { useCuenta } from '../../../shared/cuentas/CuentaContext';
+import PanelTerminal from '../../../shared/ui/PanelTerminal';
+import { num } from '../../../shared/utils/format';
+
+function FilaValor({ label, valor, destacado = false }) {
+  return (
+    <>
+      <div className="border-t border-gray-800 bg-gray-800/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500">
+        {label}
+      </div>
+      <div
+        className={`border-t border-gray-800 px-3 py-1.5 text-right font-mono text-xs font-bold tabular-nums ${
+          destacado ? 'text-cyan-400' : 'text-gray-200'
+        }`}
+      >
+        {num(valor)}
+      </div>
+    </>
+  );
+}
+
+function PanelPeriodo({ periodo, acento }) {
+  if (!periodo) return null;
+  return (
+    <PanelTerminal titulo={periodo.etiqueta} acento={acento}>
+      <div className="grid grid-cols-2">
+        <FilaValor label="Saldo" valor={periodo.saldo} destacado />
+        <FilaValor label="Cantidad de cuotas" valor={periodo.cuotas} />
+        <FilaValor label="Pagos efectuados" valor={periodo.pagosEfectuados} />
+        <FilaValor label="Más crédito disponible" valor={periodo.creditoDisponible} destacado />
+      </div>
+      <div className="flex items-center justify-between border-t border-gray-800 bg-gray-950/60 px-3 py-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500">
+          Vencimiento
+        </span>
+        <span className="font-mono text-xs font-bold text-gray-200">{periodo.vencimiento}</span>
+      </div>
+    </PanelTerminal>
+  );
+}
 
 export default function TabMargenes() {
-  return (
-    <div className="flex gap-4 h-full text-sm font-mono">
-      {/* Columna Izquierda: Asignados y No Financiable */}
-      <div className="flex-1 space-y-4">
-        
-        <div className="bg-gray-900 border border-gray-700">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase tracking-widest text-xs">
-            Margenes Asignados
-          </div>
-          <div className="grid grid-cols-4 divide-x divide-gray-700 text-center">
-            <div className="bg-gray-800 text-gray-400 py-1">Mensual</div>
-            <div className="text-gray-200 py-1 font-bold">650.00</div>
-            <div className="bg-gray-800 text-gray-400 py-1">Crédito</div>
-            <div className="text-gray-200 py-1 font-bold">1550.00</div>
-            
-            <div className="bg-gray-800 text-gray-400 py-1 border-t border-gray-700">Adel.Mensual</div>
-            <div className="text-gray-200 py-1 font-bold border-t border-gray-700">0.00</div>
-            <div className="bg-gray-800 text-gray-400 py-1 border-t border-gray-700">Adel.Crédito</div>
-            <div className="text-gray-200 py-1 font-bold border-t border-gray-700">0.00</div>
-          </div>
-        </div>
+  const { cuenta } = useCuenta();
+  if (!cuenta) return null;
 
-        <div className="bg-gray-900 border border-gray-700 flex flex-col h-48">
-          <div className="bg-gray-800 text-gray-300 font-bold text-center py-1 border-b border-gray-700 uppercase text-xs">
-            No Financiable
+  const m = cuenta.margenes || {};
+  const asignados = m.asignados || {};
+  const libres = m.libres || {};
+
+  return (
+    <div className="grid h-full min-h-0 grid-cols-1 gap-3 overflow-auto pr-1 lg:grid-cols-2">
+      {/* ---------- Izquierda ---------- */}
+      <div className="flex flex-col gap-3">
+        <PanelTerminal titulo="Márgenes asignados">
+          <div className="grid grid-cols-2">
+            <FilaValor label="Mensual" valor={asignados.mensual} destacado />
+            <FilaValor label="Crédito" valor={asignados.credito} destacado />
+            <FilaValor label="Adel. mensual" valor={asignados.adelMensual} />
+            <FilaValor label="Adel. crédito" valor={asignados.adelCredito} />
           </div>
-          <div className="flex-1 flex items-center justify-center text-gray-500 font-black text-2xl">
-            +
+        </PanelTerminal>
+
+        <PanelTerminal titulo="Márgenes libres" acento="verde">
+          <div className="grid grid-cols-2">
+            <FilaValor label="Mensual" valor={libres.mensual} destacado />
+            <FilaValor label="Crédito" valor={libres.credito} destacado />
+            <FilaValor label="Adel. mensual" valor={libres.adelMensual} />
+            <FilaValor label="Adel. crédito" valor={libres.adelCredito} />
           </div>
-          <div className="bg-gray-800 p-2 flex justify-between border-t border-gray-700">
-            <span className="text-cyan-400 text-xs font-bold uppercase">Mínimo Elegido</span>
-            <span className="text-gray-200 font-bold">0.00</span>
+        </PanelTerminal>
+
+        <PanelTerminal titulo="No financiable / mínimo" acento="gris">
+          <div className="grid grid-cols-2">
+            <FilaValor label="No financiable" valor={m.noFinanciable} />
+            <FilaValor label="Mínimo elegido" valor={m.minimoElegido} destacado />
           </div>
-        </div>
+        </PanelTerminal>
       </div>
 
-      {/* Columna Derecha: Libres y Vencimientos */}
-      <div className="flex-1 space-y-4">
-        
-        <div className="bg-gray-900 border border-gray-700">
-          <div className="bg-gray-800 text-cyan-400 font-bold text-center py-1 border-b border-gray-700 uppercase tracking-widest text-xs">
-            Margenes Libres Actuales
-          </div>
-          <div className="grid grid-cols-4 divide-x divide-gray-700 text-center">
-            <div className="bg-gray-800 text-gray-400 py-1">Mensual</div>
-            <div className="text-red-400 py-1 font-bold">650.00</div>
-            <div className="bg-gray-800 text-gray-400 py-1">Crédito</div>
-            <div className="text-red-400 py-1 font-bold">1550.00</div>
-            
-            <div className="bg-gray-800 text-gray-400 py-1 border-t border-gray-700">Adel.Mensual</div>
-            <div className="text-red-400 py-1 font-bold border-t border-gray-700">0.00</div>
-            <div className="bg-gray-800 text-gray-400 py-1 border-t border-gray-700">Adel.Crédito</div>
-            <div className="text-red-400 py-1 font-bold border-t border-gray-700">0.00</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-900 border border-gray-700 text-center p-3">
-            <div className="text-cyan-400 font-bold uppercase text-xs mb-2 border-b border-gray-700 pb-1">
-              Próximos Vencimientos
-            </div>
-            <div className="text-gray-400 text-[10px] mb-2 leading-tight">
-              Sin mora por pago a cuenta o pago vencido
-            </div>
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-gray-400">Resto</span>
-              <span className="text-gray-200">0.00</span>
-            </div>
-            <div className="flex justify-between text-xs font-bold border-t border-gray-700 mt-1 pt-1">
-              <span className="text-gray-300">TOTAL</span>
-              <span className="text-gray-200">0.00</span>
-            </div>
-          </div>
-          
-          <div className="bg-gray-900 border border-gray-700 flex items-center justify-center">
-            {/* Espacio reservado para métricas de ROI o simulación */}
-            <span className="text-gray-600 text-xs">Simulador Inactivo</span>
-          </div>
-        </div>
-
+      {/* ---------- Derecha ---------- */}
+      <div className="flex flex-col gap-3">
+        <PanelPeriodo periodo={m.periodoActual} acento="cyan" />
+        <PanelPeriodo periodo={m.periodoProximo} acento="ambar" />
       </div>
     </div>
   );

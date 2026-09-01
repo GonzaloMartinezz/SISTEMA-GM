@@ -1,105 +1,173 @@
-import React, { useState } from 'react';
-import { Search, Database } from 'lucide-react';
+// ============================================================================
+// SISTEMA GM · MÓDULO 8 · GESTIÓN DE COBRANZAS (Fase 3)
+// ----------------------------------------------------------------------------
+// Split-screen obligatorio: a la izquierda el estado de cuenta y la estructura
+// financiera (información estática); a la derecha se opera el llamado y se
+// audita la gestión, sin perder contexto.
+// ============================================================================
+
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Loader2, AlertTriangle } from 'lucide-react';
+
+import { CuentaProvider, useCuenta } from '../../../shared/cuentas/CuentaContext';
+import { listarCuentas } from '../../../shared/cuentas/cuentasService';
+
+import ColaGestionPanel from '../components/ColaGestionPanel';
+import EstadoCuentaPanel from '../components/EstadoCuentaPanel';
+import EstructuraFinancieraPanel from '../components/EstructuraFinancieraPanel';
 import RegistroLlamadaPanel from '../components/RegistroLlamadaPanel';
+import AuditoriaPanel from '../components/AuditoriaPanel';
 
-// Icono auxiliar
-function DatabaseIcon(props) {
-  return <Database {...props} />;
-}
+// ---------------------------------------------------------------------------
+// Puesto de gestión (consume la cuenta activa)
+// ---------------------------------------------------------------------------
+function PuestoGestion({ onSiguiente }) {
+  const { cuenta, cargando, error, agregarLlamado, agregarNota } = useCuenta();
 
-export default function CobranzasMain() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const grabar = useCallback(
+    async (registro) => {
+      await agregarLlamado({
+        quienAtiende: registro.quienAtiende,
+        contacto: registro.contacto,
+        respuesta: registro.respuesta,
+        proximoEvento: registro.proximoEvento,
+        operador: registro.operador,
+      });
+      if (registro.nota?.trim()) {
+        await agregarNota({
+          texto: registro.nota.trim(),
+          tipo: 'Operativa',
+          operador: registro.operador,
+        });
+      }
+    },
+    [agregarLlamado, agregarNota]
+  );
+
+  const llamarDespues = useCallback(
+    async (registro) => {
+      await grabar(registro);
+      onSiguiente();
+    },
+    [grabar, onSiguiente]
+  );
+
+  if (cargando) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-rose-400" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-500">
+            Cargando estado de cuenta
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !cuenta) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <AlertTriangle className="h-6 w-6 text-rose-400" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-rose-300">
+            {error || 'Cuenta no encontrada'}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-950 p-2 font-sans flex flex-col h-screen">
-      {/* Cabecera del Módulo */}
-      <div className="bg-gray-900 border border-gray-800 p-3 flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-3">
-          <DatabaseIcon className="text-red-400 w-6 h-6" />
-          <h1 className="text-red-400 font-bold tracking-widest uppercase text-sm">
-            Gestión de Cobranzas y Morosos
-          </h1>
-        </div>
-        
-        {/* Buscador de Estado de Cuenta */}
-        <div className="flex items-center gap-2">
-          <label className="text-gray-400 text-xs font-bold uppercase">Estado de Cuenta (DNI/Apellido)</label>
-          <div className="relative">
-            <input 
-              type="text" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Ej: TORRES, MARCELA"
-              className="bg-gray-950 border border-gray-700 text-red-300 px-3 py-1 text-sm font-mono focus:outline-none focus:border-red-500 w-64 uppercase"
-            />
-            <Search className="absolute right-2 top-1.5 w-4 h-4 text-gray-500" />
-          </div>
-        </div>
+    <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-hidden p-3 lg:grid-cols-[minmax(320px,38%)_1fr]">
+      {/* ---------- Lado estático ---------- */}
+      <div className="min-h-0 space-y-3 overflow-y-auto pr-1">
+        <EstadoCuentaPanel cuenta={cuenta} />
+        <EstructuraFinancieraPanel cuenta={cuenta} />
       </div>
 
-      {/* Área de Trabajo Split-Screen */}
-      <div className="flex gap-2 flex-1 mt-2 min-h-0">
-        
-        {/* Columna Izquierda: Directorio y Estado de Cuenta */}
-        <div className="w-1/2 flex flex-col gap-2 min-h-0">
-          
-          {/* Ficha Rápida de Contacto */}
-          <div className="bg-gray-900 border border-gray-800 p-3 shrink-0">
-            <h2 className="text-red-400 font-bold text-xs uppercase mb-2 border-b border-gray-800 pb-1">
-              Directorio de Contacto
-            </h2>
-            <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-              <div>
-                <span className="text-gray-500 block">Teléfonos</span>
-                <span className="text-gray-300">0381-4943494 / 0381-4311717</span>
-              </div>
-              <div>
-                <span className="text-gray-500 block">Mail</span>
-                <span className="text-gray-300">mtorres@clinica.com</span>
-              </div>
-              <div className="col-span-2">
-                <span className="text-gray-500 block">Domicilios (Gral / Negocio)</span>
-                <span className="text-gray-300">CALLE BALCARCE Nº:171, San Miguel de Tucumán</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Cuotas y Crédito (Períodos) */}
-          <div className="bg-gray-900 border border-gray-800 flex-1 flex flex-col min-h-0">
-            <h2 className="text-red-400 font-bold text-xs uppercase p-2 border-b border-gray-800 text-center bg-gray-800">
-              Estructura de Cuotas y Crédito
-            </h2>
-            
-            <div className="grid grid-cols-2 gap-2 p-2 flex-1 overflow-auto font-mono text-xs">
-              {/* Período Actual */}
-              <div className="border border-gray-700 bg-gray-950 p-2">
-                <div className="text-center text-cyan-400 font-bold border-b border-gray-800 pb-1 mb-2">PERIODO ACTUAL</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between"><span className="text-gray-500">Pagos Efectuados</span><span className="text-green-400">15,000.00</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Cant. Cuotas Restantes</span><span className="text-gray-300">2 de 6</span></div>
-                  <div className="flex justify-between border-t border-gray-800 pt-1 mt-1"><span className="text-gray-500">Saldo Exigible</span><span className="text-red-400 font-bold">45,300.00</span></div>
-                </div>
-              </div>
-
-              {/* Período Próximo */}
-              <div className="border border-gray-700 bg-gray-950 p-2">
-                <div className="text-center text-gray-400 font-bold border-b border-gray-800 pb-1 mb-2">PERIODO PROXIMO</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between"><span className="text-gray-500">Vencimiento</span><span className="text-gray-300">10/10/2026</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Proyección Cuota</span><span className="text-gray-300">22,650.00</span></div>
-                  <div className="flex justify-between border-t border-gray-800 pt-1 mt-1"><span className="text-gray-500">Más Crédito Disp.</span><span className="text-cyan-400 font-bold">150,000.00</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* ---------- Lado operativo ---------- */}
+      <div className="flex min-h-0 flex-col gap-3 overflow-hidden">
+        <div className="shrink-0">
+          <RegistroLlamadaPanel
+            cuenta={cuenta}
+            onGrabar={grabar}
+            onLlamarDespues={llamarDespues}
+            onOmitir={onSiguiente}
+          />
         </div>
-
-        {/* Columna Derecha: Panel de Gestión Operativa (Llamados) */}
-        <div className="w-1/2 flex flex-col min-h-0">
-          <RegistroLlamadaPanel />
-        </div>
-
+        <AuditoriaPanel cuenta={cuenta} />
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Vista del módulo
+// ---------------------------------------------------------------------------
+export default function CobranzasMain() {
+  const [cuentas, setCuentas] = useState([]);
+  const [cuentaId, setCuentaId] = useState(null);
+  const [gestionadas, setGestionadas] = useState([]);
+
+  useEffect(() => {
+    let vivo = true;
+    listarCuentas().then((data) => {
+      if (!vivo) return;
+      // Primero las que están en mora: es la cola real de trabajo
+      const ordenadas = [...data].sort((a, b) => {
+        const aMora = String(a.cuenta?.estado || '').toUpperCase().includes('MORA') ? 0 : 1;
+        const bMora = String(b.cuenta?.estado || '').toUpperCase().includes('MORA') ? 0 : 1;
+        return aMora - bMora;
+      });
+      setCuentas(ordenadas);
+      setCuentaId((prev) => prev || ordenadas[0]?.id || null);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const siguiente = useCallback(() => {
+    setGestionadas((prev) => (cuentaId && !prev.includes(cuentaId) ? [...prev, cuentaId] : prev));
+    setCuentas((lista) => {
+      const i = lista.findIndex((c) => c.id === cuentaId);
+      const proxima = lista[(i + 1) % (lista.length || 1)];
+      if (proxima) setCuentaId(proxima.id);
+      return lista;
+    });
+  }, [cuentaId]);
+
+  const cuentaActual = useMemo(
+    () => cuentas.find((c) => c.id === cuentaId) || null,
+    [cuentas, cuentaId]
+  );
+
+  const enMora = String(cuentaActual?.cuenta?.estado || '').toUpperCase().includes('MORA');
+
+  return (
+    <div className="flex h-screen min-h-screen flex-col bg-gray-950 font-sans">
+      {/* Cola de gestión */}
+      {cuentas.length > 0 && (
+        <ColaGestionPanel
+          cuentas={cuentas}
+          cuentaActiva={cuentaId}
+          gestionadas={gestionadas}
+          onSeleccionar={setCuentaId}
+          titularActivo={
+            cuentaActual
+              ? `${cuentaActual.titular.apellido}, ${cuentaActual.titular.nombre}`
+              : null
+          }
+          estadoActivo={cuentaActual?.cuenta?.estado}
+          enMora={enMora}
+        />
+      )}
+
+      {/* Puesto de trabajo */}
+      <CuentaProvider cuentaId={cuentaId}>
+        <PuestoGestion onSiguiente={siguiente} />
+      </CuentaProvider>
     </div>
   );
 }

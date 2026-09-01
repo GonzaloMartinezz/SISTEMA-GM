@@ -1,36 +1,124 @@
-import React from 'react';
-import { Map, MapPin } from 'lucide-react';
+// ============================================================================
+// SISTEMA GM · AGENDA INTELIGENTE · RUTA DEL DÍA
+// ----------------------------------------------------------------------------
+// Cruza los horarios de la agenda con las ubicaciones y propone el orden más
+// eficiente de visitas.
+// ============================================================================
 
-export default function PanelMapaRutas({ selectedEvent }) {
+import React, { useMemo } from 'react';
+import { Navigation, Route as RouteIcon, TrendingDown } from 'lucide-react';
+import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
+import { BASE_OPERATIVA } from '../../../shared/agenda/agendaDemo';
+import {
+  optimizarRuta,
+  rutaCronologica,
+  linkGoogleMapsRuta,
+  minutosDeViaje,
+} from '../../../shared/geo/ruteo';
+import { useAgenda } from '../context/AgendaContext';
+
+export default function PanelMapaRutas() {
+  const { delDia } = useAgenda();
+
+  const visitas = useMemo(
+    () => delDia.filter((e) => e.tipo === 'visita' && e.estado !== 'cancelado'),
+    [delDia]
+  );
+
+  const optimizada = useMemo(() => optimizarRuta(BASE_OPERATIVA, visitas), [visitas]);
+  const cronologica = useMemo(() => rutaCronologica(BASE_OPERATIVA, visitas), [visitas]);
+  const ahorro = cronologica.totalKm - optimizada.totalKm;
+
   return (
-    <div className="bg-gray-900 border border-gray-800 flex flex-col h-full relative overflow-hidden">
-      <div className="bg-gray-800 text-purple-400 font-bold text-center py-2 border-b border-gray-800 uppercase tracking-widest text-xs flex justify-center items-center gap-2 z-10 relative">
-        <Map className="w-4 h-4" />
-        Trazado de Ruta Interactivo
-      </div>
-      
-      {/* Mockup de Mapa Cyberpunk */}
-      <div className="flex-1 relative bg-gray-950 flex justify-center items-center">
-        {/* Grilla de fondo simulando mapa cyber */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.05)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        
-        {/* Contenido del Mapa Simulado */}
-        <div className="z-10 text-center space-y-4">
-          <MapPin className="w-16 h-16 text-purple-500/50 mx-auto animate-pulse" />
-          {selectedEvent ? (
-            <div className="bg-gray-900/80 border border-purple-500/50 p-4 backdrop-blur-sm">
-              <h3 className="text-gray-200 font-bold uppercase">{selectedEvent.cliente}</h3>
-              <p className="text-gray-400 text-xs font-mono mt-1">{selectedEvent.dir}</p>
-              <div className="mt-3 text-[10px] text-purple-400 font-mono flex gap-4 justify-center">
-                <span>ETA: 14 MIN</span>
-                <span>DIST: 4.2 KM</span>
-              </div>
+    <PanelTerminal
+      titulo="Ruta optimizada del día"
+      acento="verde"
+      className="min-h-[220px]"
+      acciones={
+        visitas.length ? (
+          <a
+            href={linkGoogleMapsRuta(BASE_OPERATIVA, optimizada.orden)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] text-gray-500 transition-colors hover:text-emerald-400"
+          >
+            <Navigation className="h-3 w-3" />
+            Abrir en Maps
+          </a>
+        ) : null
+      }
+    >
+      {visitas.length ? (
+        <>
+          {/* Resumen */}
+          <div className="grid grid-cols-3 divide-x divide-gray-800 border-b border-gray-800">
+            <div className="p-2.5 text-center">
+              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
+                Paradas
+              </p>
+              <p className="font-mono text-sm font-bold text-gray-200">{visitas.length}</p>
             </div>
-          ) : (
-            <p className="text-gray-500 font-mono text-sm">Seleccione un destino en la agenda para trazar la ruta</p>
+            <div className="p-2.5 text-center">
+              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
+                Distancia
+              </p>
+              <p className="font-mono text-sm font-bold text-emerald-400">
+                {optimizada.totalKm.toFixed(1)} km
+              </p>
+            </div>
+            <div className="p-2.5 text-center">
+              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
+                Manejo
+              </p>
+              <p className="font-mono text-sm font-bold text-gray-200">
+                {minutosDeViaje(optimizada.totalKm)}′
+              </p>
+            </div>
+          </div>
+
+          {ahorro > 0.3 && (
+            <div className="flex items-center gap-2 border-b border-gray-800 bg-emerald-950/20 px-3 py-1.5">
+              <TrendingDown className="h-3 w-3 shrink-0 text-emerald-400" />
+              <p className="font-mono text-[10px] text-emerald-400">
+                Reordenando las visitas ahorrás {ahorro.toFixed(1)} km (
+                {minutosDeViaje(ahorro)}′)
+              </p>
+            </div>
           )}
-        </div>
-      </div>
-    </div>
+
+          {/* Orden propuesto */}
+          <ol className="divide-y divide-gray-800">
+            <li className="flex items-center gap-2.5 px-3 py-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-700 font-mono text-[9px] text-gray-500">
+                0
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-gray-500">
+                {BASE_OPERATIVA.nombre}
+              </span>
+            </li>
+
+            {optimizada.orden.map((p, i) => (
+              <li key={p.id} className="flex items-start gap-2.5 px-3 py-2">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/10 font-mono text-[9px] font-bold text-emerald-400">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-semibold text-gray-200">{p.cliente}</p>
+                  <p className="truncate font-mono text-[10px] text-gray-600">{p.direccion}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="font-mono text-[10px] font-bold text-gray-300">
+                    {p.distancia.toFixed(1)} km
+                  </p>
+                  <p className="font-mono text-[9px] text-gray-600">{p.hora}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </>
+      ) : (
+        <SinDatos mensaje="No hay visitas para rutear en este día" />
+      )}
+    </PanelTerminal>
   );
 }
