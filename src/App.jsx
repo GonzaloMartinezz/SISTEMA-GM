@@ -20,7 +20,7 @@ export default function App() {
       <ThemeProvider>
         <ModuleAuthProvider>
           <ClientProvider>
-            <div className="h-screen w-screen overflow-hidden bg-background dark:bg-background/90 selection:bg-primary/30">
+            <div className="h-dvh w-dvh overflow-hidden bg-background dark:bg-background/90 selection:bg-primary/30">
               <AppRoutes />
             </div>
             {/* Overlay global de perfil 360° (se autogestiona: sin cliente activo no renderiza) */}

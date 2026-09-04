@@ -208,13 +208,13 @@ export default function PortalHubPage() {
 
       {/* ======================== BARRA DE ESTADO ======================== */}
       <footer className="relative z-10 flex shrink-0 items-center justify-between gap-3 border-t border-white/[0.06] bg-black/40 px-[clamp(0.75rem,2.5vw,2rem)] py-[clamp(0.3rem,0.9vh,0.6rem)]">
-        <span className="truncate font-mono text-[clamp(0.52rem,1.15vh,0.68rem)] text-white/40">
+        <span className="min-w-0 truncate font-mono text-[clamp(0.52rem,1.15vh,0.68rem)] text-white/40">
           {formatDateLarga(clock)}
         </span>
         <span className="hidden font-mono text-[clamp(0.52rem,1.15vh,0.68rem)] uppercase tracking-[0.2em] text-white/25 md:inline">
           Sistema GM · Tucumán
         </span>
-        <span className="flex items-center gap-3">
+        <span className="flex shrink-0 items-center gap-3">
           {/* Cerrar sesiones sigue disponible, pero abajo: es algo que se hace
               al terminar el día, no cada vez que se entra. */}
           <button
