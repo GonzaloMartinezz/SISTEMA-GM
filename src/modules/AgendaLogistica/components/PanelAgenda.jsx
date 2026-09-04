@@ -13,6 +13,8 @@ import {
   CalendarPlus,
   Clock,
   ExternalLink,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
 import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
 import { linkGoogleCalendar } from '../../../shared/agenda/agendaService';
@@ -30,7 +32,7 @@ const PRIORIDAD = {
   baja: 'border-gray-700 text-gray-500',
 };
 
-export default function PanelAgenda({ onNuevoEvento }) {
+export default function PanelAgenda({ onNuevoEvento, onEditarEvento, onEliminarEvento }) {
   const { delDia, marcarEstado, metricas } = useAgenda();
 
   return (
@@ -144,6 +146,28 @@ export default function PanelAgenda({ onNuevoEvento }) {
                       <ExternalLink className="h-3 w-3" />
                       Calendar
                     </a>
+
+                    {onEditarEvento && (
+                      <button
+                        type="button"
+                        onClick={() => onEditarEvento(ev)}
+                        title="Editar"
+                        className="inline-flex items-center gap-1 rounded border border-gray-700 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-gray-500 transition-colors hover:border-cyan-500/50 hover:text-cyan-400"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </button>
+                    )}
+
+                    {onEliminarEvento && (
+                      <button
+                        type="button"
+                        onClick={() => onEliminarEvento(ev)}
+                        title="Eliminar"
+                        className="inline-flex items-center gap-1 rounded border border-gray-700 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-gray-500 transition-colors hover:border-rose-500/50 hover:text-rose-400"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    )}
 
                     <span
                       className={`ml-auto inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${estado.color}`}

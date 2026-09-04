@@ -4,6 +4,15 @@
 // Única fuente de verdad del Portal Hub, del interceptor de credenciales y del
 // ruteo aislado. Si un módulo no está acá, no existe para el sistema.
 // Regla del Plan Maestro: aislamiento modular absoluto y cero contaminación.
+//
+// Orden del Portal Hub: no es alfabético ni por código (los códigos M-01..M-08
+// son identidad interna de cada módulo, usada por Notario 360° y quedan fijos
+// para no romper esa trazabilidad). El orden de esta lista es el operativo,
+// calcado del uso real: arriba los tres módulos que se abren todos los días
+// (Clientes, Seguimientos, Agenda Inteligente) y después el resto en la
+// secuencia en que aparecen en la jornada — Equipamientos a primera hora,
+// Notario 360° junto a la negociación con el cliente, Mapa y Logística para
+// salir a despachar, Cobranzas a la tarde y Tesorería en el cierre del día.
 // ============================================================================
 
 import {
@@ -43,42 +52,6 @@ export const MODULES = [
     ],
   },
   {
-    id: 'equipamientos',
-    code: 'M-02',
-    name: 'Equipamientos',
-    desc: 'Catálogo técnico y disponibilidad física',
-    icon: Package,
-    path: '/equipamientos',
-    accent: {
-      text: 'text-violet-400',
-      border: 'hover:border-violet-400/60',
-      bg: 'hover:bg-violet-400/[0.07]',
-      glow: 'group-hover:shadow-[0_0_40px_-8px_rgba(167,139,250,0.45)]',
-      ring: 'focus-visible:ring-violet-400/60',
-      bar: 'from-violet-500/20 to-transparent',
-      dot: 'bg-violet-400',
-    },
-    items: ['Stock de Equipamiento', 'Informes de Equipamiento', 'Información Detallada'],
-  },
-  {
-    id: 'tesoreria',
-    code: 'M-03',
-    name: 'Tesorería',
-    desc: 'Panel bimonetario USD / ARS y ROI',
-    icon: Wallet,
-    path: '/tesoreria',
-    accent: {
-      text: 'text-amber-400',
-      border: 'hover:border-amber-400/60',
-      bg: 'hover:bg-amber-400/[0.07]',
-      glow: 'group-hover:shadow-[0_0_40px_-8px_rgba(251,191,36,0.45)]',
-      ring: 'focus-visible:ring-amber-400/60',
-      bar: 'from-amber-500/20 to-transparent',
-      dot: 'bg-amber-400',
-    },
-    items: ['Ingresos', 'Egresos', 'Proyecciones', 'ROI', 'Ahorros y Capital'],
-  },
-  {
     id: 'seguimientos',
     code: 'M-04',
     name: 'Seguimientos',
@@ -112,13 +85,31 @@ export const MODULES = [
       bar: 'from-teal-500/20 to-transparent',
       dot: 'bg-teal-400',
     },
-    items: ['Visitas y Llamadas', 'Alertas Tempranas', 'Google Calendar'],
+    items: ['Hoy', 'Semana', 'Mes', 'Pendientes y Alertas'],
+  },
+  {
+    id: 'equipamientos',
+    code: 'M-02',
+    name: 'Equipamientos',
+    desc: 'Catálogo técnico y disponibilidad física',
+    icon: Package,
+    path: '/equipamientos',
+    accent: {
+      text: 'text-violet-400',
+      border: 'hover:border-violet-400/60',
+      bg: 'hover:bg-violet-400/[0.07]',
+      glow: 'group-hover:shadow-[0_0_40px_-8px_rgba(167,139,250,0.45)]',
+      ring: 'focus-visible:ring-violet-400/60',
+      bar: 'from-violet-500/20 to-transparent',
+      dot: 'bg-violet-400',
+    },
+    items: ['Base de Datos', 'Información Detallada', 'Control de Stock'],
   },
   {
     id: 'notario360',
     code: 'M-06',
     name: 'Notario 360°',
-    desc: 'Perfil ejecutivo y auditoría de cuenta',
+    desc: 'Notas de todo el sistema y trazabilidad',
     icon: ScanFace,
     path: '/notario-360',
     accent: {
@@ -130,7 +121,7 @@ export const MODULES = [
       bar: 'from-primary/20 to-transparent',
       dot: 'bg-primary',
     },
-    items: ['Progreso de Venta', 'Clasificación', 'Trazabilidad', 'Notas Estratégicas'],
+    items: ['Notas', 'Trazabilidad', 'Ficha 360°', 'Cuentas'],
   },
   {
     id: 'logistica',
@@ -148,13 +139,13 @@ export const MODULES = [
       bar: 'from-orange-500/20 to-transparent',
       dot: 'bg-orange-400',
     },
-    items: ['Geolocalización', 'Marcadores', 'Ruteo Automático', 'Google Maps'],
+    items: ['Mapa', 'Agenda en el mapa', 'Ruta del día', 'Cobertura'],
   },
   {
     id: 'cobranzas',
     code: 'M-08',
     name: 'Cobranzas',
-    desc: 'Recupero de cartera y morosidad',
+    desc: 'Ventas, cuotas y resultado del negocio',
     icon: ShieldAlert,
     path: '/cobranzas',
     accent: {
@@ -166,7 +157,25 @@ export const MODULES = [
       bar: 'from-rose-500/20 to-transparent',
       dot: 'bg-rose-400',
     },
-    items: ['Estado de Cuenta', 'Estructura Financiera', 'Registro de Llamados', 'Auditoría'],
+    items: ['Ventas y cobros', 'Calendario de cobros', 'Caja y movimientos', 'Resultado'],
+  },
+  {
+    id: 'tesoreria',
+    code: 'M-03',
+    name: 'Tesorería',
+    desc: 'Panel bimonetario USD / ARS y ROI',
+    icon: Wallet,
+    path: '/tesoreria',
+    accent: {
+      text: 'text-amber-400',
+      border: 'hover:border-amber-400/60',
+      bg: 'hover:bg-amber-400/[0.07]',
+      glow: 'group-hover:shadow-[0_0_40px_-8px_rgba(251,191,36,0.45)]',
+      ring: 'focus-visible:ring-amber-400/60',
+      bar: 'from-amber-500/20 to-transparent',
+      dot: 'bg-amber-400',
+    },
+    items: ['Resumen', 'Ingresos y Egresos', 'Proyecciones', 'Impuestos y Capital'],
   },
 ];
 

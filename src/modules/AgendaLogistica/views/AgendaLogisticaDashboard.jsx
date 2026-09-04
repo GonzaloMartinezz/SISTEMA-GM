@@ -14,6 +14,24 @@ import PanelAgenda from '../components/PanelAgenda';
 import AlertasTempranas from '../components/AlertasTempranas';
 import PanelMapaRutas from '../components/PanelMapaRutas';
 import NuevoEventoModal from '../components/NuevoEventoModal';
+import RegistroModal from '../../../shared/abm/RegistroModal';
+import ConfirmarBorrado from '../../../shared/abm/ConfirmarBorrado';
+
+const CAMPOS_EVENTO = [
+  { name: 'titulo', label: 'Título', tipo: 'texto', requerido: true, ancho: 2 },
+  { name: 'cliente', label: 'Cliente', tipo: 'texto', requerido: true },
+  { name: 'tipo', label: 'Tipo', tipo: 'select', defecto: 'visita',
+    opciones: [{ valor: 'visita', label: 'Visita' }, { valor: 'llamada', label: 'Llamada' }] },
+  { name: 'fecha', label: 'Fecha', tipo: 'fecha', requerido: true },
+  { name: 'hora', label: 'Hora', tipo: 'hora', requerido: true },
+  { name: 'duracion', label: 'Duración (min)', tipo: 'numero', defecto: 30, min: 5, paso: 5 },
+  { name: 'prioridad', label: 'Prioridad', tipo: 'select', defecto: 'media',
+    opciones: [{ valor: 'alta', label: 'Alta' }, { valor: 'media', label: 'Media' }, { valor: 'baja', label: 'Baja' }] },
+  { name: 'direccion', label: 'Dirección', tipo: 'texto', ancho: 2 },
+  { name: 'lat', label: 'Latitud', tipo: 'numero', paso: '0.0001' },
+  { name: 'lng', label: 'Longitud', tipo: 'numero', paso: '0.0001' },
+  { name: 'nota', label: 'Nota de preparación', tipo: 'area', ancho: 2, filas: 2 },
+];
 
 const formatoDia = (iso) => {
   const [y, m, d] = iso.split('-').map(Number);
@@ -25,8 +43,11 @@ const formatoDia = (iso) => {
 };
 
 function Jornada() {
-  const { dia, setDia, HOY, MANANA, cargando, metricas, delDia, crearEvento } = useAgenda();
+  const { dia, setDia, HOY, MANANA, cargando, metricas, delDia, crearEvento, editarEvento, borrarEvento } =
+    useAgenda();
   const [modal, setModal] = useState(false);
+  const [editando, setEditando] = useState(null);
+  const [borrando, setBorrando] = useState(null);
 
   if (cargando) {
     return (
@@ -89,7 +110,11 @@ function Jornada() {
       {/* Split: tablero | preparación */}
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-hidden p-3 lg:grid-cols-[1fr_minmax(300px,34%)]">
         <div className="flex min-h-0 flex-col overflow-hidden">
-          <PanelAgenda onNuevoEvento={() => setModal(true)} />
+          <PanelAgenda
+            onNuevoEvento={() => setModal(true)}
+            onEditarEvento={setEditando}
+            onEliminarEvento={setBorrando}
+          />
         </div>
 
         <div className="min-h-0 space-y-3 overflow-y-auto pr-1">
@@ -103,6 +128,27 @@ function Jornada() {
         diaPorDefecto={dia}
         onCerrar={() => setModal(false)}
         onGuardar={crearEvento}
+      />
+
+      <RegistroModal
+        abierto={Boolean(editando)}
+        acento="verde"
+        titulo="Editar compromiso"
+        subtitulo={editando ? `${editando.id} · ${editando.cliente}` : ''}
+        campos={CAMPOS_EVENTO}
+        valores={editando || null}
+        onCerrar={() => setEditando(null)}
+        onGuardar={(v) => editarEvento(editando.id, v)}
+        textoBoton="Guardar cambios"
+      />
+
+      <ConfirmarBorrado
+        abierto={Boolean(borrando)}
+        titulo="¿Eliminar este compromiso de la agenda?"
+        detalle={borrando ? `${borrando.hora} · ${borrando.titulo} — ${borrando.cliente}` : ''}
+        advertencia="Si ya lo pasaste a Google Calendar, ahí queda: esto solo lo saca del sistema."
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={() => borrarEvento(borrando.id)}
       />
     </>
   );

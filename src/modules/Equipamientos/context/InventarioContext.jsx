@@ -23,15 +23,18 @@ export function InventarioProvider({ children }) {
   const [tipos, setTipos] = useState(() => [...TIPOS]);
   const [soloAlertas, setSoloAlertas] = useState(false);
 
-  useEffect(() => {
-    let vivo = true;
-    listarEquipos()
-      .then((data) => vivo && setEquipos(data))
-      .finally(() => vivo && setCargando(false));
-    return () => {
-      vivo = false;
-    };
+  const recargar = useCallback(async () => {
+    setCargando(true);
+    try {
+      setEquipos(await listarEquipos());
+    } finally {
+      setCargando(false);
+    }
   }, []);
+
+  useEffect(() => {
+    recargar();
+  }, [recargar]);
 
   const toggleCategoria = useCallback(
     (c) => setCategorias((p) => (p.includes(c) ? p.filter((x) => x !== c) : [...p, c])),
@@ -71,6 +74,7 @@ export function InventarioProvider({ children }) {
       toggleTipo,
       soloAlertas,
       setSoloAlertas,
+      recargar,
     }),
     [
       equipos,
@@ -83,6 +87,7 @@ export function InventarioProvider({ children }) {
       tipos,
       toggleTipo,
       soloAlertas,
+      recargar,
     ]
   );
 

@@ -10,21 +10,24 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ModuleAuthProvider } from './context/ModuleAuthContext';
 import { ClientProvider } from './context/ClientContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ClientProfileModal from './components/client360/ClientProfileModal';
 import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <ModuleAuthProvider>
-        <ClientProvider>
-          <div className="h-screen w-screen overflow-hidden bg-background selection:bg-primary/30">
-            <AppRoutes />
-          </div>
-          {/* Overlay global de perfil 360° (se autogestiona: sin cliente activo no renderiza) */}
-          <ClientProfileModal />
-        </ClientProvider>
-      </ModuleAuthProvider>
+      <ThemeProvider>
+        <ModuleAuthProvider>
+          <ClientProvider>
+            <div className="h-screen w-screen overflow-hidden bg-background dark:bg-background/90 selection:bg-primary/30">
+              <AppRoutes />
+            </div>
+            {/* Overlay global de perfil 360° (se autogestiona: sin cliente activo no renderiza) */}
+            <ClientProfileModal />
+          </ClientProvider>
+        </ModuleAuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

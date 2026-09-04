@@ -15,9 +15,9 @@ async function cargarFuentes(paramsOverride) {
     return {
       params: { ...PARAMETROS, ...paramsOverride },
       meses: MESES,
-      gastos: GASTOS_SRC,
+      gastos: GASTOS,
       flujo: FLUJO_PROYECTADO,
-      capital: CAPITAL_SRC,
+      capital: CAPITAL,
     };
   }
 
@@ -70,8 +70,6 @@ async function cargarFuentes(paramsOverride) {
     },
   };
 }
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Liquidación de un mes: sueldo fijo + comisión, egresos y resultado. */
 export function liquidarMes(mes, params = PARAMETROS) {

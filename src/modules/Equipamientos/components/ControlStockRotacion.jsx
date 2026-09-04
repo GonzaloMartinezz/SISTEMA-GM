@@ -6,12 +6,13 @@
 
 import React from 'react';
 import { FileText } from 'lucide-react';
+import { AccionesFila } from '../../../shared/abm/AccionesFila';
 import PanelTerminal, { SinDatos } from '../../../shared/ui/PanelTerminal';
 import { usd, pct } from '../../../shared/ui/viz';
 import { getEstadoStock } from '../config/inventario.config';
 import { useInventario } from '../context/InventarioContext';
 
-export default function ControlStockRotacion({ onVerFicha }) {
+export default function ControlStockRotacion({ onVerFicha, onEditar, onEliminar }) {
   const { visibles } = useInventario();
 
   return (
@@ -30,6 +31,7 @@ export default function ControlStockRotacion({ onVerFicha }) {
               <th className="p-2 text-right">Margen</th>
               <th className="p-2 text-center">Estado</th>
               <th className="p-2 text-center">Ficha</th>
+              <th className="p-2 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody className="text-gray-300">
@@ -72,6 +74,13 @@ export default function ControlStockRotacion({ onVerFicha }) {
                       <FileText className="h-3 w-3" />
                       Ver
                     </button>
+                  </td>
+                  <td className="p-2 text-center">
+                    <AccionesFila
+                      compacto
+                      onEditar={onEditar ? () => onEditar(e) : null}
+                      onEliminar={onEliminar ? () => onEliminar(e) : null}
+                    />
                   </td>
                 </tr>
               );

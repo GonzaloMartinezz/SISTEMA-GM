@@ -13,6 +13,8 @@ import React, {
 import {
   listarEventos,
   guardarEvento,
+  actualizarEvento,
+  eliminarEvento,
   cambiarEstadoEvento,
   HOY,
   MANANA,
@@ -61,6 +63,17 @@ export function AgendaProvider({ children }) {
     return guardado;
   }, []);
 
+  const editarEvento = useCallback(async (codigo, cambios) => {
+    const actualizado = await actualizarEvento(codigo, cambios);
+    setEventos((prev) => prev.map((e) => (e.id === codigo ? { ...e, ...actualizado } : e)));
+    return actualizado;
+  }, []);
+
+  const borrarEvento = useCallback(async (codigo) => {
+    await eliminarEvento(codigo);
+    setEventos((prev) => prev.filter((e) => e.id !== codigo));
+  }, []);
+
   const metricas = useMemo(() => {
     const visitas = delDia.filter((e) => e.tipo === 'visita').length;
     const llamadas = delDia.filter((e) => e.tipo === 'llamada').length;
@@ -79,11 +92,13 @@ export function AgendaProvider({ children }) {
       cargando,
       marcarEstado,
       crearEvento,
+      editarEvento,
+      borrarEvento,
       metricas,
       HOY,
       MANANA,
     }),
-    [eventos, delDia, deManana, dia, cargando, marcarEstado, crearEvento, metricas]
+    [eventos, delDia, deManana, dia, cargando, marcarEstado, crearEvento, editarEvento, borrarEvento, metricas]
   );
 
   return <AgendaContext.Provider value={value}>{children}</AgendaContext.Provider>;

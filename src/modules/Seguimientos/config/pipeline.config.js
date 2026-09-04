@@ -1,80 +1,87 @@
 // ============================================================================
-// SISTEMA GM · SEGUIMIENTOS · NIVELES DE PROCESO
+// SISTEMA GM · M-04 SEGUIMIENTOS · ETAPAS, TEMPERATURA Y PRIORIDAD
 // ----------------------------------------------------------------------------
-// Única fuente de verdad del pipeline. El tablero, los filtros y las métricas
-// se construyen a partir de esta lista.
+// Las cinco etapas son un orden, no cinco categorías sueltas: van de "recién
+// lo saludé" a "ya cobré". Por eso el color es una rampa de un solo tono que se
+// va oscureciendo, la misma que usa el embudo. Si fueran cinco colores
+// distintos, el tablero diría que son cosas diferentes cuando en realidad son
+// el mismo camino en distintos puntos.
+//
+// La probabilidad de cada etapa es la que pondera la cartera. No es una
+// estadística: es el criterio del negocio, y está acá a la vista justamente
+// para poder discutirlo cuando la realidad diga otra cosa.
 // ============================================================================
+
+import { RAMPA, ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
 
 export const ETAPAS = [
   {
     id: 'comienzo',
-    label: 'Comienzo',
-    desc: 'Primer contacto realizado',
-    color: 'text-sky-400',
-    borde: 'border-sky-500/40',
-    fondo: 'bg-sky-500/10',
-    barra: 'bg-sky-500',
+    nombre: 'Comienzo',
+    bajada: 'Primer contacto realizado',
     probabilidad: 15,
+    color: RAMPA[0],
   },
   {
     id: 'proceso',
-    label: 'En Proceso',
-    desc: 'Necesidad detectada, cotizando',
-    color: 'text-cyan-400',
-    borde: 'border-cyan-500/40',
-    fondo: 'bg-cyan-500/10',
-    barra: 'bg-cyan-500',
+    nombre: 'En Proceso',
+    bajada: 'Necesidad detectada, cotizando',
     probabilidad: 35,
+    color: RAMPA[1],
   },
   {
     id: 'convencer',
-    label: 'Convencer Más',
-    desc: 'Hay objeciones para trabajar',
-    color: 'text-amber-400',
-    borde: 'border-amber-500/40',
-    fondo: 'bg-amber-500/10',
-    barra: 'bg-amber-500',
+    nombre: 'Convencer Más',
+    bajada: 'Hay objeciones para trabajar',
     probabilidad: 55,
+    color: RAMPA[2],
   },
   {
     id: 'posible-venta',
-    label: 'Posible Venta',
-    desc: 'Listo para cerrar',
-    color: 'text-violet-400',
-    borde: 'border-violet-500/40',
-    fondo: 'bg-violet-500/10',
-    barra: 'bg-violet-500',
+    nombre: 'Posible Venta',
+    bajada: 'Listo para cerrar',
     probabilidad: 80,
+    color: RAMPA[3],
   },
   {
     id: 'cerrado',
-    label: 'Cerrado',
-    desc: 'Operación concretada',
-    color: 'text-emerald-400',
-    borde: 'border-emerald-500/40',
-    fondo: 'bg-emerald-500/10',
-    barra: 'bg-emerald-500',
+    nombre: 'Cerrado',
+    bajada: 'Operación concretada',
     probabilidad: 100,
+    color: RAMPA[4],
   },
 ];
 
+export const ETAPAS_ID = ETAPAS.map((e) => e.id);
+
 export const getEtapa = (id) => ETAPAS.find((e) => e.id === id) || ETAPAS[0];
 
-/** Semáforo de contacto: cuántos días sin tocar al lead. */
+/** Posición de la etapa en el camino (0..4). -1 si no la conocemos. */
+export const indiceEtapa = (id) => ETAPAS.findIndex((e) => e.id === id);
+
+/**
+ * Semáforo por días sin contacto. Los umbrales son del negocio: un lead de
+ * equipamiento aguanta bastante más que uno de consumo, pero pasadas dos
+ * semanas ya hay que dar por perdido el impulso de la primera charla.
+ */
 export const TEMPERATURA = [
-  { max: 3, label: 'Al día', color: 'text-emerald-400', punto: 'bg-emerald-400' },
-  { max: 7, label: 'Tibio', color: 'text-amber-400', punto: 'bg-amber-400' },
-  { max: 15, label: 'Enfriando', color: 'text-orange-400', punto: 'bg-orange-400' },
-  { max: Infinity, label: 'Frío', color: 'text-rose-400', punto: 'bg-rose-400' },
+  { max: 3, nombre: 'Al día', color: ESTADO_COLOR.bien },
+  { max: 7, nombre: 'Tibio', color: ESTADO_COLOR.atencion },
+  { max: 15, nombre: 'Enfriando', color: ESTADO_COLOR.riesgo },
+  { max: Infinity, nombre: 'Frío', color: ESTADO_COLOR.critico },
 ];
 
-export const getTemperatura = (dias = 0) =>
-  TEMPERATURA.find((t) => dias <= t.max) || TEMPERATURA[TEMPERATURA.length - 1];
+export const getTemperatura = (dias = 0) => TEMPERATURA.find((t) => dias <= t.max);
+
+/** Días sin contacto a partir de los cuales un lead entra en la lista de hoy. */
+export const DIAS_FRIO = 7;
 
 export const PRIORIDADES = {
-  alta: { label: 'Alta', color: 'text-rose-400', fondo: 'bg-rose-500/10 border-rose-500/30' },
-  media: { label: 'Media', color: 'text-amber-400', fondo: 'bg-amber-500/10 border-amber-500/30' },
-  baja: { label: 'Baja', color: 'text-gray-400', fondo: 'bg-gray-500/10 border-gray-600/40' },
+  alta: { nombre: 'Alta', tono: 'rosa' },
+  media: { nombre: 'Media', tono: 'amarillo' },
+  baja: { nombre: 'Baja', tono: 'gris' },
 };
+
+export const getPrioridad = (id) => PRIORIDADES[id] || PRIORIDADES.baja;
 
 export default ETAPAS;

@@ -2,7 +2,7 @@
 // SISTEMA GM · TESORERÍA · CONTEXTO
 // ============================================================================
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { obtenerFinanzas } from '../../../shared/finanzas/finanzasService';
 import { PARAMETROS } from '../../../shared/finanzas/finanzasDemo';
 
@@ -13,20 +13,22 @@ export function TesoreriaProvider({ children }) {
   const [cargando, setCargando] = useState(true);
   const [params, setParams] = useState(PARAMETROS);
 
-  useEffect(() => {
-    let vivo = true;
+  const recargar = useCallback(async () => {
     setCargando(true);
-    obtenerFinanzas(params)
-      .then((d) => vivo && setDatos(d))
-      .finally(() => vivo && setCargando(false));
-    return () => {
-      vivo = false;
-    };
+    try {
+      setDatos(await obtenerFinanzas(params));
+    } finally {
+      setCargando(false);
+    }
   }, [params]);
 
+  useEffect(() => {
+    recargar();
+  }, [recargar]);
+
   const value = useMemo(
-    () => ({ datos, cargando, params, setParams }),
-    [datos, cargando, params]
+    () => ({ datos, cargando, params, setParams, recargar }),
+    [datos, cargando, params, recargar]
   );
 
   return <TesoreriaContext.Provider value={value}>{children}</TesoreriaContext.Provider>;

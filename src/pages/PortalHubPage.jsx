@@ -8,14 +8,16 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LockKeyhole, AlertTriangle } from 'lucide-react';
+import { LockKeyhole, AlertTriangle, Power } from 'lucide-react';
 
 import { MODULES } from '../config/modules.config';
 import { ALWAYS_ASK_CREDENTIALS } from '../config/moduleCredentials';
 import { useModuleAuth } from '../context/ModuleAuthContext';
 import ModuleLauncherCard from '../components/portal/ModuleLauncherCard';
-import ExitTile from '../components/portal/ExitTile';
+import ActualizarTile from '../components/portal/ActualizarTile';
+import PanelActualizacion from '../components/portal/PanelActualizacion';
 import LoginCredentialModal from '../components/portal/LoginCredentialModal';
+import { actualizarTodo, leerUltimaActualizacion } from '../services/sincronizacion';
 
 const formatClock = (date) =>
   date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -40,6 +42,50 @@ export default function PortalHubPage() {
 
   const [pendingModule, setPendingModule] = useState(null);
   const [clock, setClock] = useState(() => new Date());
+
+  // ------------------------- actualización general -------------------------
+  // El botón que reemplazó a "Salir". Trae de Drive y de Supabase todo lo que
+  // se haya cargado por fuera del sistema, y deja a los módulos con los datos
+  // frescos antes de entrar a cualquiera.
+  const [sync, setSync] = useState('listo');   // listo | trabajando | ok | atencion
+  const [syncPaso, setSyncPaso] = useState('');
+  const [syncResultado, setSyncResultado] = useState(null);
+  const [panelSync, setPanelSync] = useState(false);
+  const [ultimaSync, setUltimaSync] = useState(() => leerUltimaActualizacion());
+
+  const handleActualizar = async () => {
+    // Si ya se actualizó y sólo se quiere volver a ver el detalle, se abre el
+    // panel en vez de repetir todo el trabajo.
+    if (sync !== 'listo' && sync !== 'trabajando' && syncResultado) {
+      setPanelSync(true);
+      return;
+    }
+
+    setSync('trabajando');
+    setSyncPaso('Arrancando…');
+    try {
+      const r = await actualizarTodo(setSyncPaso);
+      setSyncResultado(r);
+      setUltimaSync(r.cuando || new Date());
+      setSync(r.ok && (r.conErrores?.length ?? 0) === 0 ? 'ok' : 'atencion');
+      setPanelSync(true);
+    } catch (err) {
+      setSyncResultado({
+        ok: false,
+        empuje: { disponible: false, motivo: 'error', mensaje: err.message },
+        planillas: [],
+        conErrores: [],
+        sinDatos: [],
+        cambios: [],
+        resumen: null,
+        segundos: 1,
+      });
+      setSync('atencion');
+      setPanelSync(true);
+    } finally {
+      setSyncPaso('');
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setClock(new Date()), 1000);
@@ -148,7 +194,14 @@ export default function PortalHubPage() {
               );
             })}
 
-            <ExitTile sesionesActivas={activeCount} onSalir={revokeAll} />
+            <ActualizarTile
+              estado={sync}
+              paso={syncPaso}
+              ultima={ultimaSync}
+              resumen={syncResultado?.resumen}
+              motivo={syncResultado?.motivo}
+              onActualizar={handleActualizar}
+            />
           </div>
         </div>
       </main>
@@ -161,10 +214,35 @@ export default function PortalHubPage() {
         <span className="hidden font-mono text-[clamp(0.52rem,1.15vh,0.68rem)] uppercase tracking-[0.2em] text-white/25 md:inline">
           Sistema GM · Tucumán
         </span>
-        <span className="font-mono text-[clamp(0.62rem,1.5vh,0.85rem)] tabular-nums text-white/70">
-          {formatClock(clock)}
+        <span className="flex items-center gap-3">
+          {/* Cerrar sesiones sigue disponible, pero abajo: es algo que se hace
+              al terminar el día, no cada vez que se entra. */}
+          <button
+            type="button"
+            onClick={revokeAll}
+            disabled={!activeCount}
+            title={
+              activeCount
+                ? `Cerrar ${activeCount} sesión${activeCount === 1 ? '' : 'es'} de módulo abierta${activeCount === 1 ? '' : 's'}`
+                : 'No hay sesiones abiertas'
+            }
+            className="flex items-center gap-1.5 rounded-md border border-white/[0.08] px-2 py-1 font-mono text-[clamp(0.5rem,1.1vh,0.62rem)] uppercase tracking-[0.16em] text-white/35 transition hover:border-rose-500/40 hover:text-rose-400 disabled:cursor-default disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:text-white/35"
+          >
+            <Power className="h-3 w-3" />
+            Salir
+          </button>
+          <span className="font-mono text-[clamp(0.62rem,1.5vh,0.85rem)] tabular-nums text-white/70">
+            {formatClock(clock)}
+          </span>
         </span>
       </footer>
+
+      {/* ==================== RESULTADO DE ACTUALIZAR ==================== */}
+      <PanelActualizacion
+        abierto={panelSync}
+        resultado={syncResultado}
+        onCerrar={() => setPanelSync(false)}
+      />
 
       {/* ========================= INTERCEPTOR ========================= */}
       {pendingModule && (

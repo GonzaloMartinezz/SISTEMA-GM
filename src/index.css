@@ -1,28 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-background text-text font-sans antialiased;
-    overscroll-behavior-y: none;
-  }
+/* ---------------------------------------------------------------------------
+   SISTEMA GM · Variables de tema (claro / oscuro)
+   Estos son los valores por DEFECTO — el tema claro de siempre — para que
+   cualquier módulo que todavía no envuelve su contenido en <TemaProvider>
+   seguya viéndose exactamente igual que antes. Un módulo que sí lo adopta
+   (por ahora, Clientes) pisa estas mismas variables en su propio nodo raíz
+   según el tema que tenga elegido, y eso alcanza para que todo lo de adentro
+   —clases de Tailwind con var(--gm-*) incluidas— cambie de tema sin que cada
+   componente tenga que saber nada de esto.
+--------------------------------------------------------------------------- */
+:root {
+  --gm-fondo: #FAF6F0;
+  --gm-superficie: #FFFFFF;
+  --gm-superficie-suave: #FCFAF6;
+  --gm-superficie-fuerte: #F3EDE4;
+  --gm-borde: #E8E0D5;
+  --gm-borde-fuerte: #D5CABA;
+  --gm-divisor: #F0EAE1;
+  --gm-texto: #2A2118;
+  --gm-texto-medio: #6E6559;
+  --gm-texto-suave: #948A7C;
+  --gm-texto-tenue: #B0A697;
+  --gm-acento: #B4551A;
+  --gm-acento-fuerte: #8A3F11;
+  --gm-acento-suave-bg: #FBE5C8;
+  --gm-sobre-acento: #FFFFFF;
+  --gm-overlay: rgba(42,33,24,0.35);
+  --gm-sombra-panel: 0 1px 2px rgba(26,26,24,0.04), 0 8px 24px -14px rgba(26,26,24,0.14);
+  --gm-sombra-modal: 0 24px 64px -16px rgba(16,24,40,0.35);
+  --gm-sombra-tooltip: 0 8px 24px -8px rgba(16,24,40,0.18);
 }
 
-/* Custom scrollbar for webkit (Windows high-end desktop target + mobile) */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+@layer base {
+  body {
+    background-color: var(--gm-fondo);
+    color: var(--gm-texto);
+    @apply font-sans antialiased;
+    overscroll-behavior-y: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -44,5 +64,71 @@
 @media (max-height: 620px) {
   .gm-hub .gm-card-desc {
     display: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   SISTEMA GM · Escala del sistema
+   Los dashboards se dibujan al 80% para que entre más información en pantalla.
+   Se resuelve con `zoom` (no con transform) porque zoom sí reflowea: las
+   columnas se reacomodan solas y no aparecen barras de scroll fantasma.
+   El módulo sigue llenando su contenedor: con `zoom` los porcentajes se
+   resuelven ya escalados, así que no hace falta compensar el tamaño.
+--------------------------------------------------------------------------- */
+.gm-escala {
+  zoom: 0.8;
+}
+
+/* Navegadores sin `zoom`: al menos se achica la tipografía y con ella todo el
+   sistema de medidas, que está en rem/px relativos al texto. */
+@supports not (zoom: 1) {
+  .gm-escala {
+    font-size: 80%;
+  }
+}
+
+/* Barra de scroll en los colores de la marca (modo claro, el de siempre). */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6F0;
+}
+::-webkit-scrollbar-thumb {
+  background: #D5CABA;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BCAF9C;
+}
+
+/* Barra de scroll dentro de un módulo en modo oscuro: sigue el tema en vez
+   de quedar clara sobre fondo oscuro. */
+[data-tema="oscuro"] ::-webkit-scrollbar-track {
+  background: var(--gm-fondo);
+}
+[data-tema="oscuro"] ::-webkit-scrollbar-thumb {
+  background: var(--gm-borde-fuerte);
+}
+[data-tema="oscuro"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--gm-texto-tenue);
+}
+
+
+/* Barra de progreso indeterminada del botón Actualizar del Portal. */
+@keyframes gm-sync-desliza {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+.gm-barra-sync {
+  animation: gm-sync-desliza 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gm-barra-sync {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
   }
 }

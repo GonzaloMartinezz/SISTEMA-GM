@@ -8,6 +8,11 @@
 import React, { useState } from 'react';
 import { Loader2, Search, Boxes, Truck, Coins, AlertTriangle } from 'lucide-react';
 
+import RegistroModal from '../../../shared/abm/RegistroModal';
+import ConfirmarBorrado from '../../../shared/abm/ConfirmarBorrado';
+import { CAMPOS_EQUIPO, aFormulario, aEquipo } from '../config/equipo.form';
+import { crearEquipo, actualizarEquipo, eliminarEquipo } from '../../../shared/inventario/inventarioService';
+
 import { InventarioProvider, useInventario } from '../context/InventarioContext';
 import { CATEGORIAS, TIPOS } from '../config/inventario.config';
 import KpiTile from '../../../shared/ui/KpiTile';
@@ -39,10 +44,25 @@ function Consola() {
     toggleTipo,
     soloAlertas,
     setSoloAlertas,
+    recargar,
   } = useInventario();
 
   const [vista, setVista] = useState('stock');
   const [ficha, setFicha] = useState(null);
+  const [editando, setEditando] = useState(null);   // null | 'nuevo' | equipo
+  const [borrando, setBorrando] = useState(null);
+
+  const guardarEquipo = async (valores) => {
+    const equipo = aEquipo(valores);
+    if (editando === 'nuevo') await crearEquipo(equipo);
+    else await actualizarEquipo(editando.id, equipo);
+    await recargar();
+  };
+
+  const confirmarBorrado = async () => {
+    await eliminarEquipo(borrando.id);
+    await recargar();
+  };
 
   if (cargando) {
     return (
@@ -92,6 +112,14 @@ function Consola() {
           <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-gray-600">
             {visibles.length}/{equipos.length}
           </span>
+
+          <button
+            type="button"
+            onClick={() => setEditando('nuevo')}
+            className="inline-flex items-center gap-1.5 rounded-md border border-violet-500/50 bg-violet-500/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-violet-400 transition-colors hover:bg-violet-500/20"
+          >
+            + Nuevo equipo
+          </button>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
@@ -177,7 +205,11 @@ function Consola() {
       <div className="min-h-0 flex-1 overflow-hidden p-3 md:p-4">
         {vista === 'stock' && (
           <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-[1fr_minmax(280px,30%)]">
-            <ControlStockRotacion onVerFicha={setFicha} />
+            <ControlStockRotacion
+              onVerFicha={setFicha}
+              onEditar={setEditando}
+              onEliminar={setBorrando}
+            />
             <div className="min-h-0 overflow-y-auto pr-1">
               <AlertasStock onVerFicha={setFicha} />
             </div>
@@ -199,6 +231,27 @@ function Consola() {
       </div>
 
       <FichaTecnicaModal equipo={ficha} onCerrar={() => setFicha(null)} />
+
+      <RegistroModal
+        abierto={Boolean(editando)}
+        acento="violeta"
+        titulo={editando === 'nuevo' ? 'Nuevo equipo' : 'Editar equipo'}
+        subtitulo={editando && editando !== 'nuevo' ? `${editando.id} · ${editando.nombre}` : 'Módulo 2 · Equipamientos'}
+        campos={CAMPOS_EQUIPO}
+        valores={editando && editando !== 'nuevo' ? aFormulario(editando) : null}
+        onCerrar={() => setEditando(null)}
+        onGuardar={guardarEquipo}
+        textoBoton={editando === 'nuevo' ? 'Crear equipo' : 'Guardar cambios'}
+      />
+
+      <ConfirmarBorrado
+        abierto={Boolean(borrando)}
+        titulo="¿Eliminar este equipo del catálogo?"
+        detalle={borrando ? `${borrando.id} · ${borrando.nombre}` : ''}
+        advertencia="El equipo se da de baja y deja de aparecer en el stock y en el catálogo. Su historial de movimientos se conserva."
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={confirmarBorrado}
+      />
     </>
   );
 }
