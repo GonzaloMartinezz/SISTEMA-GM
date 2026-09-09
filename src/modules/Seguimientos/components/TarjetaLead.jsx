@@ -35,7 +35,7 @@ export default function TarjetaLead({
     <article
       draggable
       onDragStart={(e) => onArrastrar?.(e, lead.id)}
-      className="group relative cursor-grab overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] p-3.5 pl-4 shadow-[0_1px_2px_rgba(26,26,24,0.04)] transition hover:border-[#D5CABA] hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.25)] active:cursor-grabbing"
+      className="group relative cursor-grab overflow-hidden rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] p-3.5 pl-4 shadow-[0_1px_2px_rgba(26,26,24,0.04)] transition hover:border-[var(--gm-borde-fuerte)] hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.25)] active:cursor-grabbing"
     >
       <span
         className="absolute inset-y-0 left-0 w-[3px]"
@@ -45,16 +45,16 @@ export default function TarjetaLead({
 
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-[14px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+          <p className="truncate text-[14px] font-semibold text-[var(--gm-texto)]">
             {lead.apellido}, {lead.nombre}
           </p>
-          <p className="truncate text-[12px] text-[#948A7C]">{lead.clinica}</p>
+          <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">{lead.clinica}</p>
         </div>
         <Chip tono={prioridad.tono}>{prioridad.nombre}</Chip>
       </div>
 
-      <div className="mt-3 rounded-lg bg-[#FCFAF6] dark:bg-[#2D2D2D] px-3 py-2">
-        <p className="truncate text-[12px] text-[#6E6559] dark:text-[#9CA3AF]">{lead.equipo || 'Sin equipo definido'}</p>
+      <div className="mt-3 rounded-lg bg-[var(--gm-superficie-suave)] px-3 py-2">
+        <p className="truncate text-[12px] text-[var(--gm-texto-medio)]">{lead.equipo || 'Sin equipo definido'}</p>
         <p className="mt-0.5 text-[15px] font-semibold" style={{ color: etapa.color }}>
           {usd(lead.montoUsd)}
         </p>
@@ -62,11 +62,11 @@ export default function TarjetaLead({
 
       <div className="mt-2.5 flex items-center justify-between gap-2">
         <ChipTemperatura dias={lead.diasSinContacto} />
-        <span className="text-[11px] text-[#B0A697] dark:text-[#6B7280]">{lead.interacciones || 0} int.</span>
+        <span className="text-[11px] text-[var(--gm-texto-tenue)]">{lead.interacciones || 0} int.</span>
       </div>
 
       {lead.proximoPaso && (
-        <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#948A7C]">
+        <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[var(--gm-texto-suave)]">
           {lead.proximoPaso}
         </p>
       )}
@@ -125,8 +125,8 @@ function BotonIcono({ etiqueta, icono: Icono, onClick, deshabilitado, peligro })
       disabled={deshabilitado}
       className={`grid h-8 w-8 place-items-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-30 ${
         peligro
-          ? 'text-[#B0A697] dark:text-[#6B7280] hover:bg-[#FBEAE0] hover:text-[#A63A0C]'
-          : 'text-[#948A7C] hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]'
+          ? 'text-[var(--gm-texto-tenue)]  hover:bg-[var(--gm-acento-suave-bg)] hover:text-[var(--gm-acento)]'
+          : 'text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-fuerte)]  hover:text-[var(--gm-texto)] '
       }`}
     >
       <Icono size={15} strokeWidth={2} />

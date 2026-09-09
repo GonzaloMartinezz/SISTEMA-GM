@@ -39,22 +39,22 @@ export default function ColumnaEtapa({ etapa, leads, onMensaje, onEditar, onElim
       onDragLeave={() => setEncima(false)}
       onDrop={soltar}
       className={`flex w-full flex-col rounded-2xl border transition sm:w-[276px] sm:shrink-0 ${
-        encima ? 'border-[#B4551A] bg-[#FBE5C8]/50' : 'border-[#E8E0D5] bg-[#FCFAF6]'
+        encima ? 'border-[#B4551A] bg-[var(--gm-acento-suave-bg)]/50' : 'border-[var(--gm-borde)] bg-[var(--gm-superficie-suave)]'
       }`}
     >
       <header className="border-b border-[#EFE7DB] px-4 py-3.5">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: etapa.color }} />
-          <h3 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-[#2A2118]">
+          <h3 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-[var(--gm-texto)]">
             {etapa.nombre}
           </h3>
-          <span className="rounded-full bg-[#F3EDE4] px-2 py-0.5 text-[11px] font-semibold text-[#6E6559]">
+          <span className="rounded-full bg-[var(--gm-superficie-fuerte)] px-2 py-0.5 text-[11px] font-semibold text-[var(--gm-texto-medio)]">
             {leads.length}
           </span>
         </div>
 
-        <p className="mt-2 text-[15px] font-semibold text-[#2A2118]">{usd(valor)}</p>
-        <p className="text-[11px] text-[#B0A697]">
+        <p className="mt-2 text-[15px] font-semibold text-[var(--gm-texto)]">{usd(valor)}</p>
+        <p className="text-[11px] text-[var(--gm-texto-tenue)]">
           {etapa.probabilidad}% de probabilidad · {usd((valor * etapa.probabilidad) / 100)} ponderado
         </p>
 
@@ -68,7 +68,7 @@ export default function ColumnaEtapa({ etapa, leads, onMensaje, onEditar, onElim
 
       <div className="flex min-h-[120px] flex-1 flex-col gap-2.5 overflow-y-auto p-3">
         {leads.length === 0 ? (
-          <p className="grid flex-1 place-items-center rounded-xl border border-dashed border-[#DDD3C4] px-3 py-8 text-center text-[12px] text-[#B0A697]">
+          <p className="grid flex-1 place-items-center rounded-xl border border-dashed border-[#DDD3C4] px-3 py-8 text-center text-[12px] text-[var(--gm-texto-tenue)]">
             Soltá una tarjeta acá
           </p>
         ) : (

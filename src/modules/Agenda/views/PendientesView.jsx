@@ -241,8 +241,8 @@ export default function PendientesView() {
                   <a.icono size={16} />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{a.titulo}</p>
-                  <p className="mt-0.5 text-[13px] leading-relaxed text-[#948A7C]">{a.detalle}</p>
+                  <p className="text-[14px] font-medium text-[var(--gm-texto)]">{a.titulo}</p>
+                  <p className="mt-0.5 text-[13px] leading-relaxed text-[var(--gm-texto-suave)]">{a.detalle}</p>
                 </div>
               </li>
             ))}
@@ -254,11 +254,11 @@ export default function PendientesView() {
       <Panel
         titulo="Te está esperando"
         bajada="Sale de Seguimientos, Equipamientos, Logística, Cobranzas y Post Venta. Agendá lo que vas a hacer y desaparece de acá."
-        acciones={<Inbox size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+        acciones={<Inbox size={16} className="text-[var(--gm-texto-tenue)]" />}
         cuerpoClassName={pendientes.length ? 'p-0' : 'p-6'}
       >
         {cargando ? (
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Consultando los módulos…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Consultando los módulos…</p>
         ) : pendientes.length === 0 ? (
           <EstadoVacio
             icono={CircleCheck}
@@ -287,8 +287,8 @@ export default function PendientesView() {
                   </span>
 
                   <div className="min-w-[200px] flex-1">
-                    <p className="truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{p.titular}</p>
-                    <p className="truncate text-[13px] text-[#948A7C]">
+                    <p className="truncate text-[14px] font-medium text-[var(--gm-texto)]">{p.titular}</p>
+                    <p className="truncate text-[13px] text-[var(--gm-texto-suave)]">
                       {p.motivo}
                       {p.referencia ? ` · ${p.referencia}` : ''}
                     </p>
@@ -303,7 +303,7 @@ export default function PendientesView() {
                   </span>
 
                   {p.montoUsd > 0 && (
-                    <span className="text-[13px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+                    <span className="text-[13px] font-semibold text-[var(--gm-texto)]">
                       US$ {Math.round(p.montoUsd).toLocaleString('es-AR')}
                     </span>
                   )}
@@ -323,7 +323,7 @@ export default function PendientesView() {
         )}
       </Panel>
 
-      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[#B0A697] dark:text-[#6B7280]">
+      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[var(--gm-texto-tenue)]">
         <MapPin size={14} className="mt-0.5 shrink-0" />
         Nada de esta lista ocupa tiempo de la jornada hasta que lo agendes. Cuando lo agendás, el
         compromiso se lleva anotado de qué módulo salió y la sugerencia se apaga sola; si después

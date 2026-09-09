@@ -36,14 +36,14 @@ export default function LineaTiempoLeads({ datos, onLead }) {
       <div className="min-w-[860px]">
         {/* ------------------------------ eje ------------------------------- */}
         <div className="flex items-end border-b border-[#EFE7DB] pb-2">
-          <div className="w-[228px] shrink-0 pr-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">
+          <div className="w-[228px] shrink-0 pr-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-tenue)]">
             Oportunidad
           </div>
           <div className="relative h-4 flex-1">
             {marcas.map((m) => (
               <span
                 key={m.pos}
-                className="absolute -translate-x-1/2 whitespace-nowrap text-[11px] text-[#B0A697] dark:text-[#6B7280]"
+                className="absolute -translate-x-1/2 whitespace-nowrap text-[11px] text-[var(--gm-texto-tenue)]"
                 style={{ left: `${m.pos}%` }}
               >
                 {m.texto}
@@ -59,13 +59,13 @@ export default function LineaTiempoLeads({ datos, onLead }) {
               <button
                 type="button"
                 onClick={() => onLead?.(lead)}
-                className="flex w-full items-center py-3 text-left transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]"
+                className="flex w-full items-center py-3 text-left transition hover:bg-[var(--gm-superficie-suave)]"
               >
                 <div className="w-[228px] shrink-0 pr-4">
-                  <p className="truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
+                  <p className="truncate text-[13px] font-medium text-[var(--gm-texto)]">
                     {lead.apellido}, {lead.nombre}
                   </p>
-                  <p className="truncate text-[11px] text-[#948A7C]">
+                  <p className="truncate text-[11px] text-[var(--gm-texto-suave)]">
                     {lead.clinica} · {usd(lead.montoUsd)}
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default function LineaTiempoLeads({ datos, onLead }) {
         </ul>
 
         {/* ---------------------------- referencia -------------------------- */}
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#F4EFE7] pt-3 text-[11px] text-[#948A7C]">
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#F4EFE7] pt-3 text-[11px] text-[var(--gm-texto-suave)]">
           {['comienzo', 'proceso', 'convencer', 'posible-venta', 'cerrado'].map((id) => (
             <span key={id} className="inline-flex items-center gap-1.5">
               <span

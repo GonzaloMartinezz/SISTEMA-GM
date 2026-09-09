@@ -119,10 +119,10 @@ export default function NotasView() {
                 key={e.nombre}
                 type="button"
                 onClick={() => setEtiquetaActiva(e.nombre)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E8E0D5] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D] px-2.5 py-1.5 text-[12px] text-[#6E6559] dark:text-[#9CA3AF] transition hover:border-[#B4551A] hover:bg-[#FBE5C8] dark:hover:bg-[#2A1608] hover:text-[#8A3F11]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--gm-borde)] bg-[var(--gm-superficie-suave)] px-2.5 py-1.5 text-[12px] text-[var(--gm-texto-medio)] transition hover:border-[#B4551A] hover:bg-[var(--gm-acento-suave-bg)] hover:text-[var(--gm-acento-fuerte)]"
               >
                 #{e.nombre}
-                <span className="text-[11px] text-[#B0A697] dark:text-[#6B7280]">{e.total}</span>
+                <span className="text-[11px] text-[var(--gm-texto-tenue)]">{e.total}</span>
               </button>
             ))}
           </div>
@@ -132,7 +132,7 @@ export default function NotasView() {
       {/* -------------------------------- notas ------------------------------ */}
       {cargando ? (
         <Panel sinEncabezado>
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Abriendo el cuaderno…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Abriendo el cuaderno…</p>
         </Panel>
       ) : notasFiltradas.length === 0 ? (
         <Panel sinEncabezado>

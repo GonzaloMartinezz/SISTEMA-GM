@@ -17,6 +17,7 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
+      idModulo="agenda"
       numero={5}
       nombre="Agenda Inteligente"
       icono={CalendarClock}

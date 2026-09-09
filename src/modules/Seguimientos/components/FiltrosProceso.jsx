@@ -20,7 +20,7 @@ export default function FiltrosProceso({ conteo = {} }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697] dark:text-[#6B7280]">
+      <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
         Nivel de proceso
       </span>
 
@@ -46,7 +46,7 @@ export default function FiltrosProceso({ conteo = {} }) {
             />
             {e.nombre}
             {conteo[e.id] != null && (
-              <span className={activo ? 'text-[#6E6559] dark:text-[#9CA3AF]' : 'text-[#C6BCAC]'}>{conteo[e.id]}</span>
+              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>{conteo[e.id]}</span>
             )}
           </button>
         );
@@ -61,8 +61,8 @@ export default function FiltrosProceso({ conteo = {} }) {
         title="Recorta la cartera: cambia también los indicadores de arriba."
         className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
           soloPrioridadAlta
-            ? 'border-[#A63A0C66] bg-[#F5DDCC] text-[#A63A0C]'
-            : 'border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+            ? 'border-[#A63A0C66] bg-[#F5DDCC] text-[var(--gm-acento)]'
+            : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)] '
         }`}
       >
         <Flame size={13} />
@@ -73,7 +73,7 @@ export default function FiltrosProceso({ conteo = {} }) {
         <button
           type="button"
           onClick={limpiarFiltros}
-          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[#948A7C] transition hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
         >
           <RotateCcw size={13} />
           Limpiar

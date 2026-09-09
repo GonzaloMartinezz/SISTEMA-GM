@@ -48,7 +48,7 @@ export default function PasosEtapa({ etapa, tamano = 'md', className = '' }) {
               {hecho && <Check size={chico ? 10 : 12} strokeWidth={3} color="#FFFFFF" />}
               {esActual && (
                 <span
-                  className="rounded-full bg-white dark:bg-[#1E1E1E]"
+                  className="rounded-full bg-[var(--gm-superficie)]"
                   style={{ height: chico ? 5 : 6, width: chico ? 5 : 6 }}
                 />
               )}

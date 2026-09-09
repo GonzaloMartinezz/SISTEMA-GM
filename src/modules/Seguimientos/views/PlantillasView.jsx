@@ -97,10 +97,10 @@ export default function PlantillasView() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="max-w-2xl text-[13px] leading-relaxed text-[#948A7C]">
+        <p className="max-w-2xl text-[13px] leading-relaxed text-[var(--gm-texto-suave)]">
           Los textos que más usás, listos para salir. Las variables entre llaves se reemplazan solas
           con los datos del lead cuando abrís el mensaje. La vista previa de abajo usa a{' '}
-          <span className="text-[#6E6559] dark:text-[#9CA3AF]">
+          <span className="text-[var(--gm-texto-medio)]">
             {muestra.nombre} {muestra.apellido || ''}
           </span>{' '}
           como ejemplo.
@@ -115,7 +115,7 @@ export default function PlantillasView() {
           key={c.id}
           titulo={c.nombre}
           bajada={`${c.lista.length} ${c.lista.length === 1 ? 'respuesta guardada' : 'respuestas guardadas'}`}
-          acciones={<c.icono size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<c.icono size={16} className="text-[var(--gm-texto-tenue)]" />}
         >
           {c.lista.length === 0 ? (
             <EstadoVacio
@@ -130,7 +130,7 @@ export default function PlantillasView() {
                 return (
                   <article
                     key={p.id}
-                    className="group relative flex flex-col overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D] p-4 pl-5"
+                    className="group relative flex flex-col overflow-hidden rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie-suave)] p-4 pl-5"
                   >
                     <span
                       className="absolute inset-y-0 left-0 w-[3px]"
@@ -140,10 +140,10 @@ export default function PlantillasView() {
 
                     <header className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="truncate text-[14px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+                        <p className="truncate text-[14px] font-semibold text-[var(--gm-texto)]">
                           {p.titulo}
                         </p>
-                        <p className="mt-1 text-[11px] text-[#B0A697] dark:text-[#6B7280]">{p.id}</p>
+                        <p className="mt-1 text-[11px] text-[var(--gm-texto-tenue)]">{p.id}</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
                         {etapa && <Chip tono="gris">{etapa.nombre}</Chip>}
@@ -151,7 +151,7 @@ export default function PlantillasView() {
                           type="button"
                           aria-label="Editar respuesta"
                           onClick={() => setEditando(p)}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-[#948A7C] transition hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
                         >
                           <Pencil size={14} />
                         </button>
@@ -159,7 +159,7 @@ export default function PlantillasView() {
                           type="button"
                           aria-label="Eliminar respuesta"
                           onClick={() => setBorrando(p)}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-[#B0A697] dark:text-[#6B7280] transition hover:bg-[#FBEAE0] hover:text-[#A63A0C]"
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-tenue)] transition hover:bg-[var(--gm-acento-suave-bg)] hover:text-[var(--gm-acento)]"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -167,13 +167,13 @@ export default function PlantillasView() {
                     </header>
 
                     {p.asunto && (
-                      <p className="mt-3 truncate rounded-lg bg-white dark:bg-[#1E1E1E] px-3 py-2 text-[12px] text-[#6E6559] dark:text-[#9CA3AF]">
-                        <span className="text-[#B0A697] dark:text-[#6B7280]">Asunto: </span>
+                      <p className="mt-3 truncate rounded-lg bg-[var(--gm-superficie)] px-3 py-2 text-[12px] text-[var(--gm-texto-medio)]">
+                        <span className="text-[var(--gm-texto-tenue)]">Asunto: </span>
                         {interpolar(p.asunto, muestra)}
                       </p>
                     )}
 
-                    <p className="mt-3 whitespace-pre-line rounded-lg bg-white dark:bg-[#1E1E1E] px-3 py-2.5 text-[13px] leading-relaxed text-[#6E6559] dark:text-[#9CA3AF]">
+                    <p className="mt-3 whitespace-pre-line rounded-lg bg-[var(--gm-superficie)] px-3 py-2.5 text-[13px] leading-relaxed text-[var(--gm-texto-medio)]">
                       {interpolar(p.texto, muestra)}
                     </p>
                   </article>

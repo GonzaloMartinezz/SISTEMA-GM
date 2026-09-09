@@ -25,7 +25,7 @@ export default function BarraCarga({ carga, compacto = false }) {
     <div className={compacto ? '' : 'space-y-1.5'}>
       {!compacto && (
         <div className="flex items-baseline justify-between gap-3">
-          <span className="text-[12px] text-[#6E6559] dark:text-[#9CA3AF]">
+          <span className="text-[12px] text-[var(--gm-texto-medio)]">
             {horasYminutos(carga.minutos)} comprometidas de 12 h de jornada
           </span>
           <span className="text-[13px] font-semibold" style={{ color }}>
@@ -35,7 +35,7 @@ export default function BarraCarga({ carga, compacto = false }) {
       )}
 
       <div
-        className={`flex overflow-hidden rounded-full bg-[#F3EDE4] dark:bg-[#121212] ${compacto ? 'h-1.5' : 'h-2.5'}`}
+        className={`flex overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]  ${compacto ? 'h-1.5' : 'h-2.5'}`}
         role="img"
         aria-label={`Jornada al ${Math.round(carga.pct)} por ciento`}
       >
@@ -57,7 +57,7 @@ export default function BarraCarga({ carga, compacto = false }) {
       </div>
 
       {!compacto && carga.excedido && (
-        <p className="text-[12px] text-[#A63A0C]">
+        <p className="text-[12px] text-[var(--gm-acento)]">
           Te pasaste {horasYminutos(carga.minutos - 12 * 60)}. Algo hay que mover de día.
         </p>
       )}

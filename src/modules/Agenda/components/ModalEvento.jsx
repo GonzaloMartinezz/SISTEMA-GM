@@ -110,21 +110,21 @@ export default function ModalEvento({
         {/* ---------------------------- cerrar bien ------------------------ */}
         {abierto && (
           <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF]">
-              Qué pasó <span className="font-normal text-[#B0A697] dark:text-[#6B7280]">(opcional, queda anotado)</span>
+            <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">
+              Qué pasó <span className="font-normal text-[var(--gm-texto-tenue)]">(opcional, queda anotado)</span>
             </span>
             <textarea
               rows={2}
               value={resultado}
               onChange={(e) => setResultado(e.target.value)}
               placeholder="Quedó en confirmar el viernes. Pidió la cotización por mail."
-              className="w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-3.5 py-2.5 text-[14px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB] outline-none transition placeholder:text-[#B0A697] dark:text-[#6B7280] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
+              className="w-full rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-3.5 py-2.5 text-[14px] leading-relaxed text-[var(--gm-texto)] outline-none transition placeholder:text-[var(--gm-texto-tenue)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
             />
           </label>
         )}
 
         {/* ----------------------------- acciones -------------------------- */}
-        <div className="flex flex-wrap items-center gap-2 border-t border-[#F0EAE1] dark:border-[#333333] pt-4">
+        <div className="flex flex-wrap items-center gap-2 border-t border-[#F0EAE1] pt-4">
           <BotonGm
             variante="contorno"
             tamano="sm"
@@ -156,7 +156,7 @@ export default function ModalEvento({
             href={linkGoogleCalendar(evento)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#E8E0D5] dark:border-[#333333] px-3 text-[13px] text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[var(--gm-borde)] px-3 text-[13px] text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-suave)] hover:text-[var(--gm-texto)]"
           >
             <ExternalLink size={14} />
             Copiar a Google Calendar
@@ -171,10 +171,10 @@ function Dato({ titulo, valor, ancho }) {
   if (!valor) return null;
   return (
     <div className={ancho ? 'sm:col-span-2' : ''}>
-      <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">
+      <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-tenue)]">
         {titulo}
       </dt>
-      <dd className="mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB]">
+      <dd className="mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[var(--gm-texto)]">
         {valor}
       </dd>
     </div>

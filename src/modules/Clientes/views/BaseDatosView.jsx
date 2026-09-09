@@ -6,8 +6,9 @@
 // del módulo: si algo no está acá, no está en el sistema.
 // ============================================================================
 
-import React, { useMemo, useState } from 'react';
-import { Download, Plus, Users, UserCheck, Sparkles, MapPin } from 'lucide-react';
+import React, { useMemo, useState, useRef } from 'react';
+import { Download, Upload, Plus, Users, UserCheck, Sparkles, MapPin } from 'lucide-react';
+import Papa from 'papaparse';
 import { useClientes } from '../context/ClientesContext';
 import { CAMPOS_CLIENTE, aFormulario } from '../config/cliente.form';
 import Panel from '../../../shared/gm-ui/Panel';
@@ -32,7 +33,7 @@ const valorOrden = (c, clave) => {
 };
 
 export default function BaseDatosView() {
-  const { clientes, leads, mensajes, eventos, porRubro, cargando, altaCliente, editarCliente, bajaCliente } =
+  const { clientes, leads, mensajes, eventos, porRubro, cargando, altaCliente, editarCliente, bajaCliente, importarClientes } =
     useClientes();
 
   const [busqueda, setBusqueda] = useState('');
@@ -41,6 +42,8 @@ export default function BaseDatosView() {
   const [ficha, setFicha] = useState(null);
   const [editando, setEditando] = useState(null); // null | {} (alta) | cliente (edición)
   const [borrando, setBorrando] = useState(null);
+  const [importando, setImportando] = useState(false);
+  const fileInputRef = useRef(null);
 
   const filtrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -84,6 +87,88 @@ export default function BaseDatosView() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+  };
+
+  const procesarImportacion = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImportando(true);
+    
+    // Mapeo sugerido de columnas del Excel a nuestro sistema
+    const COLUMNAS_MAP = {
+      "código": "codigo",
+      "codigo": "codigo",
+      "nombre del negocio": "negocio",
+      "negocio": "negocio",
+      "nombre": "profesionalNombre",
+      "apellido": "profesionalApellido",
+      "rubro": "rubro",
+      "clasificación": "clasificacion",
+      "clasificacion": "clasificacion",
+      "teléfono": "telefono",
+      "telefono": "telefono",
+      "celular": "celular",
+      "email": "email",
+      "correo": "email",
+      "ubicación del negocio": "ubicacion",
+      "dirección": "ubicacion",
+      "direccion": "ubicacion",
+      "ubicacion": "ubicacion",
+      "localidad": "localidad",
+      "provincia": "provincia",
+      "latitud": "latitud",
+      "longitud": "longitud",
+      "estado": "estado",
+      "dni": "dni",
+      "cuit": "cuit",
+      "notas": "notas"
+    };
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const clientesAImportar = results.data.map(fila => {
+            const cliente = { estado: 'lead' };
+            // Mapeamos los headers del CSV (limpios) a nuestro formato
+            Object.keys(fila).forEach(key => {
+              const headerLimpio = key.trim().toLowerCase();
+              const campoLocal = COLUMNAS_MAP[headerLimpio];
+              if (campoLocal && fila[key]) {
+                cliente[campoLocal] = fila[key].trim();
+              }
+            });
+            // Fallback si "Nombre y Apellido" vienen juntos (algunos lo usan así)
+            if (!cliente.profesionalNombre && fila["Nombre y Apellido"]) {
+               const partes = fila["Nombre y Apellido"].split(' ');
+               cliente.profesionalNombre = partes[0];
+               cliente.profesionalApellido = partes.slice(1).join(' ');
+            }
+            return cliente;
+          }).filter(c => c.negocio || (c.profesionalNombre && c.profesionalApellido));
+
+          if (clientesAImportar.length === 0) {
+            alert('No se encontraron clientes válidos en el archivo. Verifica los nombres de las columnas.');
+            return;
+          }
+          
+          const cantidad = await importarClientes(clientesAImportar);
+          alert(`¡Se importaron ${cantidad} clientes exitosamente!`);
+        } catch (error) {
+          alert('Hubo un error importando el archivo: ' + error.message);
+        } finally {
+          setImportando(false);
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+      },
+      error: (error) => {
+        alert('Error al leer el archivo CSV: ' + error.message);
+        setImportando(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    });
   };
 
   const guardar = async (form) => {
@@ -134,6 +219,22 @@ export default function BaseDatosView() {
           <>
             <BotonGm variante="contorno" tamano="sm" icono={Download} onClick={exportarCsv}>
               Exportar
+            </BotonGm>
+            <input 
+              type="file" 
+              accept=".csv" 
+              ref={fileInputRef}
+              onChange={procesarImportacion}
+              className="hidden" 
+            />
+            <BotonGm 
+              variante="contorno" 
+              tamano="sm" 
+              icono={Upload} 
+              onClick={() => fileInputRef.current?.click()}
+              cargando={importando ? 1 : 0}
+            >
+              Importar CSV
             </BotonGm>
             <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
               Nuevo cliente

@@ -19,7 +19,7 @@ import { TIPOS_NOTA } from '../config/notario.config';
 import SelectorEntidad from './SelectorEntidad';
 
 const INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[#B0A697] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-3.5 text-[14px] text-[var(--gm-texto)] outline-none transition placeholder:text-[var(--gm-texto-tenue)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
 
 const vacia = (previo = {}) => ({
   titulo: '',
@@ -92,8 +92,8 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
             onClick={() => setForm((f) => ({ ...f, fijada: !f.fijada }))}
             className={`inline-flex h-11 items-center gap-2 rounded-xl border px-3.5 text-[13px] font-medium transition ${
               form.fijada
-                ? 'border-[#B4551A66] bg-[#FBE5C8] text-[#8A3F11]'
-                : 'border-[#E8E0D5] bg-white text-[#948A7C] hover:bg-[#FCFAF6]'
+                ? 'border-[#B4551A66] bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento-fuerte)]'
+                : 'border-[var(--gm-borde)] bg-[var(--gm-superficie)] text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)]'
             }`}
           >
             <Pin size={15} />
@@ -112,7 +112,7 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
       }
     >
       {error && (
-        <div className="mb-4 flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[#FBEAE0] px-3.5 py-3 text-[13px] text-[#A63A0C]">
+        <div className="mb-4 flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[var(--gm-acento-suave-bg)] px-3.5 py-3 text-[13px] text-[var(--gm-acento)]">
           <AlertTriangle size={15} className="mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>
@@ -121,7 +121,7 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
       <div className="space-y-4">
         {/* ------------------------------- tipo ---------------------------- */}
         <div>
-          <p className="mb-2 text-[12px] font-medium text-[#6E6559]">Qué clase de nota es</p>
+          <p className="mb-2 text-[12px] font-medium text-[var(--gm-texto-medio)]">Qué clase de nota es</p>
           <div className="flex flex-wrap gap-2">
             {TIPOS_NOTA.map((t) => {
               const activo = form.tipo === t.id;
@@ -148,8 +148,8 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
 
         {/* ------------------------------ título --------------------------- */}
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium text-[#6E6559]">
-            Título <span className="font-normal text-[#B0A697]">(opcional, ayuda a encontrarla)</span>
+          <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">
+            Título <span className="font-normal text-[var(--gm-texto-tenue)]">(opcional, ayuda a encontrarla)</span>
           </span>
           <input
             type="text"
@@ -162,8 +162,8 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
 
         {/* ------------------------------- texto --------------------------- */}
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium text-[#6E6559]">
-            La nota <span className="text-[#B4551A]">*</span>
+          <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">
+            La nota <span className="text-[var(--gm-acento)]">*</span>
           </span>
           <textarea
             rows={5}
@@ -176,9 +176,9 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
 
         {/* ------------------------------ entidad -------------------------- */}
         <div className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium text-[#6E6559]">
+          <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">
             ¿De qué habla?{' '}
-            <span className="font-normal text-[#B0A697]">
+            <span className="font-normal text-[var(--gm-texto-tenue)]">
               (opcional: si la dejás vacía queda como nota suelta)
             </span>
           </span>
@@ -197,7 +197,7 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
 
         {/* ----------------------------- etiquetas ------------------------- */}
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium text-[#6E6559]">Etiquetas</span>
+          <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">Etiquetas</span>
           <input
             type="text"
             value={form.etiquetas}
@@ -205,7 +205,7 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
             placeholder="proveedor, precio, urgente"
             className={INPUT}
           />
-          <span className="text-[11px] text-[#B0A697]">
+          <span className="text-[11px] text-[var(--gm-texto-tenue)]">
             Separadas por coma. Se guardan en minúscula para que “Precio” y “precio” sean la misma.
           </span>
         </label>

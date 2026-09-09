@@ -102,11 +102,11 @@ export default function MensajeriaView() {
               <p className="truncate text-[13px] font-medium">
                 {l.apellido}, {l.nombre}
               </p>
-              <p className="truncate text-[11px] text-[#948A7C]">{l.clinica}</p>
+              <p className="truncate text-[11px] text-[var(--gm-texto-suave)]">{l.clinica}</p>
             </div>
           </div>
         ) : (
-          <span className="text-[13px] text-[#B0A697] dark:text-[#6B7280]">{m.leadCodigo} · lead eliminado</span>
+          <span className="text-[13px] text-[var(--gm-texto-tenue)]">{m.leadCodigo} · lead eliminado</span>
         );
       },
     },
@@ -123,8 +123,8 @@ export default function MensajeriaView() {
       titulo: 'Mensaje',
       render: (m) => (
         <div className="min-w-0">
-          {m.asunto && <p className="truncate text-[12px] text-[#6E6559] dark:text-[#9CA3AF]">{m.asunto}</p>}
-          <p className="line-clamp-2 text-[13px] text-[#948A7C]">{m.texto}</p>
+          {m.asunto && <p className="truncate text-[12px] text-[var(--gm-texto-medio)]">{m.asunto}</p>}
+          <p className="line-clamp-2 text-[13px] text-[var(--gm-texto-suave)]">{m.texto}</p>
         </div>
       ),
     },
@@ -138,7 +138,7 @@ export default function MensajeriaView() {
             Respondió
           </Chip>
         ) : (
-          <span className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">—</span>
+          <span className="text-[12px] text-[var(--gm-texto-tenue)]">—</span>
         ),
     },
   ];
@@ -153,7 +153,7 @@ export default function MensajeriaView() {
       <Panel
         titulo="Para escribirles hoy"
         bajada={`Oportunidades abiertas con más de ${DIAS_FRIO} días sin contacto, de la más olvidada a la más reciente.`}
-        acciones={<Clock size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+        acciones={<Clock size={16} className="text-[var(--gm-texto-tenue)]" />}
         cuerpoClassName={pendientes.length ? 'p-0' : 'p-6'}
       >
         {pendientes.length === 0 ? (
@@ -168,10 +168,10 @@ export default function MensajeriaView() {
               <li key={l.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5">
                 <Avatar nombre={`${l.nombre} ${l.apellido}`} tamano="sm" />
                 <div className="min-w-[170px] flex-1">
-                  <p className="truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
+                  <p className="truncate text-[14px] font-medium text-[var(--gm-texto)]">
                     {l.apellido}, {l.nombre}
                   </p>
-                  <p className="truncate text-[12px] text-[#948A7C]">
+                  <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">
                     {l.clinica} · {l.equipo || 'sin equipo'}
                   </p>
                 </div>
@@ -207,7 +207,7 @@ export default function MensajeriaView() {
       <Panel
         titulo="Lo que se mandó"
         bajada="Cada mensaje que salió desde el sistema queda anotado acá con su fecha, su canal y su texto."
-        acciones={<Send size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+        acciones={<Send size={16} className="text-[var(--gm-texto-tenue)]" />}
         cuerpoClassName="p-0"
       >
         <Tabla

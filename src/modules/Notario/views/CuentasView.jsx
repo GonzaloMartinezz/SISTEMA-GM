@@ -68,8 +68,8 @@ export default function CuentasView() {
       ancho: '24%',
       render: (c) => (
         <div className="min-w-0">
-          <p className="truncate font-medium text-[#2A2118] dark:text-[#F9FAFB]">{c.cliente || 'Sin cliente'}</p>
-          <p className="truncate font-mono text-[12px] text-[#948A7C]">{c.numero}</p>
+          <p className="truncate font-medium text-[var(--gm-texto)]">{c.cliente || 'Sin cliente'}</p>
+          <p className="truncate font-mono text-[12px] text-[var(--gm-texto-suave)]">{c.numero}</p>
         </div>
       ),
     },
@@ -83,7 +83,7 @@ export default function CuentasView() {
       clave: 'etapa',
       titulo: 'Etapa',
       ancho: '13%',
-      render: (c) => <span className="text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">{c.etapa || '—'}</span>,
+      render: (c) => <span className="text-[13px] text-[var(--gm-texto-medio)]">{c.etapa || '—'}</span>,
     },
     {
       clave: 'progreso',
@@ -92,9 +92,9 @@ export default function CuentasView() {
       render: (c) => (
         <div className="min-w-[110px]">
           <div className="flex items-baseline justify-between">
-            <span className="text-[12px] tabular-nums text-[#6E6559] dark:text-[#9CA3AF]">{c.progreso}%</span>
+            <span className="text-[12px] tabular-nums text-[var(--gm-texto-medio)]">{c.progreso}%</span>
           </div>
-          <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[#F3EDE4] dark:bg-[#121212]">
+          <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
             <span
               className="block h-full rounded-full"
               style={{
@@ -116,7 +116,7 @@ export default function CuentasView() {
       clave: 'ultimaVisita',
       titulo: 'Última visita',
       ancho: '12%',
-      render: (c) => <span className="text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">{fecha(c.ultimaVisita)}</span>,
+      render: (c) => <span className="text-[13px] text-[var(--gm-texto-medio)]">{fecha(c.ultimaVisita)}</span>,
     },
     {
       clave: 'notas',
@@ -125,8 +125,8 @@ export default function CuentasView() {
       render: (c) => {
         const n = notasDeCuenta.get(c.numero) || 0;
         return n ? (
-          <span className="inline-flex items-center gap-1 text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">
-            <NotebookPen size={13} className="text-[#B0A697] dark:text-[#6B7280]" />
+          <span className="inline-flex items-center gap-1 text-[13px] text-[var(--gm-texto-medio)]">
+            <NotebookPen size={13} className="text-[var(--gm-texto-tenue)]" />
             {n}
           </span>
         ) : (
@@ -169,7 +169,7 @@ export default function CuentasView() {
         cuerpoClassName="p-0"
       >
         {cargando ? (
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Cargando el padrón…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando el padrón…</p>
         ) : (
           <Tabla
             columnas={COLUMNAS}
@@ -200,7 +200,7 @@ export default function CuentasView() {
             </dl>
 
             {activa.avisos?.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2 border-t border-[#F0EAE1] dark:border-[#333333] pt-4">
+              <div className="mt-4 flex flex-wrap gap-2 border-t border-[#F0EAE1] pt-4">
                 {activa.avisos.map((a) => (
                   <Chip key={a} tono="amarillo">
                     {a}
@@ -230,9 +230,9 @@ export default function CuentasView() {
                   {suyas.map((n) => (
                     <li key={n.id} className="px-6 py-3.5">
                       {n.titulo && (
-                        <p className="text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{n.titulo}</p>
+                        <p className="text-[14px] font-medium text-[var(--gm-texto)]">{n.titulo}</p>
                       )}
-                      <p className="mt-0.5 whitespace-pre-line text-[13px] leading-relaxed text-[#948A7C]">
+                      <p className="mt-0.5 whitespace-pre-line text-[13px] leading-relaxed text-[var(--gm-texto-suave)]">
                         {n.texto}
                       </p>
                     </li>
@@ -251,10 +251,10 @@ function Dato({ titulo, valor, ancho }) {
   if (!valor) return null;
   return (
     <div className={ancho ? 'sm:col-span-2' : ''}>
-      <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">
+      <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-tenue)]">
         {titulo}
       </dt>
-      <dd className="mt-1 text-[14px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB]">{valor}</dd>
+      <dd className="mt-1 text-[14px] leading-relaxed text-[var(--gm-texto)]">{valor}</dd>
     </div>
   );
 }

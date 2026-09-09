@@ -72,7 +72,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
         {/* --------------------------- eje de horas ------------------------- */}
         {horas.map((h) => (
           <div key={h} className="absolute inset-x-0 flex items-start" style={{ top: pos(h) }}>
-            <span className="w-12 shrink-0 -translate-y-1.5 pr-2 text-right text-[11px] tabular-nums text-[#B0A697] dark:text-[#6B7280]">
+            <span className="w-12 shrink-0 -translate-y-1.5 pr-2 text-right text-[11px] tabular-nums text-[var(--gm-texto-tenue)]">
               {String(Math.floor(h / 60)).padStart(2, '0')}:00
             </span>
             <span className="mt-px h-px flex-1 bg-[#F0EAE1]" />
@@ -85,7 +85,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
             className="pointer-events-none absolute inset-x-0 z-20 flex items-center"
             style={{ top: pos(minutosAhora) }}
           >
-            <span className="w-12 shrink-0 pr-2 text-right text-[11px] font-semibold text-[#B4551A]">
+            <span className="w-12 shrink-0 pr-2 text-right text-[11px] font-semibold text-[var(--gm-acento)]">
               {String(ahora.getHours()).padStart(2, '0')}:
               {String(ahora.getMinutes()).padStart(2, '0')}
             </span>
@@ -123,7 +123,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
               >
                 <span className="flex items-center gap-1.5">
                   <tipo.icono size={12} style={{ color: cerrado ? '#B0A697' : tipo.color }} />
-                  <span className="truncate text-[11px] tabular-nums text-[#6E6559] dark:text-[#9CA3AF]">
+                  <span className="truncate text-[11px] tabular-nums text-[var(--gm-texto-medio)]">
                     {evento.hora}–{horaFin(evento)}
                   </span>
                   {pisa && (
@@ -135,17 +135,17 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
                 </span>
 
                 <p
-                  className={`mt-0.5 truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB] ${
+                  className={`mt-0.5 truncate text-[13px] font-medium text-[var(--gm-texto)]  ${
                     cerrado ? 'line-through' : ''
                   }`}
                 >
                   {evento.titulo}
                 </p>
                 {altoBloque > 68 && evento.cliente && (
-                  <p className="truncate text-[11px] text-[#948A7C]">{evento.cliente}</p>
+                  <p className="truncate text-[11px] text-[var(--gm-texto-suave)]">{evento.cliente}</p>
                 )}
                 {altoBloque > 94 && evento.nota && (
-                  <p className="mt-1 truncate text-[11px] text-[#B0A697] dark:text-[#6B7280]">{evento.nota}</p>
+                  <p className="mt-1 truncate text-[11px] text-[var(--gm-texto-tenue)]">{evento.nota}</p>
                 )}
 
                 {/* Cerrar o cancelar sin abrir el compromiso. */}
@@ -159,7 +159,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
                       ev.stopPropagation();
                       onCerrar?.(evento);
                     }}
-                    className="grid h-5 w-5 place-items-center rounded bg-white dark:bg-[#1E1E1E]/90 text-[#2E9B76] hover:bg-white dark:hover:bg-[#1E1E1E]"
+                    className="grid h-5 w-5 place-items-center rounded bg-[var(--gm-superficie)] /90 text-[#2E9B76] hover:bg-[var(--gm-superficie)]"
                   >
                     <Check size={12} />
                   </span>
@@ -173,7 +173,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
                         ev.stopPropagation();
                         onCancelar?.(evento);
                       }}
-                      className="grid h-5 w-5 place-items-center rounded bg-white dark:bg-[#1E1E1E]/90 text-[#A63A0C] hover:bg-white dark:hover:bg-[#1E1E1E]"
+                      className="grid h-5 w-5 place-items-center rounded bg-[var(--gm-superficie)] /90 text-[var(--gm-acento)] hover:bg-[var(--gm-superficie)]"
                     >
                       <X size={12} />
                     </span>

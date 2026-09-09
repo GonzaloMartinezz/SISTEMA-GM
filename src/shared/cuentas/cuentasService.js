@@ -174,6 +174,25 @@ export async function eliminarCliente(id, { definitivo = false } = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// IMPORTACIÓN MASIVA
+// ---------------------------------------------------------------------------
+
+export async function importarClientesMasivo(clientes) {
+  if (!clientes || clientes.length === 0) return 0;
+  
+  // Transformamos el array mapeando al formato de Supabase
+  const filas = clientes.map(aFilaCliente);
+  
+  const { data, error } = await supabase
+    .from('gm_clientes')
+    .insert(filas)
+    .select();
+    
+  if (error) throw new Error(error.message);
+  return data ? data.length : 0;
+}
+
+// ---------------------------------------------------------------------------
 // ABM genérico para las tablas hijas de una cuenta
 // ---------------------------------------------------------------------------
 

@@ -31,18 +31,18 @@ export default function NavegadorFecha() {
         type="button"
         onClick={irHoy}
         disabled={esHoy(fecha)}
-        className="h-9 rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-3 text-[13px] font-medium text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] disabled:opacity-40"
+        className="h-9 rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-3 text-[13px] font-medium text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-suave)] disabled:opacity-40"
       >
         Hoy
       </button>
 
-      <div className="flex items-center overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E]">
+      <div className="flex items-center overflow-hidden rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)]">
         <button
           type="button"
           onClick={() => mover(-1)}
           aria-label={`${etiquetaPaso} anterior`}
           title={`${etiquetaPaso} anterior`}
-          className="grid h-9 w-8 place-items-center text-[#948A7C] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+          className="grid h-9 w-8 place-items-center text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-suave)] hover:text-[var(--gm-texto)]"
         >
           <ChevronLeft size={16} />
         </button>
@@ -51,14 +51,14 @@ export default function NavegadorFecha() {
           value={fecha}
           onChange={(e) => setFecha(e.target.value || hoyIso())}
           aria-label="Ir a una fecha"
-          className="h-9 border-x border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-2.5 text-[13px] text-[#2A2118] dark:text-[#F9FAFB] outline-none"
+          className="h-9 border-x border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-2.5 text-[13px] text-[var(--gm-texto)] outline-none"
         />
         <button
           type="button"
           onClick={() => mover(1)}
           aria-label={`${etiquetaPaso} siguiente`}
           title={`${etiquetaPaso} siguiente`}
-          className="grid h-9 w-8 place-items-center text-[#948A7C] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+          className="grid h-9 w-8 place-items-center text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-suave)] hover:text-[var(--gm-texto)]"
         >
           <ChevronRight size={16} />
         </button>

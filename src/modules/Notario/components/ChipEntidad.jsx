@@ -18,7 +18,7 @@ export default function ChipEntidad({ entidad, codigo, resuelta, className = '',
   if (!entidad) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-2.5 py-1 text-[12px] text-[#B0A697] dark:text-[#6B7280] ${className}`}
+        className={`inline-flex items-center gap-1.5 rounded-full border border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  px-2.5 py-1 text-[12px] text-[var(--gm-texto-tenue)]  ${className}`}
       >
         Nota suelta
       </span>

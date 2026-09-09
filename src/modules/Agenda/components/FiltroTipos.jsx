@@ -34,7 +34,7 @@ export default function FiltroTipos({ conteo = {} }) {
             <t.icono size={13} style={{ color: activo ? t.color : '#C6BCAC' }} />
             {t.plural}
             {conteo[t.id] != null && (
-              <span className={activo ? 'text-[#6E6559] dark:text-[#9CA3AF]' : 'text-[#C6BCAC]'}>{conteo[t.id]}</span>
+              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>{conteo[t.id]}</span>
             )}
           </button>
         );
@@ -48,8 +48,8 @@ export default function FiltroTipos({ conteo = {} }) {
         aria-pressed={ocultarCerrados}
         className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
           ocultarCerrados
-            ? 'border-[#B4551A66] bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-            : 'border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+            ? 'border-[#B4551A66] bg-[var(--gm-acento-suave-bg)]  text-[var(--gm-acento-fuerte)]'
+            : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)] '
         }`}
       >
         <EyeOff size={13} />

@@ -120,7 +120,7 @@ export default function FichaView() {
         </Panel>
       ) : cargando ? (
         <Panel sinEncabezado>
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Juntando todo…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Juntando todo…</p>
         </Panel>
       ) : (
         <>
@@ -134,14 +134,14 @@ export default function FichaView() {
                 <clase.icono size={24} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
                   {clase.nombre} · {clase.modulo} · {ficha?.codigo || elegida.codigo}
                 </p>
-                <h2 className="mt-1 text-[22px] font-semibold leading-tight text-[#2A2118]">
+                <h2 className="mt-1 text-[22px] font-semibold leading-tight text-[var(--gm-texto)]">
                   {ficha?.nombre || elegida.codigo}
                 </h2>
                 {ficha?.detalle && (
-                  <p className="mt-0.5 text-[14px] text-[#948A7C]">{ficha.detalle}</p>
+                  <p className="mt-0.5 text-[14px] text-[var(--gm-texto-suave)]">{ficha.detalle}</p>
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -176,7 +176,7 @@ export default function FichaView() {
             <Panel
               titulo="Lo que anotaste"
               bajada="Las notas que escribiste vos sobre esto."
-              acciones={<NotebookPen size={16} className="text-[#B0A697]" />}
+              acciones={<NotebookPen size={16} className="text-[var(--gm-texto-tenue)]" />}
               cuerpoClassName={notas.length ? 'space-y-4 p-6' : 'p-6'}
             >
               {notas.length === 0 ? (
@@ -216,7 +216,7 @@ export default function FichaView() {
             <Panel
               titulo="Lo que registró el sistema"
               bajada="Mensajes, avances, movimientos de stock, compromisos, visitas y pagos."
-              acciones={<History size={16} className="text-[#B0A697]" />}
+              acciones={<History size={16} className="text-[var(--gm-texto-tenue)]" />}
             >
               <LineaBitacora grupos={grupos} resolver={resolver} />
             </Panel>

@@ -26,7 +26,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
           {NOMBRES.map((n) => (
             <div
               key={n}
-              className="px-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]"
+              className="px-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-tenue)]"
             >
               {n}
             </div>
@@ -58,14 +58,14 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                 }}
                 className={`flex h-[122px] flex-col rounded-xl border p-2 text-left transition ${
                   encima === iso
-                    ? 'border-[#B4551A] bg-[#FBE5C8] dark:bg-[#2A1608]/60'
+                    ? 'border-[#B4551A] bg-[var(--gm-acento-suave-bg)] /60'
                     : elegido
-                      ? 'border-[#B4551A] bg-white dark:bg-[#1E1E1E]'
+                      ? 'border-[#B4551A] bg-[var(--gm-superficie)] '
                       : delMes
                         ? esFinDeSemana(iso)
-                          ? 'border-[#EFE7DB] bg-[#FAF6F0] dark:bg-[#121212] hover:border-[#D5CABA]'
-                          : 'border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] hover:border-[#D5CABA]'
-                        : 'border-[#F0EAE1] dark:border-[#333333] bg-[#FBF8F3]'
+                          ? 'border-[#EFE7DB] bg-[var(--gm-fondo)]  hover:border-[var(--gm-borde-fuerte)]'
+                          : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  hover:border-[var(--gm-borde-fuerte)]'
+                        : 'border-[#F0EAE1]  bg-[#FBF8F3]'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -74,14 +74,14 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                       hoy
                         ? 'bg-[#B4551A] text-white'
                         : delMes
-                          ? 'text-[#2A2118] dark:text-[#F9FAFB]'
+                          ? 'text-[var(--gm-texto)] '
                           : 'text-[#C6BCAC]'
                     }`}
                   >
                     {numeroDia(iso)}
                   </span>
                   {eventos.length > 0 && (
-                    <span className="text-[10px] text-[#B0A697] dark:text-[#6B7280]">{eventos.length}</span>
+                    <span className="text-[10px] text-[var(--gm-texto-tenue)]">{eventos.length}</span>
                   )}
                 </div>
 
@@ -117,7 +117,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                     );
                   })}
                   {eventos.length > MAX_VISIBLES && (
-                    <span className="px-1 text-[10px] text-[#948A7C]">
+                    <span className="px-1 text-[10px] text-[var(--gm-texto-suave)]">
                       +{eventos.length - MAX_VISIBLES} más
                     </span>
                   )}

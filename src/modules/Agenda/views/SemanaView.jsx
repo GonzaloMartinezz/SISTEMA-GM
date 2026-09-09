@@ -106,7 +106,7 @@ export default function SemanaView() {
       </Panel>
 
       {saturados.length > 0 && (
-        <p className="flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[#FBEAE0] px-4 py-3 text-[13px] leading-relaxed text-[#A63A0C]">
+        <p className="flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[var(--gm-acento-suave-bg)] px-4 py-3 text-[13px] leading-relaxed text-[var(--gm-acento)]">
           <TriangleAlert size={15} className="mt-0.5 shrink-0" />
           {saturados.length === 1
             ? `El ${diaCorto(saturados[0].dia)} no entra: ${horasYminutos(saturados[0].carga.minutos)} comprometidas en una jornada de 12 h.`
@@ -120,7 +120,7 @@ export default function SemanaView() {
         bajada="Arrastrá un compromiso de una columna a otra para cambiarlo de día."
       >
         {cargando ? (
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Cargando la semana…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando la semana…</p>
         ) : (
           <RejillaSemana
             dias={dias}

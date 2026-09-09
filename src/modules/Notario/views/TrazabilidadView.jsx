@@ -128,7 +128,7 @@ export default function TrazabilidadView() {
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697]">
+              <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
                 Módulo
               </span>
               {Object.entries(MODULOS).map(([id, m]) => {
@@ -142,12 +142,12 @@ export default function TrazabilidadView() {
                     aria-pressed={activo}
                     className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
                       activo
-                        ? 'border-[#B4551A66] bg-[#FBE5C8] text-[#8A3F11]'
-                        : 'border-[#E8E0D5] bg-white text-[#948A7C] hover:bg-[#FCFAF6]'
+                        ? 'border-[#B4551A66] bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento-fuerte)]'
+                        : 'border-[var(--gm-borde)] bg-[var(--gm-superficie)] text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)]'
                     } ${total === 0 ? 'opacity-50' : ''}`}
                   >
                     {m.codigo} {m.nombre}{' '}
-                    <span className={activo ? 'text-[#8A3F11]/70' : 'text-[#C6BCAC]'}>{total}</span>
+                    <span className={activo ? 'text-[var(--gm-acento-fuerte)]/70' : 'text-[#C6BCAC]'}>{total}</span>
                   </button>
                 );
               })}
@@ -161,13 +161,13 @@ export default function TrazabilidadView() {
                     setModulosVisibles([]);
                     setClasesVisibles([]);
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[#948A7C] transition hover:bg-[#F3EDE4] hover:text-[#2A2118]"
+                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
                 >
                   <RotateCcw size={13} />
                   Limpiar
                 </button>
               )}
-              <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5]">
+              <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
                 {RANGOS.map((r) => (
                   <button
                     key={r.id}
@@ -175,8 +175,8 @@ export default function TrazabilidadView() {
                     onClick={() => setRangoId(r.id)}
                     className={`px-3 py-1.5 text-[12px] font-semibold transition ${
                       rangoId === r.id
-                        ? 'bg-[#FBE5C8] text-[#8A3F11]'
-                        : 'bg-white text-[#948A7C] hover:bg-[#FCFAF6]'
+                        ? 'bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento-fuerte)]'
+                        : 'bg-[var(--gm-superficie)] text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)]'
                     }`}
                   >
                     {r.nombre}
@@ -187,7 +187,7 @@ export default function TrazabilidadView() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697]">
+            <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
               Qué pasó
             </span>
             {Object.entries(CLASES).map(([id, c]) => {
@@ -210,7 +210,7 @@ export default function TrazabilidadView() {
                 >
                   <c.icono size={13} style={{ color: activo ? c.color : '#C6BCAC' }} />
                   {c.nombre}
-                  <span className={activo ? 'text-[#6E6559]' : 'text-[#C6BCAC]'}>{total}</span>
+                  <span className={activo ? 'text-[var(--gm-texto-medio)]' : 'text-[#C6BCAC]'}>{total}</span>
                 </button>
               );
             })}
@@ -222,10 +222,10 @@ export default function TrazabilidadView() {
       <Panel
         titulo="Todo lo que pasó"
         bajada="Sale de Notas, Seguimientos, Equipamientos, Agenda, Cobranzas, Tesorería y Logística. No se carga a mano: se lee de lo que cada módulo ya registra."
-        acciones={<History size={16} className="text-[#B0A697]" />}
+        acciones={<History size={16} className="text-[var(--gm-texto-tenue)]" />}
       >
         {cargando ? (
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Juntando los movimientos…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Juntando los movimientos…</p>
         ) : (
           <LineaBitacora
             grupos={grupos}

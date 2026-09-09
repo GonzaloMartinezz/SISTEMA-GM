@@ -44,26 +44,26 @@ export default function RejillaSemana({ dias, eventosDe, onEvento, onNuevo, onMo
             onDrop={soltar(dia)}
             className={`flex min-h-[240px] flex-col rounded-2xl border transition ${
               encima === dia
-                ? 'border-[#B4551A] bg-[#FBE5C8] dark:bg-[#2A1608]/50'
+                ? 'border-[#B4551A] bg-[var(--gm-acento-suave-bg)] /50'
                 : hoy
-                  ? 'border-[#D5CABA] bg-white dark:bg-[#1E1E1E]'
+                  ? 'border-[var(--gm-borde-fuerte)] bg-[var(--gm-superficie)] '
                   : esFinDeSemana(dia)
-                    ? 'border-[#EFE7DB] bg-[#FAF6F0] dark:bg-[#121212]'
-                    : 'border-[#E8E0D5] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D]'
+                    ? 'border-[#EFE7DB] bg-[var(--gm-fondo)] '
+                    : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie-suave)] '
             }`}
           >
             <header className="border-b border-[#EFE7DB] px-3 py-2.5">
               <div className="flex items-baseline justify-between gap-2">
                 <span
                   className={`text-[12px] font-semibold capitalize ${
-                    hoy ? 'text-[#B4551A]' : 'text-[#6E6559] dark:text-[#9CA3AF]'
+                    hoy ? 'text-[var(--gm-acento)]' : 'text-[var(--gm-texto-medio)] '
                   }`}
                 >
                   {diaCorto(dia)}
                 </span>
                 {/* Un día con dos visitas ya cumplidas no está "ocupado": está
                     cerrado. Decir "0 min" al lado de dos tarjetas confunde. */}
-                <span className={`text-[11px] ${hoy ? 'text-[#B4551A]' : 'text-[#B0A697] dark:text-[#6B7280]'}`}>
+                <span className={`text-[11px] ${hoy ? 'text-[var(--gm-acento)]' : 'text-[var(--gm-texto-tenue)] '}`}>
                   {carga.minutos
                     ? horasYminutos(carga.minutos)
                     : eventos.length
@@ -102,17 +102,17 @@ export default function RejillaSemana({ dias, eventosDe, onEvento, onNuevo, onMo
                   >
                     <span className="flex items-center gap-1.5">
                       <tipo.icono size={11} style={{ color: cerrado ? '#B0A697' : tipo.color }} />
-                      <span className="text-[11px] tabular-nums text-[#6E6559] dark:text-[#9CA3AF]">{ev.hora}</span>
+                      <span className="text-[11px] tabular-nums text-[var(--gm-texto-medio)]">{ev.hora}</span>
                     </span>
                     <p
-                      className={`truncate text-[12px] font-medium text-[#2A2118] dark:text-[#F9FAFB] ${
+                      className={`truncate text-[12px] font-medium text-[var(--gm-texto)]  ${
                         cerrado ? 'line-through' : ''
                       }`}
                     >
                       {ev.titulo}
                     </p>
                     {ev.cliente && (
-                      <p className="truncate text-[11px] text-[#948A7C]">{ev.cliente}</p>
+                      <p className="truncate text-[11px] text-[var(--gm-texto-suave)]">{ev.cliente}</p>
                     )}
                   </button>
                 );
@@ -122,7 +122,7 @@ export default function RejillaSemana({ dias, eventosDe, onEvento, onNuevo, onMo
                 type="button"
                 onClick={() => onNuevo?.(dia)}
                 aria-label={`Agendar el ${numeroDia(dia)}`}
-                className="mt-auto flex items-center justify-center gap-1 rounded-lg border border-dashed border-[#DDD3C4] py-2 text-[11px] text-[#B0A697] dark:text-[#6B7280] transition hover:border-[#B4551A] hover:text-[#8A3F11]"
+                className="mt-auto flex items-center justify-center gap-1 rounded-lg border border-dashed border-[#DDD3C4] py-2 text-[11px] text-[var(--gm-texto-tenue)] transition hover:border-[#B4551A] hover:text-[var(--gm-acento-fuerte)]"
               >
                 <Plus size={12} />
                 Agendar

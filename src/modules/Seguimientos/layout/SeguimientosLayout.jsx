@@ -17,6 +17,7 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
+      idModulo="seguimientos"
       numero={4}
       nombre="Seguimientos"
       icono={Send}

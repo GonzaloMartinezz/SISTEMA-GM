@@ -93,7 +93,7 @@ export default function AvancesView() {
   if (cargando) {
     return (
       <Panel sinEncabezado>
-        <p className="py-16 text-center text-[14px] text-[#948A7C]">Reconstruyendo el historial…</p>
+        <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Reconstruyendo el historial…</p>
       </Panel>
     );
   }
@@ -102,11 +102,11 @@ export default function AvancesView() {
     <div className="space-y-6">
       {/* -------------------------- rango de tiempo -------------------------- */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[13px] text-[#948A7C]">
+        <p className="text-[13px] text-[var(--gm-texto-suave)]">
           Mostrando el movimiento de los últimos{' '}
-          <span className="text-[#6E6559] dark:text-[#9CA3AF]">{rango.nombre.toLowerCase()}</span>.
+          <span className="text-[var(--gm-texto-medio)]">{rango.nombre.toLowerCase()}</span>.
         </p>
-        <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333]">
+        <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
           {RANGOS.map((r) => (
             <button
               key={r.id}
@@ -114,8 +114,8 @@ export default function AvancesView() {
               onClick={() => setRangoId(r.id)}
               className={`px-3 py-1.5 text-[12px] font-semibold transition ${
                 rangoId === r.id
-                  ? 'bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-                  : 'bg-white dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+                  ? 'bg-[var(--gm-acento-suave-bg)]  text-[var(--gm-acento-fuerte)]'
+                  : 'bg-[var(--gm-superficie)]  text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)] '
               }`}
             >
               {r.nombre}
@@ -133,7 +133,7 @@ export default function AvancesView() {
       <Panel
         titulo="Línea de tiempo de las ventas"
         bajada="Cada fila es una oportunidad; cada bloque, el tiempo que pasó en esa etapa. Un bloque largo es una venta que se quedó quieta."
-        acciones={<GitBranch size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+        acciones={<GitBranch size={16} className="text-[var(--gm-texto-tenue)]" />}
       >
         <LineaTiempoLeads datos={linea} />
       </Panel>
@@ -150,7 +150,7 @@ export default function AvancesView() {
         <Panel
           titulo="Cuánto tarda cada etapa"
           bajada="Promedio de días sobre las ventas que ya salieron de esa etapa. Las que siguen adentro no cuentan: todavía no sabemos cuánto van a tardar."
-          acciones={<Timer size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<Timer size={16} className="text-[var(--gm-texto-tenue)]" />}
         >
           <VelocidadEtapas etapas={velocidad} />
         </Panel>
@@ -160,7 +160,7 @@ export default function AvancesView() {
       <Panel
         titulo="Ventas frenadas"
         bajada={`Llevan más de ${DIAS_ESTANCADO} días en la misma etapa sin moverse. Son las que hay que destrabar o dar de baja.`}
-        acciones={<AlarmClock size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+        acciones={<AlarmClock size={16} className="text-[var(--gm-texto-tenue)]" />}
         cuerpoClassName={quietos.length ? 'p-0' : 'p-6'}
       >
         {quietos.length === 0 ? (
@@ -178,16 +178,16 @@ export default function AvancesView() {
                   style={{ backgroundColor: getEtapa(q.etapa).color }}
                 />
                 <div className="min-w-[180px] flex-1">
-                  <p className="truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
+                  <p className="truncate text-[14px] font-medium text-[var(--gm-texto)]">
                     {q.lead.apellido}, {q.lead.nombre}
                   </p>
-                  <p className="truncate text-[12px] text-[#948A7C]">
+                  <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">
                     {q.lead.clinica} · {q.lead.equipo || 'sin equipo'}
                   </p>
                 </div>
-                <span className="text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">{getEtapa(q.etapa).nombre}</span>
-                <span className="text-[13px] font-semibold text-[#B4551A]">{q.dias} días acá</span>
-                <span className="text-[13px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+                <span className="text-[13px] text-[var(--gm-texto-medio)]">{getEtapa(q.etapa).nombre}</span>
+                <span className="text-[13px] font-semibold text-[var(--gm-acento)]">{q.dias} días acá</span>
+                <span className="text-[13px] font-semibold text-[var(--gm-texto)]">
                   {usd(q.lead.montoUsd)}
                 </span>
                 <ChipTemperatura dias={q.lead.diasSinContacto} />
@@ -198,13 +198,13 @@ export default function AvancesView() {
       </Panel>
 
       {/* -------------------------- nota del historial ----------------------- */}
-      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[#B0A697] dark:text-[#6B7280]">
+      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[var(--gm-texto-tenue)]">
         <ArrowUpRight size={14} className="mt-0.5 shrink-0" />
         El historial de etapas lo escribe la base sola cada vez que una venta cambia de lugar. Los
         tramos anteriores a la puesta en marcha no existen: no se inventaron para llenar el gráfico.
         A medida que uses el tablero, esta pantalla se va llenando sola.
         {mov.retrocedieron > 0 && (
-          <span className="inline-flex items-center gap-1 text-[#B4551A]">
+          <span className="inline-flex items-center gap-1 text-[var(--gm-acento)]">
             <ArrowDownRight size={13} />
             Los retrocesos también quedan: mover una tarjeta para atrás se registra igual.
           </span>

@@ -34,29 +34,29 @@ export default function EmbudoEtapas({ etapas, onEtapa }) {
           <button
             type="button"
             onClick={() => onEtapa?.(e.id)}
-            className="w-full rounded-lg px-1 py-1 text-left transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]"
+            className="w-full rounded-lg px-1 py-1 text-left transition hover:bg-[var(--gm-superficie-suave)]"
           >
             <div className="flex items-baseline justify-between gap-3">
-              <span className="flex items-center gap-2 text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
+              <span className="flex items-center gap-2 text-[13px] font-medium text-[var(--gm-texto)]">
                 <span className="h-2 w-2 rounded-full" style={{ backgroundColor: e.color }} />
                 {e.nombre}
-                <span className="text-[12px] font-normal text-[#B0A697] dark:text-[#6B7280]">
+                <span className="text-[12px] font-normal text-[var(--gm-texto-tenue)]">
                   {e.cantidad} {e.cantidad === 1 ? 'oportunidad' : 'oportunidades'}
                 </span>
               </span>
-              <span className="whitespace-nowrap text-[13px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+              <span className="whitespace-nowrap text-[13px] font-semibold text-[var(--gm-texto)]">
                 {usd(e.valor)}
               </span>
             </div>
 
-            <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-[#F3EDE4] dark:bg-[#121212]">
+            <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
               <span
                 className="block h-full rounded-full transition-all"
                 style={{ width: `${(e.valor / maximo) * 100}%`, backgroundColor: e.color }}
               />
             </div>
 
-            <p className="mt-1 text-[11px] text-[#B0A697] dark:text-[#6B7280]">
+            <p className="mt-1 text-[11px] text-[var(--gm-texto-tenue)]">
               {e.probabilidad}% de probabilidad · {usd(e.ponderado)} ponderado
             </p>
           </button>

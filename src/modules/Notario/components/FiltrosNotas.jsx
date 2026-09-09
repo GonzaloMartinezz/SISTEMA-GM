@@ -21,7 +21,7 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697] dark:text-[#6B7280]">
+        <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
           Clase
         </span>
         {TIPOS_NOTA.map((t) => {
@@ -43,7 +43,7 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
               <t.icono size={13} style={{ color: activo ? t.color : '#C6BCAC' }} />
               {t.nombre}
               {conteoTipo[t.id] != null && (
-                <span className={activo ? 'text-[#6E6559] dark:text-[#9CA3AF]' : 'text-[#C6BCAC]'}>
+                <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>
                   {conteoTipo[t.id]}
                 </span>
               )}
@@ -53,7 +53,7 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697] dark:text-[#6B7280]">
+        <span className="mr-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
           Habla de
         </span>
         {[...ENTIDADES, { id: 'general', nombre: 'Sueltas', icono: StickyNote, tono: 'gris' }].map((e) => {
@@ -82,13 +82,13 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
         })}
 
         {etiquetaActiva && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B4551A66] bg-[#FBE5C8] dark:bg-[#2A1608] px-3 py-1.5 text-[12px] font-medium text-[#8A3F11]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B4551A66] bg-[var(--gm-acento-suave-bg)] px-3 py-1.5 text-[12px] font-medium text-[var(--gm-acento-fuerte)]">
             #{etiquetaActiva}
             <button
               type="button"
               onClick={() => setEtiquetaActiva(null)}
               aria-label="Quitar la etiqueta"
-              className="text-[#8A3F11]/70 transition hover:text-[#8A3F11]"
+              className="text-[var(--gm-acento-fuerte)]/70 transition hover:text-[var(--gm-acento-fuerte)]"
             >
               ×
             </button>
@@ -99,7 +99,7 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
           <button
             type="button"
             onClick={limpiarFiltros}
-            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[#948A7C] transition hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
           >
             <RotateCcw size={13} />
             Limpiar

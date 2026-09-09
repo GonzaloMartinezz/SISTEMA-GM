@@ -83,10 +83,10 @@ export default function PipelineView() {
         <div className="flex items-center gap-3">
           <Avatar nombre={`${l.nombre} ${l.apellido}`} tamano="sm" />
           <div className="min-w-0">
-            <p className="truncate font-medium text-[#2A2118]">
+            <p className="truncate font-medium text-[var(--gm-texto)]">
               {l.apellido}, {l.nombre}
             </p>
-            <p className="truncate text-[12px] text-[#948A7C]">
+            <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">
               {l.id} · {l.clinica}
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function PipelineView() {
       render: (l) => (
         <div className="flex items-center gap-3">
           <PasosEtapa etapa={l.etapa} tamano="sm" />
-          <span className="whitespace-nowrap text-[12px] text-[#6E6559]">
+          <span className="whitespace-nowrap text-[12px] text-[var(--gm-texto-medio)]">
             {getEtapa(l.etapa).nombre}
           </span>
         </div>
@@ -111,7 +111,7 @@ export default function PipelineView() {
       titulo: 'Equipo',
       ancho: '18%',
       render: (l) => (
-        <span className="block truncate text-[13px] text-[#6E6559]">{l.equipo || '—'}</span>
+        <span className="block truncate text-[13px] text-[var(--gm-texto-medio)]">{l.equipo || '—'}</span>
       ),
     },
     {
@@ -174,7 +174,7 @@ export default function PipelineView() {
           <FiltrosProceso conteo={conteo} />
 
           <div className="flex items-center gap-2">
-            <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5]">
+            <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
               {VISTAS.map((v) => (
                 <button
                   key={v.id}
@@ -182,8 +182,8 @@ export default function PipelineView() {
                   onClick={() => setVista(v.id)}
                   className={`inline-flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold transition ${
                     vista === v.id
-                      ? 'bg-[#FBE5C8] text-[#8A3F11]'
-                      : 'bg-white text-[#948A7C] hover:bg-[#FCFAF6]'
+                      ? 'bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento-fuerte)]'
+                      : 'bg-[var(--gm-superficie)] text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)]'
                   }`}
                 >
                   <v.icono size={14} />
@@ -201,7 +201,7 @@ export default function PipelineView() {
       {/* ------------------------------ contenido ---------------------------- */}
       {cargando ? (
         <Panel sinEncabezado>
-          <p className="py-16 text-center text-[14px] text-[#948A7C]">Cargando el pipeline…</p>
+          <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando el pipeline…</p>
         </Panel>
       ) : columnas.length === 0 ? (
         <Panel sinEncabezado>

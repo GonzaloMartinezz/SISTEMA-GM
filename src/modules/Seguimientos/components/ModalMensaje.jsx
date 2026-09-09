@@ -107,12 +107,12 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
       <div className="grid gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
         {/* ------------------------- respuestas rápidas ------------------------ */}
         <aside className="min-w-0">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--gm-texto-tenue)]">
             Respuestas rápidas
           </p>
           <div className="max-h-[300px] space-y-1.5 overflow-y-auto pr-1">
             {disponibles.length === 0 && (
-              <p className="rounded-xl border border-dashed border-[#DDD3C4] px-3 py-4 text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+              <p className="rounded-xl border border-dashed border-[#DDD3C4] px-3 py-4 text-[12px] text-[var(--gm-texto-tenue)]">
                 No hay respuestas guardadas para este canal.
               </p>
             )}
@@ -123,11 +123,11 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
                 onClick={() => usar(p)}
                 className={`w-full rounded-xl border px-3 py-2.5 text-left transition ${
                   elegida === p.id
-                    ? 'border-[#B4551A] bg-[#FBE5C8] dark:bg-[#2A1608]'
-                    : 'border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+                    ? 'border-[#B4551A] bg-[var(--gm-acento-suave-bg)] '
+                    : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  hover:bg-[var(--gm-superficie-suave)] '
                 }`}
               >
-                <p className="truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{p.titulo}</p>
+                <p className="truncate text-[13px] font-medium text-[var(--gm-texto)]">{p.titulo}</p>
                 {p.etapa && (
                   <p className="mt-1 text-[11px]" style={{ color: getEtapa(p.etapa).color }}>
                     {getEtapa(p.etapa).nombre}
@@ -141,7 +141,7 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
         {/* ------------------------------ redacción ---------------------------- */}
         <div className="min-w-0">
           <div className="mb-3 flex items-center gap-2">
-            <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333]">
+            <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
               {CANALES.map((c) => {
                 const ok = c.id === 'whatsapp' ? Boolean(lead?.telefono) : Boolean(lead?.email);
                 return (
@@ -153,8 +153,8 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
                     title={ok ? c.nombre : `El lead no tiene ${c.id === 'whatsapp' ? 'teléfono' : 'email'}`}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
                       canal === c.id
-                        ? 'bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-                        : 'bg-white dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+                        ? 'bg-[var(--gm-acento-suave-bg)]  text-[var(--gm-acento-fuerte)]'
+                        : 'bg-[var(--gm-superficie)]  text-[var(--gm-texto-suave)] hover:bg-[var(--gm-superficie-suave)] '
                     }`}
                   >
                     <c.icono size={14} />
@@ -168,7 +168,7 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
 
           {canal === 'email' && (
             <label className="mb-3 flex flex-col gap-1.5">
-              <span className="text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF]">Asunto</span>
+              <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">Asunto</span>
               <input
                 type="text"
                 value={asunto}
@@ -176,13 +176,13 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
                   tocado.current = true;
                   setAsunto(e.target.value);
                 }}
-                className="h-11 w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-3.5 text-[14px] text-[#2A2118] dark:text-[#F9FAFB] outline-none transition focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
+                className="h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-3.5 text-[14px] text-[var(--gm-texto)] outline-none transition focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
               />
             </label>
           )}
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF]">Mensaje</span>
+            <span className="text-[12px] font-medium text-[var(--gm-texto-medio)]">Mensaje</span>
             <textarea
               rows={canal === 'email' ? 9 : 8}
               value={texto}
@@ -191,12 +191,12 @@ export default function ModalMensaje({ lead, canalInicial = 'whatsapp', plantill
                 setTexto(e.target.value);
               }}
               placeholder="Escribí el mensaje o elegí una respuesta rápida."
-              className="w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-3.5 py-2.5 text-[14px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB] outline-none transition placeholder:text-[#B0A697] dark:text-[#6B7280] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
+              className="w-full rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-3.5 py-2.5 text-[14px] leading-relaxed text-[var(--gm-texto)] outline-none transition placeholder:text-[var(--gm-texto-tenue)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10"
             />
           </label>
 
-          <p className="mt-2 text-[12px] text-[#948A7C]">
-            Destino: <span className="text-[#6E6559] dark:text-[#9CA3AF]">{destino || '—'}</span>
+          <p className="mt-2 text-[12px] text-[var(--gm-texto-suave)]">
+            Destino: <span className="text-[var(--gm-texto-medio)]">{destino || '—'}</span>
             {!destino && ' · cargale el dato al lead para poder escribirle.'}
           </p>
         </div>

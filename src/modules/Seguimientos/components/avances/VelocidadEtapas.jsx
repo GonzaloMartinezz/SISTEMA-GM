@@ -22,20 +22,20 @@ export default function VelocidadEtapas({ etapas }) {
       {etapas.map((e) => (
         <li key={e.id}>
           <div className="flex items-baseline justify-between gap-3">
-            <span className="flex items-center gap-2 text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
+            <span className="flex items-center gap-2 text-[13px] font-medium text-[var(--gm-texto)]">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: e.color }} />
               {e.nombre}
             </span>
             {e.promedio == null ? (
-              <span className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">sin datos todavía</span>
+              <span className="text-[12px] text-[var(--gm-texto-tenue)]">sin datos todavía</span>
             ) : (
-              <span className="whitespace-nowrap text-[13px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
+              <span className="whitespace-nowrap text-[13px] font-semibold text-[var(--gm-texto)]">
                 {e.promedio.toFixed(1)} días
               </span>
             )}
           </div>
 
-          <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[#F3EDE4] dark:bg-[#121212]">
+          <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
             {e.promedio != null && (
               <span
                 className="block h-full rounded-full"
@@ -44,7 +44,7 @@ export default function VelocidadEtapas({ etapas }) {
             )}
           </div>
 
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] text-[var(--gm-texto-tenue)]">
             {e.promedio == null ? (
               <span>
                 {e.enCurso} {e.enCurso === 1 ? 'venta adentro' : 'ventas adentro'}, ninguna salió
@@ -58,7 +58,7 @@ export default function VelocidadEtapas({ etapas }) {
                 <span>·</span>
                 <span>{e.enCurso} adentro hoy</span>
                 {e.demorados > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[#B4551A]">
+                  <span className="inline-flex items-center gap-1 text-[var(--gm-acento)]">
                     <AlertTriangle size={11} />
                     {e.demorados} {e.demorados === 1 ? 'pasada' : 'pasadas'} de tiempo
                   </span>

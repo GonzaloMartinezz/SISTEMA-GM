@@ -18,6 +18,7 @@ import {
   crearCliente,
   actualizarCliente,
   eliminarCliente,
+  importarClientesMasivo,
 } from '../../../shared/cuentas/cuentasService';
 import { listarLeads } from '../../Seguimientos/services/leadsService';
 import { listarEventos } from '../../../shared/agenda/agendaService';
@@ -117,6 +118,14 @@ export function ClientesProvider({ children }) {
     return true;
   }, []);
 
+  const importarClientes = useCallback(async (nuevosClientes) => {
+    const cantidad = await importarClientesMasivo(nuevosClientes);
+    if (cantidad > 0) {
+      await cargar();
+    }
+    return cantidad;
+  }, [cargar]);
+
   // -------------------------------------------------------------------------
   // Derivados que usan varias secciones a la vez
   // -------------------------------------------------------------------------
@@ -151,10 +160,11 @@ export function ClientesProvider({ children }) {
       altaCliente,
       editarCliente,
       bajaCliente,
+      importarClientes,
     }),
     [
       clientes, leads, mensajes, eventos, cargando, error, ultimoCambio,
-      porRubro, indiceClientes, cargar, altaCliente, editarCliente, bajaCliente,
+      porRubro, indiceClientes, cargar, altaCliente, editarCliente, bajaCliente, importarClientes,
     ]
   );
 

@@ -54,25 +54,25 @@ export const TEMA_CLARO = {
  * porque un naranja claro con letra blanca encima no se lee bien.
  */
 export const TEMA_OSCURO = {
-  fondo: '#181310',
-  superficie: '#211A14',
-  superficieSuave: '#271F17',
-  superficieFuerte: '#31271C',
-  borde: '#3B2E21',
-  bordeFuerte: '#4C3B29',
-  divisor: '#2C2319',
-  texto: '#F3EAE0',          // 14.4:1 sobre superficie
-  textoMedio: '#C9BBA9',     // 9.1:1
-  textoSuave: '#A2937E',     // 5.7:1
-  textoTenue: '#7C6E5B',
-  acento: '#E8935A',         // terracota aclarado para leerse sobre oscuro
-  acentoFuerte: '#F2AC78',
-  acentoSuaveBg: '#3B2A1A',
-  sobreAcento: '#241505',    // texto oscuro sobre el acento claro: 7.4:1
-  overlay: 'rgba(0,0,0,0.55)',
-  sombraPanel: '0 1px 2px rgba(0,0,0,0.30), 0 8px 24px -14px rgba(0,0,0,0.55)',
-  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.60)',
-  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.45)',
+  fondo: '#0F172A',           // Deep Slate (azul marino muy oscuro)
+  superficie: '#1E293B',      // Slate un poco más claro para tarjetas
+  superficieSuave: '#334155',
+  superficieFuerte: '#475569',
+  borde: '#334155',
+  bordeFuerte: '#475569',
+  divisor: '#1E293B',
+  texto: '#F8FAFC',          // Blanco ahumado muy nítido
+  textoMedio: '#CBD5E1',
+  textoSuave: '#94A3B8',
+  textoTenue: '#64748B',
+  acento: '#FFFFFF',         // Detalles en blanco brillante
+  acentoFuerte: '#E2E8F0',
+  acentoSuaveBg: '#1E293B',
+  sobreAcento: '#0F172A',    // Texto oscuro sobre acento blanco
+  overlay: 'rgba(15, 23, 42, 0.75)',
+  sombraPanel: '0 1px 2px rgba(0,0,0,0.30), 0 8px 24px -14px rgba(0,0,0,0.65)',
+  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.70)',
+  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.55)',
 };
 
 /** Compatibilidad con todo lo que ya existe: GM sigue siendo el tema claro. */
@@ -210,6 +210,50 @@ export const RUBRO_TONO = {
   Odontología: 'azul',
   Veterinaria: 'aqua',
   'Diagnóstico por Imagen': 'naranja',
+};
+
+export const TEMA_VERDE_CLARO = {
+  fondo: '#FFFFFF',
+  superficie: '#F9FAFB',
+  superficieSuave: '#F3F4F6',
+  superficieFuerte: '#E5E7EB',
+  borde: '#E5E7EB',
+  bordeFuerte: '#D1D5DB',
+  divisor: '#E5E7EB',
+  texto: '#000000',
+  textoMedio: '#4B5563',
+  textoSuave: '#6B7280',
+  textoTenue: '#9CA3AF',
+  acento: '#10B981',
+  acentoFuerte: '#059669',
+  acentoSuaveBg: '#D1FAE5',
+  sobreAcento: '#FFFFFF',
+  overlay: 'rgba(0,0,0,0.35)',
+  sombraPanel: '0 1px 2px rgba(0,0,0,0.05), 0 8px 24px -14px rgba(0,0,0,0.14)',
+  sombraModal: '0 24px 64px -16px rgba(16,24,40,0.35)',
+  sombraTooltip: '0 8px 24px -8px rgba(16,24,40,0.18)',
+};
+
+export const TEMA_VERDE_OSCURO = {
+  fondo: '#000000',
+  superficie: '#111111',
+  superficieSuave: '#1A1A1A',
+  superficieFuerte: '#262626',
+  borde: '#333333',
+  bordeFuerte: '#4D4D4D',
+  divisor: '#262626',
+  texto: '#FFFFFF',
+  textoMedio: '#E5E5E5',
+  textoSuave: '#A3A3A3',
+  textoTenue: '#737373',
+  acento: '#10B981',
+  acentoFuerte: '#34D399',
+  acentoSuaveBg: '#064E3B',
+  sobreAcento: '#000000',
+  overlay: 'rgba(0,0,0,0.85)',
+  sombraPanel: '0 1px 2px rgba(0,0,0,0.50), 0 8px 24px -14px rgba(0,0,0,0.85)',
+  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.90)',
+  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.75)',
 };
 
 export default GM;

@@ -33,7 +33,7 @@ export default function RutaDelDia({ ruta }) {
       {/* ------------------------------ resumen ---------------------------- */}
       {/* En celular se apila en una columna con líneas horizontales; desde sm
           vuelve a las tres columnas lado a lado con líneas verticales. */}
-      <div className="grid grid-cols-1 divide-y divide-[#F0EAE1] rounded-xl bg-[#FCFAF6] py-1 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-3">
+      <div className="grid grid-cols-1 divide-y divide-[#F0EAE1] rounded-xl bg-[var(--gm-superficie-suave)] py-1 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-3">
         <Cifra titulo="Paradas" valor={ruteables.length} />
         <Cifra titulo="Distancia" valor={`${totalKm.toFixed(1)} km`} detalle={`vuelta incluida (${vueltaKm.toFixed(1)} km)`} />
         <Cifra titulo="Manejo" valor={`${minutos} min`} detalle="a 28 km/h de promedio" />
@@ -51,10 +51,10 @@ export default function RutaDelDia({ ruta }) {
       {/* ------------------------------- paradas --------------------------- */}
       <ol className="space-y-0">
         <li className="flex items-center gap-3 py-2">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#F3EDE4] text-[11px] font-semibold text-[#6E6559]">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--gm-superficie-fuerte)] text-[11px] font-semibold text-[var(--gm-texto-medio)]">
             <MapPin size={13} />
           </span>
-          <span className="text-[13px] text-[#6E6559]">{base.nombre}</span>
+          <span className="text-[13px] text-[var(--gm-texto-medio)]">{base.nombre}</span>
         </li>
 
         {optimizada.orden.map((p, i) => (
@@ -67,14 +67,14 @@ export default function RutaDelDia({ ruta }) {
               {i + 1}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-medium text-[#2A2118]">
+              <p className="truncate text-[13px] font-medium text-[var(--gm-texto)]">
                 {p.cliente || p.titulo}
               </p>
-              <p className="truncate text-[11px] text-[#948A7C]">{p.direccion || 'Sin dirección'}</p>
+              <p className="truncate text-[11px] text-[var(--gm-texto-suave)]">{p.direccion || 'Sin dirección'}</p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-[12px] tabular-nums text-[#6E6559]">{p.distancia.toFixed(1)} km</p>
-              <p className="text-[11px] tabular-nums text-[#B0A697]">{p.hora}</p>
+              <p className="text-[12px] tabular-nums text-[var(--gm-texto-medio)]">{p.distancia.toFixed(1)} km</p>
+              <p className="text-[11px] tabular-nums text-[var(--gm-texto-tenue)]">{p.hora}</p>
             </div>
           </li>
         ))}
@@ -108,9 +108,9 @@ export default function RutaDelDia({ ruta }) {
 function Cifra({ titulo, valor, detalle }) {
   return (
     <div className="px-3 py-2 text-center sm:py-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">{titulo}</p>
-      <p className="mt-1 text-[18px] leading-none text-[#2A2118]">{valor}</p>
-      {detalle && <p className="mt-1 text-[10px] leading-tight text-[#B0A697]">{detalle}</p>}
+      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-tenue)]">{titulo}</p>
+      <p className="mt-1 text-[18px] leading-none text-[var(--gm-texto)]">{valor}</p>
+      {detalle && <p className="mt-1 text-[10px] leading-tight text-[var(--gm-texto-tenue)]">{detalle}</p>}
     </div>
   );
 }

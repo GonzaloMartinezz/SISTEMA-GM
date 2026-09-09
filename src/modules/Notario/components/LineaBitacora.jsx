@@ -49,9 +49,9 @@ export default function LineaBitacora({ grupos, resolver, onHecho }) {
       {grupos.map(({ dia, hechos }) => (
         <section key={dia}>
           <header className="mb-3 flex items-baseline gap-3">
-            <h3 className="text-[13px] font-semibold capitalize text-[#2A2118] dark:text-[#F9FAFB]">{diaLargo(dia)}</h3>
+            <h3 className="text-[13px] font-semibold capitalize text-[var(--gm-texto)]">{diaLargo(dia)}</h3>
             <span className="h-px flex-1 bg-[#F0EAE1]" />
-            <span className="text-[11px] text-[#B0A697] dark:text-[#6B7280]">
+            <span className="text-[11px] text-[var(--gm-texto-tenue)]">
               {hechos.length} {hechos.length === 1 ? 'movimiento' : 'movimientos'}
             </span>
           </header>
@@ -76,9 +76,9 @@ export default function LineaBitacora({ grupos, resolver, onHecho }) {
                     <clase.icono size={13} />
                   </span>
 
-                  <div className="rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] px-4 py-3 transition hover:border-[#D5CABA]">
+                  <div className="rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-4 py-3 transition hover:border-[var(--gm-borde-fuerte)]">
                     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                      <span className="text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{h.titulo}</span>
+                      <span className="text-[14px] font-medium text-[var(--gm-texto)]">{h.titulo}</span>
                       <Chip tono={modulo.tono}>
                         {modulo.codigo} {modulo.nombre}
                       </Chip>
@@ -90,13 +90,13 @@ export default function LineaBitacora({ grupos, resolver, onHecho }) {
                           onClick={onHecho ? () => onHecho(h) : undefined}
                         />
                       )}
-                      <span className="ml-auto shrink-0 text-[11px] tabular-nums text-[#B0A697] dark:text-[#6B7280]">
+                      <span className="ml-auto shrink-0 text-[11px] tabular-nums text-[var(--gm-texto-tenue)]">
                         {hora || 'sin hora'}
                       </span>
                     </div>
 
                     {h.detalle && (
-                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-[#948A7C]">
+                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-[var(--gm-texto-suave)]">
                         {h.detalle}
                       </p>
                     )}

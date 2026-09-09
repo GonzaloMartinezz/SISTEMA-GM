@@ -86,10 +86,10 @@ export default function MesView() {
         <Panel
           titulo={<span className="capitalize">{mesLargo(fecha)}</span>}
           bajada="Tocá un día para verlo al costado. Arrastrá un compromiso a otro día para moverlo."
-          acciones={<CalendarDays size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<CalendarDays size={16} className="text-[var(--gm-texto-tenue)]" />}
         >
           {cargando ? (
-            <p className="py-16 text-center text-[14px] text-[#948A7C]">Cargando el mes…</p>
+            <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando el mes…</p>
           ) : (
             <CalendarioMes
               celdas={celdas}
@@ -136,7 +136,7 @@ export default function MesView() {
                     <button
                       type="button"
                       onClick={() => setAbierto(ev)}
-                      className={`flex w-full items-start gap-3 px-5 py-3 text-left transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] ${
+                      className={`flex w-full items-start gap-3 px-5 py-3 text-left transition hover:bg-[var(--gm-superficie-suave)]  ${
                         cerrado ? 'opacity-60' : ''
                       }`}
                     >
@@ -147,18 +147,18 @@ export default function MesView() {
                         <tipo.icono size={14} />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] tabular-nums text-[#948A7C]">
+                        <p className="text-[11px] tabular-nums text-[var(--gm-texto-suave)]">
                           {ev.hora}–{horaFin(ev)}
                         </p>
                         <p
-                          className={`truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB] ${
+                          className={`truncate text-[13px] font-medium text-[var(--gm-texto)]  ${
                             cerrado ? 'line-through' : ''
                           }`}
                         >
                           {ev.titulo}
                         </p>
                         {ev.cliente && (
-                          <p className="truncate text-[12px] text-[#948A7C]">{ev.cliente}</p>
+                          <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">{ev.cliente}</p>
                         )}
                       </div>
                     </button>

@@ -150,7 +150,7 @@ export default function HoyView() {
           }
         >
           {cargando ? (
-            <p className="py-16 text-center text-[14px] text-[#948A7C]">Cargando la jornada…</p>
+            <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando la jornada…</p>
           ) : (
             <JornadaHoras
               fecha={fecha}
@@ -180,24 +180,24 @@ export default function HoyView() {
               <button
                 type="button"
                 onClick={() => setAbierto(siguiente)}
-                className="w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D] p-4 text-left transition hover:border-[#D5CABA] hover:bg-white dark:hover:bg-[#1E1E1E]"
+                className="w-full rounded-xl border border-[var(--gm-borde)] bg-[var(--gm-superficie-suave)] p-4 text-left transition hover:border-[var(--gm-borde-fuerte)] hover:bg-[var(--gm-superficie)]"
               >
                 <div className="flex items-center gap-2">
                   {React.createElement(getTipo(siguiente.tipo).icono, {
                     size: 14,
                     style: { color: getTipo(siguiente.tipo).color },
                   })}
-                  <span className="text-[12px] tabular-nums text-[#6E6559] dark:text-[#9CA3AF]">
+                  <span className="text-[12px] tabular-nums text-[var(--gm-texto-medio)]">
                     {siguiente.hora}–{horaFin(siguiente)}
                   </span>
-                  <ArrowRight size={13} className="ml-auto text-[#B0A697] dark:text-[#6B7280]" />
+                  <ArrowRight size={13} className="ml-auto text-[var(--gm-texto-tenue)]" />
                 </div>
-                <p className="mt-2 text-[15px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">{siguiente.titulo}</p>
+                <p className="mt-2 text-[15px] font-semibold text-[var(--gm-texto)]">{siguiente.titulo}</p>
                 {siguiente.cliente && (
-                  <p className="mt-0.5 text-[13px] text-[#948A7C]">{siguiente.cliente}</p>
+                  <p className="mt-0.5 text-[13px] text-[var(--gm-texto-suave)]">{siguiente.cliente}</p>
                 )}
                 {siguiente.nota && (
-                  <p className="mt-2 rounded-lg bg-white dark:bg-[#1E1E1E] px-3 py-2 text-[12px] leading-relaxed text-[#6E6559] dark:text-[#9CA3AF]">
+                  <p className="mt-2 rounded-lg bg-[var(--gm-superficie)] px-3 py-2 text-[12px] leading-relaxed text-[var(--gm-texto-medio)]">
                     {siguiente.nota}
                   </p>
                 )}
@@ -232,15 +232,15 @@ export default function HoyView() {
               <ul className="divide-y divide-[#F4EFE7]">
                 {pendientes.slice(0, 4).map((p) => (
                   <li key={p.clave} className="px-5 py-3">
-                    <p className="truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{p.titular}</p>
-                    <p className="truncate text-[12px] text-[#948A7C]">{p.motivo}</p>
+                    <p className="truncate text-[13px] font-medium text-[var(--gm-texto)]">{p.titular}</p>
+                    <p className="truncate text-[12px] text-[var(--gm-texto-suave)]">{p.motivo}</p>
                   </li>
                 ))}
               </ul>
-              <div className="border-t border-[#F0EAE1] dark:border-[#333333] px-5 py-3">
-                <p className="text-[12px] text-[#948A7C]">
+              <div className="border-t border-[#F0EAE1] px-5 py-3">
+                <p className="text-[12px] text-[var(--gm-texto-suave)]">
                   {pendientes.length} pendientes en total · están todos en la sección{' '}
-                  <span className="text-[#6E6559] dark:text-[#9CA3AF]">Pendientes y Alertas</span>.
+                  <span className="text-[var(--gm-texto-medio)]">Pendientes y Alertas</span>.
                 </p>
               </div>
             </Panel>

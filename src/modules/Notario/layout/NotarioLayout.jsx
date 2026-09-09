@@ -14,6 +14,7 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
+      idModulo="notario"
       numero={6}
       nombre="Notario 360°"
       icono={ScanFace}
