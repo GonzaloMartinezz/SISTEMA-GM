@@ -62,7 +62,7 @@ export default function ListaMensajes({ mensajes = [] }) {
               {tituloDia(dia)}
             </h3>
             <span className="h-px flex-1 bg-[#EFE7DB]" />
-            <span className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{items.length}</span>
+            <span className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{items.length}</span>
           </div>
 
           <ul className="space-y-3">
@@ -72,7 +72,7 @@ export default function ListaMensajes({ mensajes = [] }) {
               return (
                 <li
                   key={m.id}
-                  className="flex gap-3.5 rounded-2xl border border-[#EFE7DB] bg-[#FFFFFF] dark:bg-[#1E1E1E] p-4 transition hover:border-[#D5CABA]"
+                  className="flex gap-3.5 rounded-2xl border border-[#EFE7DB] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] p-4 transition hover:border-[#D5CABA]"
                 >
                   <Avatar nombre={m.cliente} tamano="md" />
 
@@ -91,7 +91,7 @@ export default function ListaMensajes({ mensajes = [] }) {
                         {recibido ? <ArrowDownLeft size={13} /> : <ArrowUpRight size={13} />}
                         {recibido ? 'Recibido' : 'Enviado'}
                       </span>
-                      <span className="ml-auto shrink-0 text-[12px] text-[#B0A697] dark:text-[#6B7280]">{hora(m.fecha)}</span>
+                      <span className="ml-auto shrink-0 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{hora(m.fecha)}</span>
                     </div>
 
                     {m.asunto && (
@@ -99,7 +99,7 @@ export default function ListaMensajes({ mensajes = [] }) {
                     )}
                     <p className="mt-1 text-[13px] leading-relaxed text-[#6E6559] dark:text-[#9CA3AF]">{m.texto}</p>
 
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                       {m.plantilla && <span>Plantilla: {m.plantilla}</span>}
                       {m.operador && <span>Operador: {m.operador}</span>}
                       {!recibido && (

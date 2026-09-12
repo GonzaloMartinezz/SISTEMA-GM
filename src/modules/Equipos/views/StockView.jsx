@@ -113,7 +113,7 @@ export default function StockView() {
         bajada={`${filtrados.length} de ${equipos.length} equipos · los botones de la derecha registran salida, ingreso y llegada`}
         cuerpoClassName="p-0"
       >
-        <div className="flex flex-col gap-4 border-b border-[#F0EAE1] dark:border-[#333333] px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4 border-b border-[var(--gm-borde-fuerte)] dark:border-[#333333] px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <FiltrosCategoria rubros={porRubro} valor={rubro} onChange={setRubro} total={equipos.length} />
             <button
@@ -122,7 +122,7 @@ export default function StockView() {
               className={`rounded-full border px-3.5 py-2 text-[13px] transition ${
                 soloCriticos
                   ? 'border-[#B4551A] bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-                  : 'border-[#E8E0D5] dark:border-[#333333] bg-[#FFFFFF] dark:bg-[#1E1E1E] text-[#6E6559] dark:text-[#9CA3AF] hover:border-[#D5CABA]'
+                  : 'border-[var(--gm-borde)] dark:border-[#333333] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] text-[#6E6559] dark:text-[#9CA3AF] hover:border-[#D5CABA]'
               }`}
             >
               Sólo lo que falta

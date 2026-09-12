@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · MONEDA Y TIPO DE CAMBIO
+// SISTEMA GM · M-09 TESORERÍA · MONEDA Y TIPO DE CAMBIO
 // ----------------------------------------------------------------------------
 // Vive en el encabezado del módulo porque afecta a las cuatro secciones a la
 // vez. Cambiar la moneda no toca la base: todo se guarda siempre en dólares y
@@ -14,7 +14,7 @@ export default function MonedaControl() {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333]">
+      <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)] dark:border-[#333333]">
         {['USD', 'ARS'].map((m) => (
           <button
             key={m}
@@ -23,7 +23,7 @@ export default function MonedaControl() {
             className={`px-3 py-1.5 text-[12px] font-semibold transition ${
               moneda === m
                 ? 'bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-                : 'bg-[#FFFFFF] dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+                : 'bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
             }`}
           >
             {m}
@@ -32,7 +32,7 @@ export default function MonedaControl() {
       </div>
 
       {moneda === 'ARS' && (
-        <span className="hidden text-[12px] text-[#B0A697] dark:text-[#6B7280] sm:inline">
+        <span className="hidden text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280] sm:inline">
           a ${tipoCambio.toLocaleString('es-AR')}
         </span>
       )}

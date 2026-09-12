@@ -18,7 +18,7 @@ import EstadoVacio from './EstadoVacio';
 export default function Tabla({
   columnas = [],
   filas = [],
-  claveFila = (f, i) => f.id ?? i,
+  claveFila = (f, i) => f?.id ?? i,
   onFilaClick,
   filaActiva,
   orden,
@@ -28,23 +28,26 @@ export default function Tabla({
   vacioIcono,
   alto = 'max-h-[560px]',
 }) {
-  if (!filas.length) {
+  const safeFilas = Array.isArray(filas) ? filas : [];
+  const safeColumnas = Array.isArray(columnas) ? columnas : [];
+
+  if (!safeFilas.length) {
     return <EstadoVacio titulo={vacioTitulo} texto={vacioTexto} icono={vacioIcono} />;
   }
 
-  const [primeraCol, ...resto] = columnas;
+  const [primeraCol, ...resto] = safeColumnas;
   // Una columna sin título (típicamente los íconos de acción al final de la
   // fila) no tiene sentido como par etiqueta/valor en la tarjeta: se separa y
   // se muestra como una fila de acciones a todo lo ancho, sin etiqueta.
-  const restoCols = resto.filter((c) => c.titulo);
-  const accionesCols = resto.filter((c) => !c.titulo);
+  const restoCols = resto.filter((c) => c?.titulo);
+  const accionesCols = resto.filter((c) => !c?.titulo);
 
   return (
     <>
       {/* Celular: una tarjeta por fila — la primera columna es el encabezado,
           el resto se apila como etiqueta/valor. */}
       <div className={`space-y-2.5 overflow-auto sm:hidden ${alto}`}>
-        {filas.map((f, i) => {
+        {safeFilas.map((f, i) => {
           const k = claveFila(f, i);
           const activa = filaActiva != null && filaActiva === k;
           return (
@@ -99,7 +102,7 @@ export default function Tabla({
         <table className="w-full min-w-[720px] border-collapse text-left">
           <thead className="sticky top-0 z-10 bg-[var(--gm-superficie-suave)]">
             <tr>
-              {columnas.map((c) => {
+              {safeColumnas.map((c) => {
                 const ordenable = !!c.ordenable && !!onOrdenar;
                 const activo = orden?.clave === c.clave;
                 return (
@@ -127,7 +130,7 @@ export default function Tabla({
             </tr>
           </thead>
           <tbody>
-            {filas.map((f, i) => {
+            {safeFilas.map((f, i) => {
               const k = claveFila(f, i);
               const activa = filaActiva != null && filaActiva === k;
               return (
@@ -138,7 +141,7 @@ export default function Tabla({
                     onFilaClick ? 'cursor-pointer' : ''
                   } ${activa ? 'bg-[var(--gm-acento-suave-bg)]' : 'hover:bg-[var(--gm-superficie-suave)]'}`}
                 >
-                  {columnas.map((c) => (
+                  {safeColumnas.map((c) => (
                     <td
                       key={c.clave}
                       className="px-4 py-3.5 align-middle text-[14px] text-[var(--gm-texto)]"

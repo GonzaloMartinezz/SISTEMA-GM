@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · NOTAS
+// SISTEMA GM · M-05 NOTARIO 360 · NOTAS
 // ----------------------------------------------------------------------------
 // El cuaderno del sistema. Una nota puede hablar de un cliente, de un equipo,
 // de una venta en curso, de una cuenta, de un gasto fijo, de una entrega o de

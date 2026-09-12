@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 · DATOS DE DEMOSTRACIÓN
+// SISTEMA GM · M-06 · DATOS DE DEMOSTRACIÓN
 // ----------------------------------------------------------------------------
 // Sólo se usan si el sistema corre sin Supabase configurado. Las coordenadas
 // son reales de Tucumán: aunque sea una demo, los puntos caen donde tienen que

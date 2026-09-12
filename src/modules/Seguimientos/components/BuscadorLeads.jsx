@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · BUSCADOR DEL ENCABEZADO
+// SISTEMA GM · M-03 · BUSCADOR DEL ENCABEZADO
 // ----------------------------------------------------------------------------
 // Busca por titular, negocio, equipo, zona o código. En pantallas chicas se
 // achica pero no desaparece: es la forma más rápida de llegar a un lead.

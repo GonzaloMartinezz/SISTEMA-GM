@@ -32,7 +32,7 @@ export default {
         crmDarkText: '#1F2937',
       },
       fontFamily: {
-        sans: ['"Montserrat"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Inter"', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'neon-cyan': '0 0 10px rgba(0, 255, 204, 0.5), 0 0 20px rgba(0, 255, 204, 0.3)',

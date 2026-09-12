@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · AVANCES
+// SISTEMA GM · M-03 SEGUIMIENTOS · AVANCES
 // ----------------------------------------------------------------------------
 // El módulo mirado en el tiempo, no en el momento. Cuatro preguntas:
 //   ¿qué se movió?         -> la fila de estadísticas del período
@@ -170,7 +170,7 @@ export default function AvancesView() {
             texto={`Todas las oportunidades abiertas se movieron en los últimos ${DIAS_ESTANCADO} días.`}
           />
         ) : (
-          <ul className="divide-y divide-[#F4EFE7]">
+          <ul className="divide-y divide-[var(--gm-divisor)]">
             {quietos.map((q) => (
               <li key={q.codigo} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5">
                 <span

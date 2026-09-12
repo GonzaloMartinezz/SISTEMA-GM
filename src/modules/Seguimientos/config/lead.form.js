@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · FORMULARIO DEL LEAD
+// SISTEMA GM · M-03 SEGUIMIENTOS · FORMULARIO DEL LEAD
 // ----------------------------------------------------------------------------
 // Esquema para FormularioGm. Los campos son los mismos de siempre; cambia la
 // forma de declararlos (clave/etiqueta/texto) porque el formulario compartido

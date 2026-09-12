@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · CAPITAL Y ROI
+// SISTEMA GM · M-09 TESORERÍA · CAPITAL Y ROI
 // ----------------------------------------------------------------------------
 // Cuánta plata hay y de quién es. La reserva de impuestos se muestra aparte
 // porque no es capital disponible: está comprometida aunque todavía esté en la
@@ -23,7 +23,7 @@ export default function PanelCapital({ capital, resultadoAcumulado, roiPct, enMo
     <div className="space-y-5">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {CAJAS.map((c) => (
-          <div key={c.clave} className="rounded-xl border border-[#E8E0D5] dark:border-[#333333] p-4">
+          <div key={c.clave} className="rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] p-4">
             <div className="flex items-center gap-2">
               <span
                 className="grid h-8 w-8 place-items-center rounded-lg"
@@ -36,7 +36,7 @@ export default function PanelCapital({ capital, resultadoAcumulado, roiPct, enMo
             <p className="mt-3 text-[19px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">
               {enMoneda(capital[c.clave])}
             </p>
-            <p className="mt-0.5 text-[12px] text-[#B0A697] dark:text-[#6B7280]">{c.detalle}</p>
+            <p className="mt-0.5 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{c.detalle}</p>
           </div>
         ))}
       </div>
@@ -47,7 +47,7 @@ export default function PanelCapital({ capital, resultadoAcumulado, roiPct, enMo
           <span className="text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">Capital total en la cuenta</span>
           <span className="text-[14px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">{enMoneda(total)}</span>
         </div>
-        <div className="flex h-2.5 overflow-hidden rounded-full bg-[#F0EAE1]">
+        <div className="flex h-2.5 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
           {CAJAS.map((c) => (
             <div
               key={c.clave}

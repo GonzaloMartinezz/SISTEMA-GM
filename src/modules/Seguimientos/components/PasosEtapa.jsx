@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · RECORRIDO DE LA VENTA (stepper)
+// SISTEMA GM · M-03 · RECORRIDO DE LA VENTA (stepper)
 // ----------------------------------------------------------------------------
 // Cinco nodos, uno por etapa. Lo recorrido se pinta con la rampa; lo que falta
 // queda hueco. De un vistazo se ve no sólo dónde está la venta sino cuánto

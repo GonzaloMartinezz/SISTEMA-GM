@@ -28,7 +28,7 @@ function Dato({ etiqueta, valor }) {
   if (!valor && valor !== 0) return null;
   return (
     <div className="min-w-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">{etiqueta}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">{etiqueta}</p>
       <p className="mt-1 break-words text-[14px] text-[#2A2118]">{valor}</p>
     </div>
   );
@@ -62,7 +62,7 @@ export default function FichaTecnica({ equipo, specs = [], onGuardarSpec, onBorr
         <p className="mt-1 text-[14px] text-[#6E6559]">
           {[equipo.marca, equipo.modelo].filter(Boolean).join(' ') || 'Sin marca cargada'}
         </p>
-        <p className="mt-0.5 text-[12px] text-[#B0A697]">{equipo.codigo} · {equipo.tipo}</p>
+        <p className="mt-0.5 text-[12px] text-[var(--gm-texto-medio)]">{equipo.codigo} · {equipo.tipo}</p>
       </div>
 
       {/* ------------------------- Datos comerciales ------------------------- */}
@@ -83,7 +83,7 @@ export default function FichaTecnica({ equipo, specs = [], onGuardarSpec, onBorr
         </div>
 
         {specs.length ? (
-          <ul className="divide-y divide-[#F4EFE7] rounded-xl border border-[#E8E0D5]">
+          <ul className="divide-y divide-[var(--gm-divisor)] rounded-xl border border-[var(--gm-borde)]">
             {specs.map((s) => (
               <li key={s.id} className="group flex items-center gap-3 px-4 py-3">
                 <GripVertical size={14} className="shrink-0 text-[#D5CABA]" />

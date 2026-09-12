@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · CUENTAS
+// SISTEMA GM · M-05 NOTARIO 360 · CUENTAS
 // ----------------------------------------------------------------------------
 // El padrón financiero, que es de donde venía este módulo. Se conserva porque
 // es información real que ya estaba cargada; lo que cambia es el diseño y que
@@ -130,7 +130,7 @@ export default function CuentasView() {
             {n}
           </span>
         ) : (
-          <span className="text-[12px] text-[#C6BCAC]">—</span>
+          <span className="text-[12px] text-[var(--gm-texto-suave)]">—</span>
         );
       },
     },
@@ -200,7 +200,7 @@ export default function CuentasView() {
             </dl>
 
             {activa.avisos?.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2 border-t border-[#F0EAE1] pt-4">
+              <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--gm-borde-fuerte)] pt-4">
                 {activa.avisos.map((a) => (
                   <Chip key={a} tono="amarillo">
                     {a}
@@ -226,7 +226,7 @@ export default function CuentasView() {
                   texto="Lo que sepas de ella y no esté en ningún campo, anotalo en la sección Notas eligiéndola como entidad."
                 />
               ) : (
-                <ul className="divide-y divide-[#F4EFE7]">
+                <ul className="divide-y divide-[var(--gm-divisor)]">
                   {suyas.map((n) => (
                     <li key={n.id} className="px-6 py-3.5">
                       {n.titulo && (

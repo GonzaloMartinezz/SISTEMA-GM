@@ -39,9 +39,9 @@ export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
             key={e.id}
             className="flex gap-4 rounded-2xl border border-[#EFE7DB] p-4 transition hover:border-[#D5CABA]"
           >
-            <div className="w-14 shrink-0 border-r border-[#F0EAE1] dark:border-[#333333] pr-3 text-center">
+            <div className="w-14 shrink-0 border-r border-[var(--gm-borde-fuerte)] dark:border-[#333333] pr-3 text-center">
               <p className="text-[18px] font-semibold leading-none text-[#2A2118] dark:text-[#F9FAFB]">{e.hora}</p>
-              <p className="mt-1.5 text-[11px] text-[#B0A697] dark:text-[#6B7280]">{e.duracion || 30}'</p>
+              <p className="mt-1.5 text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{e.duracion || 30}'</p>
             </div>
 
             <div className="min-w-0 flex-1">
@@ -50,10 +50,10 @@ export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
                 <Chip tono={TONO_ESTADO[e.estado] || 'gris'}>{e.estado}</Chip>
               </div>
               <p className="mt-1 flex items-center gap-1.5 truncate text-[13px] text-[#6E6559] dark:text-[#9CA3AF]">
-                <Icono size={13} className="shrink-0 text-[#B0A697] dark:text-[#6B7280]" />
+                <Icono size={13} className="shrink-0 text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />
                 {e.cliente}
               </p>
-              {e.direccion && <p className="mt-0.5 truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">{e.direccion}</p>}
+              {e.direccion && <p className="mt-0.5 truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{e.direccion}</p>}
               {e.nota && <p className="mt-2 text-[13px] leading-relaxed text-[#6E6559] dark:text-[#9CA3AF]">{e.nota}</p>}
             </div>
 

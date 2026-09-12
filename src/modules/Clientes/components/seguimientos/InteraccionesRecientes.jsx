@@ -37,7 +37,7 @@ export default function InteraccionesRecientes({ leads = [], onVerLead }) {
           <Avatar nombre={l.clinica || `${l.nombre} ${l.apellido}`} tamano="sm" />
           <div className="min-w-0">
             <p className="truncate font-medium text-[#2A2118] dark:text-[#F9FAFB]">{l.clinica}</p>
-            <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+            <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
               {l.apellido}, {l.nombre}
             </p>
           </div>
@@ -50,7 +50,7 @@ export default function InteraccionesRecientes({ leads = [], onVerLead }) {
       render: (l) => (
         <div className="min-w-0">
           <p className="truncate text-[#6E6559] dark:text-[#9CA3AF]">{l.equipo || '—'}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{usd(l.montoUsd)}</p>
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{usd(l.montoUsd)}</p>
         </div>
       ),
     },
@@ -70,7 +70,7 @@ export default function InteraccionesRecientes({ leads = [], onVerLead }) {
       render: (l) => (
         <div className="min-w-0">
           <p className="text-[#6E6559] dark:text-[#9CA3AF]">{l.ultimoContacto || 'sin registrar'}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">hace {l.diasSinContacto} días</p>
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">hace {l.diasSinContacto} días</p>
         </div>
       ),
     },

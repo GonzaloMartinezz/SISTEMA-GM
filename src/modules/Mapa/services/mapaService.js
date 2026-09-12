@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · ACCESO A DATOS
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · ACCESO A DATOS
 // ----------------------------------------------------------------------------
 // Dos fuentes:
 //   gm_v_mapa_clientes -> el punto y su ficha completa (lectura)

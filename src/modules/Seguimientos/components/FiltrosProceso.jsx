@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · FILTROS DE PROCESO
+// SISTEMA GM · M-03 · FILTROS DE PROCESO
 // ----------------------------------------------------------------------------
 // Los chips de etapa apagan columnas del tablero; el de prioridad recorta la
 // cartera de verdad. Es una diferencia real y por eso están separados por un
@@ -37,7 +37,7 @@ export default function FiltrosProceso({ conteo = {} }) {
             style={
               activo
                 ? { backgroundColor: `${e.color}1F`, borderColor: `${e.color}66`, color: '#4A3520' }
-                : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#B0A697' }
+                : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: 'var(--gm-texto-medio)' }
             }
           >
             <span
@@ -46,13 +46,13 @@ export default function FiltrosProceso({ conteo = {} }) {
             />
             {e.nombre}
             {conteo[e.id] != null && (
-              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>{conteo[e.id]}</span>
+              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[var(--gm-texto-suave)]'}>{conteo[e.id]}</span>
             )}
           </button>
         );
       })}
 
-      <span className="mx-1 hidden h-5 w-px bg-[#E8E0D5] sm:block" aria-hidden="true" />
+      <span className="mx-1 hidden h-5 w-px bg-[var(--gm-borde)] sm:block" aria-hidden="true" />
 
       <button
         type="button"

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · PENDIENTES Y ALERTAS
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · PENDIENTES Y ALERTAS
 // ----------------------------------------------------------------------------
 // Esta es la parte que hace que la agenda sea inteligente y no un calendario.
 //
@@ -231,7 +231,7 @@ export default function PendientesView() {
             texto="Hoy está cerrado y mañana no tiene sorpresas."
           />
         ) : (
-          <ul className="divide-y divide-[#F4EFE7]">
+          <ul className="divide-y divide-[var(--gm-divisor)]">
             {alertas.map((a) => (
               <li key={a.id} className="flex items-start gap-3 px-6 py-3.5">
                 <span
@@ -266,7 +266,7 @@ export default function PendientesView() {
             texto="Ningún módulo tiene trabajo sin agendar. Cuando un lead se enfríe, un equipo se quede sin stock o venza un service, va a aparecer acá solo."
           />
         ) : (
-          <ul className="divide-y divide-[#F4EFE7]">
+          <ul className="divide-y divide-[var(--gm-divisor)]">
             {pendientes.map((p) => {
               const origen = getOrigen(p.modulo);
               const tipo = getTipo(p.tipoSugerido);

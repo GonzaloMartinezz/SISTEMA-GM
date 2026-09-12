@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 · EL PIN
+// SISTEMA GM · M-06 · EL PIN
 // ----------------------------------------------------------------------------
 // Gota clásica, con el color del estado de la relación. El seleccionado crece y
 // le aparece un halo: se distingue por forma y por tamaño, no sólo por color,

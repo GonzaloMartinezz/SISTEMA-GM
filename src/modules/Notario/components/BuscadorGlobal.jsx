@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · BUSCADOR DEL MÓDULO
+// SISTEMA GM · M-05 · BUSCADOR DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Busca en el texto de las notas, en sus etiquetas y en el nombre de la cosa a
 // la que están pegadas. Es lo que permite escribir "autoclave" y encontrar la

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · PROYECCIONES
+// SISTEMA GM · M-09 TESORERÍA · PROYECCIONES
 // ----------------------------------------------------------------------------
 // A dónde llega el negocio si sigue este ritmo, y el simulador para decidir
 // operación por operación. Son las dos herramientas que se usan al cotizar.
@@ -87,7 +87,7 @@ export default function ProyeccionesView() {
         <Simulador comisionPct={params.comisionPct} enMoneda={enMoneda} />
       </Panel>
 
-      <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+      <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
         Resultado acumulado real hasta hoy: {enMoneda(resultadoAcumulado)}. Es la base del ROI que
         aparece en el Resumen.
       </p>

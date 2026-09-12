@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · FICHA 360°
+// SISTEMA GM · M-05 NOTARIO 360 · FICHA 360°
 // ----------------------------------------------------------------------------
 // Elegís una cosa —un cliente, un equipo, una venta, una cuenta, un gasto— y
 // ves TODO lo que el sistema sabe de ella en una sola pantalla: lo que anotaste

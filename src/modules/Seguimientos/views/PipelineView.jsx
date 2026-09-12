@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · FILTROS DE PROCESO
+// SISTEMA GM · M-03 SEGUIMIENTOS · FILTROS DE PROCESO
 // ----------------------------------------------------------------------------
 // La pantalla del día a día. Dos formas de mirar lo mismo:
 //   · Tablero: para mover cosas de lugar (arrastrando).

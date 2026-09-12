@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · RUTA DEL DÍA
+// SISTEMA GM · M-04 · RUTA DEL DÍA
 // ----------------------------------------------------------------------------
 // Las visitas del día ordenadas por cercanía desde la base, con los kilómetros
 // que salen y el tiempo de manejo. Incluye la vuelta a la base: el día no
@@ -33,7 +33,7 @@ export default function RutaDelDia({ ruta }) {
       {/* ------------------------------ resumen ---------------------------- */}
       {/* En celular se apila en una columna con líneas horizontales; desde sm
           vuelve a las tres columnas lado a lado con líneas verticales. */}
-      <div className="grid grid-cols-1 divide-y divide-[#F0EAE1] rounded-xl bg-[var(--gm-superficie-suave)] py-1 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-3">
+      <div className="grid grid-cols-1 divide-y divide-[var(--gm-borde-fuerte)] rounded-xl bg-[var(--gm-superficie-suave)] py-1 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-3">
         <Cifra titulo="Paradas" valor={ruteables.length} />
         <Cifra titulo="Distancia" valor={`${totalKm.toFixed(1)} km`} detalle={`vuelta incluida (${vueltaKm.toFixed(1)} km)`} />
         <Cifra titulo="Manejo" valor={`${minutos} min`} detalle="a 28 km/h de promedio" />
@@ -59,7 +59,7 @@ export default function RutaDelDia({ ruta }) {
 
         {optimizada.orden.map((p, i) => (
           <li key={p.id} className="relative flex items-start gap-3 py-2">
-            <span className="absolute left-[13px] -top-2 h-3 w-px bg-[#E8E0D5]" aria-hidden="true" />
+            <span className="absolute left-[13px] -top-2 h-3 w-px bg-[var(--gm-borde)]" aria-hidden="true" />
             <span
               className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-semibold text-white"
               style={{ backgroundColor: SERIE.terracota }}

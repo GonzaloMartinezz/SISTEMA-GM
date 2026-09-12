@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-03 SEGUIMIENTOS · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Las cuatro pantallas del módulo, en el orden en que se usan durante el día:
 // primero se mira el tablero, después se ve cómo viene avanzando cada venta,

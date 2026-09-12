@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · NAVEGADOR DE FECHA
+// SISTEMA GM · M-04 · NAVEGADOR DE FECHA
 // ----------------------------------------------------------------------------
 // Flechas, botón "Hoy" y un selector de fecha real. El paso de las flechas
 // cambia con la sección: en Hoy avanzás un día, en Semana siete, en Mes un mes.

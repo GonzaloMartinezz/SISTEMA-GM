@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · FILA DE VENTA
+// SISTEMA GM · M-07 · FILA DE VENTA
 // ----------------------------------------------------------------------------
 // Una venta en la lista. Lleva lo que se necesita para decidir sin abrirla:
 // quién es, qué compró, cuánto falta y si está atrasada. El resto se ve al
@@ -34,7 +34,7 @@ export default function FilaVenta({ venta: v, activa, onClick }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
           <span className="text-[14px] font-semibold text-[#2A2118]">{v.cliente}</span>
-          <span className="text-[12px] text-[#B0A697]">{v.codigo}</span>
+          <span className="text-[12px] text-[var(--gm-texto-medio)]">{v.codigo}</span>
           <Chip tono={estado.tono} punto>{estado.nombre}</Chip>
           {atraso && (
             <Chip tono={atraso.tono}>
@@ -49,7 +49,7 @@ export default function FilaVenta({ venta: v, activa, onClick }) {
           <BarraAvance total={v.totalUsd} cobrado={v.cobradoUsd} vencido={v.vencidoUsd} />
         </div>
 
-        <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-[#B0A697]">
+        <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-[var(--gm-texto-medio)]">
           <span>{usd(v.cobradoUsd)} de {usd(v.totalUsd)}</span>
           {v.cuotasTotal > 0 && (
             <>
@@ -75,7 +75,7 @@ export default function FilaVenta({ venta: v, activa, onClick }) {
         </p>
       </div>
 
-      <div className="flex items-center justify-between gap-2 border-t border-[#F0EAE1] pt-3 sm:shrink-0 sm:justify-end sm:border-t-0 sm:pt-0.5 sm:text-right">
+      <div className="flex items-center justify-between gap-2 border-t border-[var(--gm-borde-fuerte)] pt-3 sm:shrink-0 sm:justify-end sm:border-t-0 sm:pt-0.5 sm:text-right">
         <div>
           <p
             className="text-[16px] font-semibold tabular-nums"
@@ -90,10 +90,10 @@ export default function FilaVenta({ venta: v, activa, onClick }) {
             </p>
           )}
           {v.saldoUsd > 0.01 && v.vencidoUsd === 0 && (
-            <p className="mt-0.5 text-[11px] text-[#B0A697]">por cobrar</p>
+            <p className="mt-0.5 text-[11px] text-[var(--gm-texto-medio)]">por cobrar</p>
           )}
         </div>
-        <ChevronRight size={16} className="text-[#C6BCAC]" />
+        <ChevronRight size={16} className="text-[var(--gm-texto-suave)]" />
       </div>
     </button>
   );

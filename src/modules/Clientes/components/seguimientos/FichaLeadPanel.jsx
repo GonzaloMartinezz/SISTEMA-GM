@@ -19,7 +19,7 @@ import { usd } from '../../../../shared/gm-ui/graficos';
 
 const TONO_PRIORIDAD = { alta: 'naranja', media: 'amarillo', baja: 'gris' };
 
-const soloDigitos = (t = '') => t.replace(/\D/g, '');
+const soloDigitos = (t) => String(t || '').replace(/\D/g, '');
 const waLink = (tel) => {
   const n = soloDigitos(tel || '');
   return n ? `https://wa.me/${n.length <= 10 ? `54${n}` : n}` : null;
@@ -28,7 +28,7 @@ const waLink = (tel) => {
 function Dato({ etiqueta, valor }) {
   return (
     <div className="min-w-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">{etiqueta}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{etiqueta}</p>
       <p className="mt-1 break-words text-[14px] text-[#2A2118] dark:text-[#F9FAFB]">{valor || '—'}</p>
     </div>
   );
@@ -61,12 +61,12 @@ export default function FichaLeadPanel({ lead, onCerrar }) {
           <p className="mt-1 text-[14px] text-[#6E6559] dark:text-[#9CA3AF]">
             {lead.apellido}, {lead.nombre} · {lead.especialidad}
           </p>
-          <p className="mt-0.5 text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="mt-0.5 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
             {lead.id} · {lead.zona || 'zona sin cargar'}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">Monto</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">Monto</p>
           <p className="mt-1 text-[24px] font-semibold leading-none text-[#2A2118] dark:text-[#F9FAFB]">
             {usd(lead.montoUsd)}
           </p>
@@ -117,15 +117,15 @@ export default function FichaLeadPanel({ lead, onCerrar }) {
                 <li key={e.id} className="flex items-center gap-3">
                   <span
                     className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-semibold text-[#FFFFFF]"
-                    style={{ backgroundColor: alcanzada ? RAMPA[i % RAMPA.length] : '#E8E0D5' }}
+                    style={{ backgroundColor: alcanzada ? RAMPA[i % RAMPA.length] : 'var(--gm-borde)' }}
                   >
-                    <span className={alcanzada ? '' : 'text-[#B0A697] dark:text-[#6B7280]'}>{i + 1}</span>
+                    <span className={alcanzada ? '' : 'text-[var(--gm-texto-medio)] dark:text-[#6B7280]'}>{i + 1}</span>
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className={`text-[14px] ${actual ? 'font-semibold text-[#2A2118] dark:text-[#F9FAFB]' : 'text-[#6E6559] dark:text-[#9CA3AF]'}`}>
                       {e.label}
                     </p>
-                    <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{e.desc}</p>
+                    <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{e.desc}</p>
                   </div>
                   {actual && <Chip tono="azul">etapa actual</Chip>}
                 </li>

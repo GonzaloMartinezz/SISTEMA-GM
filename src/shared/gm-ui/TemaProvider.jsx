@@ -17,8 +17,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import {
   TEMA_CLARO,
   TEMA_OSCURO,
-  TEMA_VERDE_CLARO,
-  TEMA_VERDE_OSCURO,
+  ACENTOS_MODULOS,
   SERIE_POR_TEMA,
   SERIE_ORDEN_POR_TEMA,
   ESTADO_COLOR_POR_TEMA,
@@ -51,10 +50,10 @@ function prefiereOscuroElSistema() {
 /** Junta cada bloque de tokens del tema activo en un solo objeto cómodo de
  *  usar, más las variables CSS que LayoutModulo aplica en la raíz. */
 function armarValor(tema, idModulo, alternar) {
-  const esModuloVerde = ['seguimientos', 'agenda', 'notario'].includes(idModulo);
-  const base = esModuloVerde 
-    ? (tema === 'oscuro' ? TEMA_VERDE_OSCURO : TEMA_VERDE_CLARO)
-    : (tema === 'oscuro' ? TEMA_OSCURO : TEMA_CLARO);
+  const baseOriginal = tema === 'oscuro' ? TEMA_OSCURO : TEMA_CLARO;
+  const acentosModulo = ACENTOS_MODULOS[idModulo]?.[tema] || ACENTOS_MODULOS['sistema'][tema];
+  const base = { ...baseOriginal, ...acentosModulo };
+
   return {
     tema,
     esOscuro: tema === 'oscuro',

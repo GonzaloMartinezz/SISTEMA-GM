@@ -25,54 +25,51 @@
 
 /** Superficies y texto — modo claro (el de siempre). */
 export const TEMA_CLARO = {
-  fondo: '#FAF6F0',
+  fondo: '#F8FAFC',
   superficie: '#FFFFFF',
-  superficieSuave: '#FCFAF6',
-  superficieFuerte: '#F3EDE4',
-  borde: '#E8E0D5',
-  bordeFuerte: '#D5CABA',
-  divisor: '#F0EAE1',
-  texto: '#2A2118',          // 15.8:1 sobre superficie
-  textoMedio: '#6E6559',     // 5.7:1
-  textoSuave: '#948A7C',     // 3.4:1, sólo para texto secundario grande
-  textoTenue: '#B0A697',
-  acento: '#B4551A',         // terracota: botones, activo, foco
-  acentoFuerte: '#8A3F11',
-  acentoSuaveBg: '#FBE5C8',  // la arena original, ahora como tinte
-  sobreAcento: '#FFFFFF',    // 4.9:1 sobre el terracota
-  overlay: 'rgba(42,33,24,0.35)',
-  sombraPanel: '0 1px 2px rgba(26,26,24,0.04), 0 8px 24px -14px rgba(26,26,24,0.14)',
-  sombraModal: '0 24px 64px -16px rgba(16,24,40,0.35)',
-  sombraTooltip: '0 8px 24px -8px rgba(16,24,40,0.18)',
+  superficieSuave: '#F1F5F9',
+  superficieFuerte: '#E2E8F0',
+  borde: '#E2E8F0',
+  bordeFuerte: '#CBD5E1',
+  divisor: '#F1F5F9',
+  texto: '#0F172A',
+  textoMedio: '#475569',
+  textoSuave: '#64748B',
+  textoTenue: '#94A3B8',
+  acento: '#2563EB',         // Azul Eléctrico
+  acentoFuerte: '#1D4ED8',
+  acentoSuaveBg: '#DBEAFE',
+  sobreAcento: '#FFFFFF',
+  overlay: 'rgba(15,23,42,0.45)',
+  sombraPanel: '0 1px 3px rgba(15,23,42,0.05), 0 10px 30px -10px rgba(15,23,42,0.08)',
+  sombraModal: '0 25px 50px -12px rgba(15,23,42,0.25)',
+  sombraTooltip: '0 10px 25px -5px rgba(15,23,42,0.15)',
 };
 
 /**
- * Superficies y texto — modo oscuro. Espresso cálido, no gris azulado: sigue
- * siendo "arena y terracota", sólo que la arena pasa a ser la tinta y el
- * fondo el que era la letra. El acento se aclara (terracota puro se apaga
- * contra un fondo oscuro) y el texto sobre el acento se invierte a oscuro,
- * porque un naranja claro con letra blanca encima no se lee bien.
+ * Superficies y texto — modo oscuro. Obsidian tech: negro puro y grises mate
+ * para dar un aspecto extremadamente premium.
  */
 export const TEMA_OSCURO = {
-  fondo: '#0F172A',           // Deep Slate (azul marino muy oscuro)
-  superficie: '#1E293B',      // Slate un poco más claro para tarjetas
-  superficieSuave: '#334155',
-  superficieFuerte: '#475569',
-  borde: '#334155',
-  bordeFuerte: '#475569',
-  divisor: '#1E293B',
-  texto: '#F8FAFC',          // Blanco ahumado muy nítido
-  textoMedio: '#CBD5E1',
-  textoSuave: '#94A3B8',
-  textoTenue: '#64748B',
-  acento: '#FFFFFF',         // Detalles en blanco brillante
-  acentoFuerte: '#E2E8F0',
-  acentoSuaveBg: '#1E293B',
-  sobreAcento: '#0F172A',    // Texto oscuro sobre acento blanco
-  overlay: 'rgba(15, 23, 42, 0.75)',
-  sombraPanel: '0 1px 2px rgba(0,0,0,0.30), 0 8px 24px -14px rgba(0,0,0,0.65)',
-  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.70)',
-  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.55)',
+  fondo: '#09090B',           // Obsidian / casi negro
+  superficie: '#18181B',      // Gris oscuro mate
+  superficieSuave: '#27272A',
+  superficieFuerte: '#3F3F46',
+  borde: '#27272A',
+  bordeFuerte: '#3F3F46',
+  divisor: '#18181B',
+  texto: '#F9FAFB',
+  textoMedio: '#D4D4D8',
+  textoSuave: '#A1A1AA',
+  textoTenue: '#71717A',
+  acento: '#3B82F6',         // Azul brillante
+  acentoFuerte: '#60A5FA',
+  acentoSuaveBg: '#1E3A8A',  // Azul ultra profundo
+  sobreAcento: '#FFFFFF',
+  overlay: 'rgba(9, 9, 11, 0.85)',
+  sombraPanel: '0 1px 2px rgba(0,0,0,0.50), 0 8px 24px -14px rgba(0,0,0,0.85)',
+  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.95)',
+  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.65)',
 };
 
 /** Compatibilidad con todo lo que ya existe: GM sigue siendo el tema claro. */
@@ -85,24 +82,26 @@ export const GM = TEMA_CLARO;
 // ----------------------------------------------------------------------------
 
 const SERIE_CLARO = {
-  terracota: '#B4551A',
-  azul: '#2F6DA0',
-  ambar: '#C08A1E',
-  verde: '#2E9B76',
+  terracota: '#4F46E5', // Indigo vibrante en vez de terracota
+  azul: '#2563EB',      // Azul eléctrico
+  ambar: '#F59E0B',     // Ámbar puro
+  verde: '#10B981',     // Esmeralda brillante
+  rojo: '#EF4444',      // Rojo vibrante
 };
 const SERIE_OSCURO = {
-  terracota: '#E8935A',
-  azul: '#6BA8DA',
-  ambar: '#DDB050',
-  verde: '#57C69A',
+  terracota: '#818CF8', // Indigo claro
+  azul: '#60A5FA',      // Azul claro
+  ambar: '#FCD34D',     // Amarillo pastel
+  verde: '#34D399',     // Esmeralda neón
+  rojo: '#F87171',      // Rojo pastel
 };
 
 export const SERIE_POR_TEMA = { claro: SERIE_CLARO, oscuro: SERIE_OSCURO };
 /** Compatibilidad: SERIE es el tema claro, como antes. */
 export const SERIE = SERIE_CLARO;
 export const SERIE_ORDEN_POR_TEMA = {
-  claro: [SERIE_CLARO.terracota, SERIE_CLARO.azul, SERIE_CLARO.ambar, SERIE_CLARO.verde],
-  oscuro: [SERIE_OSCURO.terracota, SERIE_OSCURO.azul, SERIE_OSCURO.ambar, SERIE_OSCURO.verde],
+  claro: [SERIE_CLARO.terracota, SERIE_CLARO.azul, SERIE_CLARO.ambar, SERIE_CLARO.verde, SERIE_CLARO.rojo],
+  oscuro: [SERIE_OSCURO.terracota, SERIE_OSCURO.azul, SERIE_OSCURO.ambar, SERIE_OSCURO.verde, SERIE_OSCURO.rojo],
 };
 export const SERIE_ORDEN = SERIE_ORDEN_POR_TEMA.claro;
 
@@ -134,18 +133,18 @@ export function textoSobre(hex) {
 /** Colores de estado. Reservados: nunca se usan como "serie 5".
  *  El estado nunca viaja solo en el color: siempre lo acompaña el texto. */
 const ESTADO_COLOR_CLARO = {
-  bien: '#2E9B76',
-  atencion: '#C08A1E',
-  riesgo: '#B4551A',
-  critico: '#A63A0C',
-  neutro: '#948A7C',
+  bien: '#10B981',      // Emerald
+  atencion: '#F59E0B',  // Amber
+  riesgo: '#E11D48',    // Rose red
+  critico: '#9F1239',   // Dark rose
+  neutro: '#64748B',    // Slate
 };
 const ESTADO_COLOR_OSCURO = {
-  bien: '#57C69A',
-  atencion: '#DDB050',
-  riesgo: '#E8935A',
-  critico: '#F2704A',
-  neutro: '#A2937E',
+  bien: '#34D399',
+  atencion: '#FCD34D',
+  riesgo: '#FB7185',
+  critico: '#F43F5E',
+  neutro: '#94A3B8',
 };
 export const ESTADO_COLOR_POR_TEMA = { claro: ESTADO_COLOR_CLARO, oscuro: ESTADO_COLOR_OSCURO };
 export const ESTADO_COLOR = ESTADO_COLOR_CLARO;
@@ -153,24 +152,24 @@ export const ESTADO_COLOR = ESTADO_COLOR_CLARO;
 /** Tintes de chips y badges: relleno claro con texto oscuro encima (o, en
  *  modo oscuro, relleno oscuro con texto claro encima — la misma idea). */
 const TINTE_CLARO = {
-  azul: { bg: '#E3EDF6', fg: '#23557E' },
-  aqua: { bg: '#DFF0E8', fg: '#1F6F53' },
-  naranja: { bg: '#FBE5C8', fg: '#8A3F11' },
-  amarillo: { bg: '#FAF0D9', fg: '#7A5600' },
-  rosa: { bg: '#F5DDCC', fg: '#A63A0C' },
-  gris: { bg: '#EFE7DB', fg: '#5B5347' },
-  peligro: { bg: '#FBEAE0', fg: '#A63A0C', borde: '#EDCBB4' },
-  exito: { bg: '#DFF0E8', fg: '#1F6F53', borde: '#CBE9DA' },
+  azul: { bg: '#DBEAFE', fg: '#1E40AF' },
+  aqua: { bg: '#CCFBF1', fg: '#115E59' },
+  naranja: { bg: '#E0E7FF', fg: '#3730A3' }, // Indigo suave (naranja key maintained for compat)
+  amarillo: { bg: '#FEF3C7', fg: '#92400E' },
+  rosa: { bg: '#FCE7F3', fg: '#9D174D' },
+  gris: { bg: '#F1F5F9', fg: '#334155' },
+  peligro: { bg: '#FFE4E6', fg: '#BE123C', borde: '#FECDD3' },
+  exito: { bg: '#D1FAE5', fg: '#065F46', borde: '#A7F3D0' },
 };
 const TINTE_OSCURO = {
-  azul: { bg: '#1C2E3D', fg: '#8FC4EC' },
-  aqua: { bg: '#163024', fg: '#7BD2AC' },
-  naranja: { bg: '#3B2A1A', fg: '#F0AC72' },
-  amarillo: { bg: '#382C12', fg: '#E8C464' },
-  rosa: { bg: '#3A2016', fg: '#F0916A' },
-  gris: { bg: '#2E271D', fg: '#C7BBA8' },
-  peligro: { bg: '#3A1C14', fg: '#F2836A', borde: '#5A3420' },
-  exito: { bg: '#163024', fg: '#7BD2AC', borde: '#295A44' },
+  azul: { bg: '#1E3A8A', fg: '#93C5FD' },
+  aqua: { bg: '#134E4A', fg: '#5EEAD4' },
+  naranja: { bg: '#312E81', fg: '#A5B4FC' },
+  amarillo: { bg: '#78350F', fg: '#FDE68A' },
+  rosa: { bg: '#831843', fg: '#F9A8D4' },
+  gris: { bg: '#334155', fg: '#CBD5E1' },
+  peligro: { bg: '#4C0519', fg: '#FDA4AF', borde: '#881337' },
+  exito: { bg: '#064E3B', fg: '#6EE7B7', borde: '#065F46' },
 };
 export const TINTE_POR_TEMA = { claro: TINTE_CLARO, oscuro: TINTE_OSCURO };
 export const TINTE = TINTE_CLARO;
@@ -196,12 +195,12 @@ export const ACENTO_TONO = ACENTO_TONO_CLARO;
 const RUBRO_COLOR_CLARO = {
   Odontología: SERIE_CLARO.azul,
   Veterinaria: SERIE_CLARO.verde,
-  'Diagnóstico por Imagen': SERIE_CLARO.terracota,
+  'Diagnóstico por Imagen': SERIE_CLARO.rojo,
 };
 const RUBRO_COLOR_OSCURO = {
   Odontología: SERIE_OSCURO.azul,
   Veterinaria: SERIE_OSCURO.verde,
-  'Diagnóstico por Imagen': SERIE_OSCURO.terracota,
+  'Diagnóstico por Imagen': SERIE_OSCURO.rojo,
 };
 export const RUBRO_COLOR_POR_TEMA = { claro: RUBRO_COLOR_CLARO, oscuro: RUBRO_COLOR_OSCURO };
 export const RUBRO_COLOR = RUBRO_COLOR_CLARO;
@@ -209,51 +208,39 @@ export const RUBRO_COLOR = RUBRO_COLOR_CLARO;
 export const RUBRO_TONO = {
   Odontología: 'azul',
   Veterinaria: 'aqua',
-  'Diagnóstico por Imagen': 'naranja',
+  'Diagnóstico por Imagen': 'peligro',
 };
 
-export const TEMA_VERDE_CLARO = {
-  fondo: '#FFFFFF',
-  superficie: '#F9FAFB',
-  superficieSuave: '#F3F4F6',
-  superficieFuerte: '#E5E7EB',
-  borde: '#E5E7EB',
-  bordeFuerte: '#D1D5DB',
-  divisor: '#E5E7EB',
-  texto: '#000000',
-  textoMedio: '#4B5563',
-  textoSuave: '#6B7280',
-  textoTenue: '#9CA3AF',
-  acento: '#10B981',
-  acentoFuerte: '#059669',
-  acentoSuaveBg: '#D1FAE5',
-  sobreAcento: '#FFFFFF',
-  overlay: 'rgba(0,0,0,0.35)',
-  sombraPanel: '0 1px 2px rgba(0,0,0,0.05), 0 8px 24px -14px rgba(0,0,0,0.14)',
-  sombraModal: '0 24px 64px -16px rgba(16,24,40,0.35)',
-  sombraTooltip: '0 8px 24px -8px rgba(16,24,40,0.18)',
-};
-
-export const TEMA_VERDE_OSCURO = {
-  fondo: '#000000',
-  superficie: '#111111',
-  superficieSuave: '#1A1A1A',
-  superficieFuerte: '#262626',
-  borde: '#333333',
-  bordeFuerte: '#4D4D4D',
-  divisor: '#262626',
-  texto: '#FFFFFF',
-  textoMedio: '#E5E5E5',
-  textoSuave: '#A3A3A3',
-  textoTenue: '#737373',
-  acento: '#10B981',
-  acentoFuerte: '#34D399',
-  acentoSuaveBg: '#064E3B',
-  sobreAcento: '#000000',
-  overlay: 'rgba(0,0,0,0.85)',
-  sombraPanel: '0 1px 2px rgba(0,0,0,0.50), 0 8px 24px -14px rgba(0,0,0,0.85)',
-  sombraModal: '0 24px 64px -16px rgba(0,0,0,0.90)',
-  sombraTooltip: '0 8px 24px -8px rgba(0,0,0,0.75)',
+export const ACENTOS_MODULOS = {
+  clientes: { // Módulo 1: Azul Fuerte
+    claro: { acento: '#2563EB', acentoFuerte: '#1D4ED8', acentoSuaveBg: '#DBEAFE' },
+    oscuro: { acento: '#3B82F6', acentoFuerte: '#60A5FA', acentoSuaveBg: '#1E3A8A' }
+  },
+  seguimientos: { // Módulo 2: Esmeralda
+    claro: { acento: '#10B981', acentoFuerte: '#059669', acentoSuaveBg: '#D1FAE5' },
+    oscuro: { acento: '#10B981', acentoFuerte: '#34D399', acentoSuaveBg: '#064E3B' }
+  },
+  agenda: { // Módulo 3: Fucsia / Rosa Tech
+    claro: { acento: '#DB2777', acentoFuerte: '#BE185D', acentoSuaveBg: '#FCE7F3' },
+    oscuro: { acento: '#EC4899', acentoFuerte: '#F472B6', acentoSuaveBg: '#831843' }
+  },
+  notario: { // Módulo 4: Violeta / Índigo
+    claro: { acento: '#4F46E5', acentoFuerte: '#4338CA', acentoSuaveBg: '#E0E7FF' },
+    oscuro: { acento: '#818CF8', acentoFuerte: '#A5B4FC', acentoSuaveBg: '#312E81' }
+  },
+  equipos: { // Módulo 5: Naranja Tech
+    claro: { acento: '#EA580C', acentoFuerte: '#C2410C', acentoSuaveBg: '#FFEDD5' },
+    oscuro: { acento: '#F97316', acentoFuerte: '#FDBA74', acentoSuaveBg: '#7C2D12' }
+  },
+  finanzas: { // Módulo 6: Ámbar / Dorado
+    claro: { acento: '#D97706', acentoFuerte: '#B45309', acentoSuaveBg: '#FEF3C7' },
+    oscuro: { acento: '#F59E0B', acentoFuerte: '#FCD34D', acentoSuaveBg: '#78350F' }
+  },
+  // Default fallback (Azul)
+  sistema: {
+    claro: { acento: '#2563EB', acentoFuerte: '#1D4ED8', acentoSuaveBg: '#DBEAFE' },
+    oscuro: { acento: '#3B82F6', acentoFuerte: '#60A5FA', acentoSuaveBg: '#1E3A8A' }
+  }
 };
 
 export default GM;

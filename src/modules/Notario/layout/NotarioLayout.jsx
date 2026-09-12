@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-05 NOTARIO 360 · LAYOUT DEL MÓDULO
 // ============================================================================
 
 import React from 'react';
@@ -15,7 +15,7 @@ function Cuerpo() {
   return (
     <LayoutModulo
       idModulo="notario"
-      numero={6}
+      numero={5}
       nombre="Notario 360°"
       icono={ScanFace}
       secciones={SECCIONES}

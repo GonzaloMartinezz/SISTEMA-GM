@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · IMPUESTOS Y CAPITAL
+// SISTEMA GM · M-09 TESORERÍA · IMPUESTOS Y CAPITAL
 // ----------------------------------------------------------------------------
 // Lo que hay que apartar, lo que queda y los parámetros con los que se calcula
 // todo el módulo. Los parámetros están acá y no escondidos en un menú porque
@@ -109,7 +109,7 @@ export default function FiscalView() {
             ['Reserva impuestos', enMoneda(capital.reservaImpuestosUsd)],
           ].map(([k, v]) => (
             <div key={k}>
-              <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                 {k}
               </dt>
               <dd className="mt-1 text-[15px] text-[#2A2118] dark:text-[#F9FAFB]">{v}</dd>

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · CHIP DE ETAPA Y DE TEMPERATURA
+// SISTEMA GM · M-03 · CHIP DE ETAPA Y DE TEMPERATURA
 // ----------------------------------------------------------------------------
 // Las etapas usan la rampa ordinal, que no entra en los tintes fijos del kit
 // compartido, así que el chip se arma acá con el color de la etapa en baja

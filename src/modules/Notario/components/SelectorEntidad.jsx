@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · ELEGIR DE QUÉ HABLA LA NOTA
+// SISTEMA GM · M-05 · ELEGIR DE QUÉ HABLA LA NOTA
 // ----------------------------------------------------------------------------
 // Un solo campo para buscar en TODO el sistema: clientes, ventas, equipos,
 // cuentas, gastos, entregas y compromisos, sin tener que elegir primero la

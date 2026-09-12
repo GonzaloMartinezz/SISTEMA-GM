@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · CUENTAS DEL NEGOCIO
+// SISTEMA GM · M-07 COBRANZAS · CUENTAS DEL NEGOCIO
 // ----------------------------------------------------------------------------
 // Acá vive la única distinción que hay que tener clara para no manejarse a
 // ciegas, y por eso está escrita y no sólo implementada:

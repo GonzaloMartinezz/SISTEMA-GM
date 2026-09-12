@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · FECHAS Y CARGA DE LA JORNADA
+// SISTEMA GM · M-04 · FECHAS Y CARGA DE LA JORNADA
 // ----------------------------------------------------------------------------
 // Todo el módulo trabaja con fechas ISO cortas ("2026-09-02") como identidad y
 // sólo las convierte a Date para calcular. La razón es concreta: `new Date

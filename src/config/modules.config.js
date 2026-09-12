@@ -5,7 +5,7 @@
 // ruteo aislado. Si un módulo no está acá, no existe para el sistema.
 // Regla del Plan Maestro: aislamiento modular absoluto y cero contaminación.
 //
-// Orden del Portal Hub: no es alfabético ni por código (los códigos M-01..M-08
+// Orden del Portal Hub: no es alfabético ni por código (los códigos M-01..M-07
 // son identidad interna de cada módulo, usada por Notario 360° y quedan fijos
 // para no romper esa trazabilidad). El orden de esta lista es el operativo,
 // calcado del uso real: arriba los tres módulos que se abren todos los días
@@ -53,7 +53,7 @@ export const MODULES = [
   },
   {
     id: 'seguimientos',
-    code: 'M-04',
+    code: 'M-03',
     name: 'Seguimientos',
     desc: 'Pipeline Kanban y acción inmediata',
     icon: Send,
@@ -71,7 +71,7 @@ export const MODULES = [
   },
   {
     id: 'agenda',
-    code: 'M-05',
+    code: 'M-04',
     name: 'Agenda Inteligente',
     desc: 'Organizador temporal de la jornada',
     icon: CalendarClock,
@@ -107,7 +107,7 @@ export const MODULES = [
   },
   {
     id: 'notario360',
-    code: 'M-06',
+    code: 'M-05',
     name: 'Notario 360°',
     desc: 'Notas de todo el sistema y trazabilidad',
     icon: ScanFace,
@@ -125,7 +125,7 @@ export const MODULES = [
   },
   {
     id: 'logistica',
-    code: 'M-07',
+    code: 'M-06',
     name: 'Mapa y Logística',
     desc: 'Geolocalización y ruteo de campo',
     icon: Map,
@@ -143,7 +143,7 @@ export const MODULES = [
   },
   {
     id: 'cobranzas',
-    code: 'M-08',
+    code: 'M-07',
     name: 'Cobranzas',
     desc: 'Ventas, cuotas y resultado del negocio',
     icon: ShieldAlert,
@@ -161,7 +161,7 @@ export const MODULES = [
   },
   {
     id: 'tesoreria',
-    code: 'M-03',
+    code: 'M-09',
     name: 'Tesorería',
     desc: 'Panel bimonetario USD / ARS y ROI',
     icon: Wallet,

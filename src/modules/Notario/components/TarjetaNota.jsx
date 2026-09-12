@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · LA NOTA
+// SISTEMA GM · M-05 · LA NOTA
 // ----------------------------------------------------------------------------
 // Tarjeta blanca con la barrita del color de su tipo. El texto se muestra
 // entero: una nota recortada obliga a abrirla para saber si es la que buscabas,
@@ -44,7 +44,7 @@ export default function TarjetaNota({
               style={{
                 backgroundColor: `${tipo.color}1A`,
                 borderColor: `${tipo.color}55`,
-                color: '#3D3225',
+                color: 'var(--gm-texto)',
               }}
             >
               <tipo.icono size={12} style={{ color: tipo.color }} />
@@ -103,7 +103,7 @@ export default function TarjetaNota({
         </button>
       )}
 
-      <footer className="mt-3.5 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[#F4EFE7] pt-3">
+      <footer className="mt-3.5 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--gm-divisor)] pt-3">
         {(nota.etiquetas || []).map((e) => (
           <button
             key={e}

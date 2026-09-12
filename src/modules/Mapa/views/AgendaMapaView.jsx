@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · LA AGENDA SOBRE EL MAPA
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · LA AGENDA SOBRE EL MAPA
 // ----------------------------------------------------------------------------
 // La pregunta que contesta: "¿qué me toca y dónde queda?".
 //
@@ -122,7 +122,7 @@ export default function AgendaMapaView() {
       {/* ------------------------------ horizonte ---------------------------- */}
       <Panel sinEncabezado cuerpoClassName="px-5 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5]">
+          <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
             {HORIZONTES.map((h) => (
               <button
                 key={h.id}
@@ -158,7 +158,7 @@ export default function AgendaMapaView() {
         <Panel
           titulo={`Qué te toca · ${horizonte.nombre.toLowerCase()}`}
           bajada="Sale de la Agenda del Módulo 5. Acá no se carga nada: se ve dónde queda cada cosa."
-          acciones={<CalendarRange size={16} className="text-[#B0A697]" />}
+          acciones={<CalendarRange size={16} className="text-[var(--gm-texto-medio)]" />}
           cuerpoClassName="p-0"
         >
           {cargando ? (
@@ -173,16 +173,16 @@ export default function AgendaMapaView() {
             <div className="max-h-[560px] overflow-y-auto">
               {dias.map(({ fecha, lista }) => (
                 <section key={fecha}>
-                  <header className="sticky top-0 z-10 flex items-baseline gap-2 border-b border-[#F0EAE1] bg-[#FCFAF6] px-5 py-2">
+                  <header className="sticky top-0 z-10 flex items-baseline gap-2 border-b border-[var(--gm-borde-fuerte)] bg-[#FCFAF6] px-5 py-2">
                     <h3 className="text-[12px] font-semibold capitalize text-[#2A2118]">
                       {diaLargo(fecha)}
                     </h3>
-                    <span className="text-[11px] text-[#B0A697]">
+                    <span className="text-[11px] text-[var(--gm-texto-medio)]">
                       {lista.length} {lista.length === 1 ? 'cosa' : 'cosas'}
                     </span>
                   </header>
 
-                  <ul className="divide-y divide-[#F4EFE7]">
+                  <ul className="divide-y divide-[var(--gm-divisor)]">
                     {lista.map((c) => {
                       const tipo = getTipoCompromiso(c.tipo);
                       const activo = seleccionado?.codigo === c.codigo;
@@ -213,18 +213,18 @@ export default function AgendaMapaView() {
                                 {c.titulo}
                               </span>
                               <span className="mt-1 flex flex-wrap items-center gap-1.5">
-                                <span className="text-[11px] tabular-nums text-[#B0A697]">
+                                <span className="text-[11px] tabular-nums text-[var(--gm-texto-medio)]">
                                   {c.hora}
                                 </span>
                                 {c.localidad && (
-                                  <span className="text-[11px] text-[#B0A697]">· {c.localidad}</span>
+                                  <span className="text-[11px] text-[var(--gm-texto-medio)]">· {c.localidad}</span>
                                 )}
                                 {!c.ubicable && (
                                   <Chip tono="amarillo">sin ubicación</Chip>
                                 )}
                                 {c.heredada && (
                                   <span
-                                    className="text-[11px] text-[#B0A697]"
+                                    className="text-[11px] text-[var(--gm-texto-medio)]"
                                     title="El compromiso no tenía coordenadas: se usa la del cliente"
                                   >
                                     · ubicado por el cliente
@@ -249,7 +249,7 @@ export default function AgendaMapaView() {
                                   rel="noreferrer"
                                   onClick={(e) => e.stopPropagation()}
                                   title="Cómo llegar"
-                                  className="grid h-7 w-7 place-items-center rounded-lg border border-[#E8E0D5] text-[#6E6559] transition hover:bg-white hover:text-[#B4551A]"
+                                  className="grid h-7 w-7 place-items-center rounded-lg border border-[var(--gm-borde)] text-[#6E6559] transition hover:bg-white hover:text-[#B4551A]"
                                 >
                                   <Navigation size={13} />
                                 </a>

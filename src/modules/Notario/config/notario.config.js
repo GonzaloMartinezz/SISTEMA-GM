@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · VOCABULARIO DEL MÓDULO
+// SISTEMA GM · M-05 NOTARIO 360 · VOCABULARIO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Los tipos de nota, las clases de cosa que se pueden anotar y los módulos que
 // alimentan la bitácora. Todo junto acá porque son decisiones del negocio.
@@ -78,12 +78,12 @@ export const getTipoNota = (id) => TIPOS_NOTA.find((t) => t.id === id) || TIPOS_
  */
 export const ENTIDADES = [
   { id: 'cliente', nombre: 'Cliente', plural: 'Clientes', icono: Building2, tono: 'azul', modulo: 'M-01' },
-  { id: 'lead', nombre: 'Venta', plural: 'Ventas', icono: Send, tono: 'aqua', modulo: 'M-04' },
+  { id: 'lead', nombre: 'Venta', plural: 'Ventas', icono: Send, tono: 'aqua', modulo: 'M-03' },
   { id: 'equipo', nombre: 'Equipo', plural: 'Equipos', icono: Package, tono: 'naranja', modulo: 'M-02' },
-  { id: 'cuenta', nombre: 'Cuenta', plural: 'Cuentas', icono: Landmark, tono: 'amarillo', modulo: 'M-06' },
-  { id: 'gasto', nombre: 'Gasto', plural: 'Gastos', icono: Receipt, tono: 'rosa', modulo: 'M-03' },
-  { id: 'entrega', nombre: 'Entrega', plural: 'Entregas', icono: Truck, tono: 'gris', modulo: 'M-07' },
-  { id: 'evento', nombre: 'Compromiso', plural: 'Compromisos', icono: CalendarClock, tono: 'gris', modulo: 'M-05' },
+  { id: 'cuenta', nombre: 'Cuenta', plural: 'Cuentas', icono: Landmark, tono: 'amarillo', modulo: 'M-05' },
+  { id: 'gasto', nombre: 'Gasto', plural: 'Gastos', icono: Receipt, tono: 'rosa', modulo: 'M-09' },
+  { id: 'entrega', nombre: 'Entrega', plural: 'Entregas', icono: Truck, tono: 'gris', modulo: 'M-06' },
+  { id: 'evento', nombre: 'Compromiso', plural: 'Compromisos', icono: CalendarClock, tono: 'gris', modulo: 'M-04' },
 ];
 
 export const getEntidad = (id) =>
@@ -129,13 +129,13 @@ export const getClase = (id) => CLASES[id] || { nombre: id, icono: StickyNote, c
 
 /** Los módulos de donde sale cada hecho de la bitácora. */
 export const MODULOS = {
-  notario: { nombre: 'Notario 360', codigo: 'M-06', tono: 'amarillo' },
-  seguimientos: { nombre: 'Seguimientos', codigo: 'M-04', tono: 'aqua' },
+  notario: { nombre: 'Notario 360', codigo: 'M-05', tono: 'amarillo' },
+  seguimientos: { nombre: 'Seguimientos', codigo: 'M-03', tono: 'aqua' },
   equipamientos: { nombre: 'Equipamientos', codigo: 'M-02', tono: 'naranja' },
-  agenda: { nombre: 'Agenda', codigo: 'M-05', tono: 'azul' },
-  cobranzas: { nombre: 'Cobranzas', codigo: 'M-08', tono: 'rosa' },
-  tesoreria: { nombre: 'Tesorería', codigo: 'M-03', tono: 'gris' },
-  logistica: { nombre: 'Logística', codigo: 'M-07', tono: 'gris' },
+  agenda: { nombre: 'Agenda', codigo: 'M-04', tono: 'azul' },
+  cobranzas: { nombre: 'Cobranzas', codigo: 'M-07', tono: 'rosa' },
+  tesoreria: { nombre: 'Tesorería', codigo: 'M-09', tono: 'gris' },
+  logistica: { nombre: 'Logística', codigo: 'M-06', tono: 'gris' },
 };
 
 export const getModulo = (id) => MODULOS[id] || { nombre: id, codigo: '', tono: 'gris' };

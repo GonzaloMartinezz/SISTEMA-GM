@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · CARGA DE LA JORNADA
+// SISTEMA GM · M-04 · CARGA DE LA JORNADA
 // ----------------------------------------------------------------------------
 // Cuánto del día ya está comprometido. La barra se pinta hasta el 100% y, si
 // se pasa, aparece un tramo aparte en rojo con lo que sobra: se ve de un

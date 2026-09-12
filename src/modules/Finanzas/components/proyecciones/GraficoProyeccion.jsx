@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · CURVA DE PROYECCIÓN
+// SISTEMA GM · M-09 TESORERÍA · CURVA DE PROYECCIÓN
 // ----------------------------------------------------------------------------
 // Los meses reales y la proyección en la misma línea, separadas por una marca:
 // a la izquierda lo que pasó, a la derecha lo que podría pasar. El tramo

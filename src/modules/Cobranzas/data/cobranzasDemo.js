@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · DATOS DE DEMOSTRACIÓN
+// SISTEMA GM · M-07 COBRANZAS · DATOS DE DEMOSTRACIÓN
 // ----------------------------------------------------------------------------
 // Lo que se ve cuando el sistema todavía no está conectado a Supabase.
 //

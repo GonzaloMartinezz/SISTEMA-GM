@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · SALUD FINANCIERA
+// SISTEMA GM · M-09 TESORERÍA · SALUD FINANCIERA
 // ----------------------------------------------------------------------------
 // Una nota de 0 a 100 que junta tres cosas: cuánto deja el negocio, cuántos
 // meses aguanta con la liquidez que hay, y si viene creciendo.
@@ -64,7 +64,7 @@ export default function MedidorSalud({ salud }) {
                 {p.detalle} · {p.valor}/{p.tope}
               </span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-[#F0EAE1]">
+            <div className="h-2 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
               <div
                 className="h-full rounded-full"
                 style={{ width: `${(p.valor / p.tope) * 100}%`, backgroundColor: color }}

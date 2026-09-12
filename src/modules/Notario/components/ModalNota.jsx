@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · ESCRIBIR UNA NOTA
+// SISTEMA GM · M-05 · ESCRIBIR UNA NOTA
 // ----------------------------------------------------------------------------
 // No usa el formulario genérico del sistema porque el campo importante de esta
 // pantalla —de qué habla la nota— es un buscador sobre todo el sistema, y eso
@@ -134,11 +134,11 @@ export default function ModalNota({ nota, entidades, entidadFija, onCerrar, onGu
                   className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition"
                   style={
                     activo
-                      ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: '#3D3225' }
-                      : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#948A7C' }
+                      ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: 'var(--gm-texto)' }
+                      : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: '#948A7C' }
                   }
                 >
-                  <t.icono size={13} style={{ color: activo ? t.color : '#C6BCAC' }} />
+                  <t.icono size={13} style={{ color: activo ? t.color : 'var(--gm-texto-suave)' }} />
                   {t.nombre}
                 </button>
               );

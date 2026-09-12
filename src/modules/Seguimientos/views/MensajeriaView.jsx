@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · WHATSAPP Y MAILING
+// SISTEMA GM · M-03 SEGUIMIENTOS · WHATSAPP Y MAILING
 // ----------------------------------------------------------------------------
 // Dos mitades. Arriba, a quién le toca hoy: los leads abiertos ordenados por
 // los días que hace que nadie les escribe, con el botón de escribir al lado. Es
@@ -163,7 +163,7 @@ export default function MensajeriaView() {
             texto="Todas las oportunidades abiertas tuvieron contacto esta semana."
           />
         ) : (
-          <ul className="divide-y divide-[#F4EFE7]">
+          <ul className="divide-y divide-[var(--gm-divisor)]">
             {pendientes.map((l) => (
               <li key={l.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5">
                 <Avatar nombre={`${l.nombre} ${l.apellido}`} tamano="sm" />

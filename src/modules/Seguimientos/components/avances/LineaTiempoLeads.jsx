@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · LÍNEA DE TIEMPO DE LAS VENTAS
+// SISTEMA GM · M-03 · LÍNEA DE TIEMPO DE LAS VENTAS
 // ----------------------------------------------------------------------------
 // Una fila por lead, un tramo por etapa, sobre un eje de fechas real. Es la
 // vista que responde "¿esta venta se está moviendo o está clavada?" sin abrir
@@ -53,7 +53,7 @@ export default function LineaTiempoLeads({ datos, onLead }) {
         </div>
 
         {/* ----------------------------- filas ------------------------------ */}
-        <ul className="divide-y divide-[#F4EFE7]">
+        <ul className="divide-y divide-[var(--gm-divisor)]">
           {filas.map(({ lead, segmentos }) => (
             <li key={lead.id}>
               <button
@@ -76,7 +76,7 @@ export default function LineaTiempoLeads({ datos, onLead }) {
                     <span
                       key={`g-${m.pos}`}
                       aria-hidden="true"
-                      className="absolute inset-y-0 w-px bg-[#F0EAE1]"
+                      className="absolute inset-y-0 w-px bg-[var(--gm-superficie-fuerte)]"
                       style={{ left: `${m.pos}%` }}
                     />
                   ))}
@@ -113,7 +113,7 @@ export default function LineaTiempoLeads({ datos, onLead }) {
         </ul>
 
         {/* ---------------------------- referencia -------------------------- */}
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#F4EFE7] pt-3 text-[11px] text-[var(--gm-texto-suave)]">
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[var(--gm-divisor)] pt-3 text-[11px] text-[var(--gm-texto-suave)]">
           {['comienzo', 'proceso', 'convencer', 'posible-venta', 'cerrado'].map((id) => (
             <span key={id} className="inline-flex items-center gap-1.5">
               <span

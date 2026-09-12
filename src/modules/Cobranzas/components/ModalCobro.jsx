@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · REGISTRAR UN COBRO
+// SISTEMA GM · M-07 · REGISTRAR UN COBRO
 // ----------------------------------------------------------------------------
 // El cliente no paga cuotas, paga plata. Trae 500 y eso puede terminar de
 // cubrir la cuota 3, pagar entera la 4 y dejar algo a cuenta de la 5.
@@ -20,7 +20,7 @@ import {
 } from '../config/cobranzas.config';
 
 const INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[#B0A697] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[var(--gm-texto-medio)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
 
 const r2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
 
@@ -165,13 +165,13 @@ export default function ModalCobro({ abierto, venta, cuotas = [], onCerrar, onGu
 
         {atajos.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-[#B0A697]">Rápido:</span>
+            <span className="text-[11px] text-[var(--gm-texto-medio)]">Rápido:</span>
             {atajos.map((a) => (
               <button
                 key={a.etiqueta}
                 type="button"
                 onClick={() => setMonto(String(a.valor))}
-                className="rounded-lg border border-[#E8E0D5] bg-white px-2.5 py-1 text-[12px] text-[#6E6559] transition hover:border-[#D5CABA] hover:bg-[#FCFAF6] hover:text-[#2A2118]"
+                className="rounded-lg border border-[var(--gm-borde)] bg-white px-2.5 py-1 text-[12px] text-[#6E6559] transition hover:border-[#D5CABA] hover:bg-[#FCFAF6] hover:text-[#2A2118]"
               >
                 {a.etiqueta} · {usd(a.valor)}
               </button>
@@ -222,8 +222,8 @@ export default function ModalCobro({ abierto, venta, cuotas = [], onCerrar, onGu
 
         {/* ------------------------ la vista previa ------------------------ */}
         {r2(monto) > 0 && (
-          <section className="rounded-xl border border-[#E8E0D5] bg-[#FCFAF6] px-4 py-3.5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">
+          <section className="rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3.5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">
               Qué va a pasar con esta plata
             </p>
 
@@ -251,7 +251,7 @@ export default function ModalCobro({ abierto, venta, cuotas = [], onCerrar, onGu
                       </span>
                       <span className="ml-auto tabular-nums text-[#6E6559]">
                         {usdExacto(t.imputa)}
-                        <span className="ml-1.5 text-[11px] text-[#B0A697]">
+                        <span className="ml-1.5 text-[11px] text-[var(--gm-texto-medio)]">
                           {t.completa ? 'queda saldada' : 'queda a medias'}
                         </span>
                       </span>

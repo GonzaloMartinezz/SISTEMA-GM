@@ -177,7 +177,7 @@ export default function BaseDatosView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex h-full flex-col gap-6">
       {/* ----------------------------- Indicadores ----------------------------- */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <TarjetaKpi
@@ -214,7 +214,8 @@ export default function BaseDatosView() {
       <Panel
         titulo="Directorio de cuentas"
         bajada={`${filtrados.length} de ${clientes.length} cuentas visibles`}
-        cuerpoClassName="p-0"
+        className="min-h-0 flex-1"
+        cuerpoClassName="flex flex-col p-0"
         acciones={
           <>
             <BotonGm variante="contorno" tamano="sm" icono={Download} onClick={exportarCsv}>

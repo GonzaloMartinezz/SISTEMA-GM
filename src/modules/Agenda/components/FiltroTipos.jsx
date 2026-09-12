@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · FILTRO POR TIPO DE COMPROMISO
+// SISTEMA GM · M-04 · FILTRO POR TIPO DE COMPROMISO
 // ----------------------------------------------------------------------------
 // Un chip por tipo, con el color que ese tipo tiene en todo el módulo, más el
 // interruptor para esconder lo ya cerrado. Cada chip muestra cuántos hay en el
@@ -27,20 +27,20 @@ export default function FiltroTipos({ conteo = {} }) {
             className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition"
             style={
               activo
-                ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: '#3D3225' }
-                : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#B0A697' }
+                ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: 'var(--gm-texto)' }
+                : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: 'var(--gm-texto-medio)' }
             }
           >
-            <t.icono size={13} style={{ color: activo ? t.color : '#C6BCAC' }} />
+            <t.icono size={13} style={{ color: activo ? t.color : 'var(--gm-texto-suave)' }} />
             {t.plural}
             {conteo[t.id] != null && (
-              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>{conteo[t.id]}</span>
+              <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[var(--gm-texto-suave)]'}>{conteo[t.id]}</span>
             )}
           </button>
         );
       })}
 
-      <span className="mx-1 hidden h-5 w-px bg-[#E8E0D5] sm:block" aria-hidden="true" />
+      <span className="mx-1 hidden h-5 w-px bg-[var(--gm-borde)] sm:block" aria-hidden="true" />
 
       <button
         type="button"

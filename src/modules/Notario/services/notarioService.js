@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · ACCESO A DATOS
+// SISTEMA GM · M-05 NOTARIO 360 · ACCESO A DATOS
 // ----------------------------------------------------------------------------
 // Cuatro fuentes, tres de ellas de sólo lectura:
 //

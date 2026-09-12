@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-03 SEGUIMIENTOS · LAYOUT DEL MÓDULO
 // ----------------------------------------------------------------------------
 // El buscador vive en el encabezado, no dentro de una vista: filtra las cuatro
 // secciones a la vez, así que tiene que estar donde se vea siempre.
@@ -18,7 +18,7 @@ function Cuerpo() {
   return (
     <LayoutModulo
       idModulo="seguimientos"
-      numero={4}
+      numero={3}
       nombre="Seguimientos"
       icono={Send}
       secciones={SECCIONES}

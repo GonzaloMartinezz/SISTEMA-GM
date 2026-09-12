@@ -14,7 +14,7 @@ const ICONO_TIPO = { visita: MapPin, llamada: Phone, reunion: Video };
 
 // La prioridad va como punto de color con title, no como chip: el panel es
 // angosto y el nombre del cliente vale más que la etiqueta.
-const COLOR_PRIORIDAD = { alta: '#B4551A', media: '#C08A1E', baja: '#B0A697' };
+const COLOR_PRIORIDAD = { alta: '#B4551A', media: '#C08A1E', baja: 'var(--gm-texto-medio)' };
 
 const hoyISO = () => new Date().toISOString().slice(0, 10);
 
@@ -46,7 +46,7 @@ export default function ProximasInteracciones({ eventos = [], limite = 6 }) {
   }
 
   return (
-    <ul className="divide-y divide-[#F4EFE7]">
+    <ul className="divide-y divide-[var(--gm-divisor)]">
       {proximos.map((e) => {
         const Icono = ICONO_TIPO[e.tipo] || CalendarClock;
         return (
@@ -70,7 +70,7 @@ export default function ProximasInteracciones({ eventos = [], limite = 6 }) {
 
             <div className="shrink-0 text-right">
               <p className="text-[14px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">{e.hora}</p>
-              <p className="mt-0.5 text-[12px] text-[#B0A697] dark:text-[#6B7280]">{etiquetaDia(e.fecha)}</p>
+              <p className="mt-0.5 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{etiquetaDia(e.fecha)}</p>
             </div>
           </li>
         );

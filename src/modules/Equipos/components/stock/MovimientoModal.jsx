@@ -36,7 +36,7 @@ const TIPOS = {
 };
 
 const BASE_INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-[#FFFFFF] dark:bg-[#1E1E1E] px-3.5 text-[14px] text-[#2A2118] dark:text-[#F9FAFB] outline-none transition placeholder:text-[#B0A697] dark:text-[#6B7280] focus:border-[#B4551A] focus:ring-4 focus:ring-[#B4551A]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] px-3.5 text-[14px] text-[#2A2118] dark:text-[#F9FAFB] outline-none transition placeholder:text-[var(--gm-texto-medio)] dark:text-[#6B7280] focus:border-[#B4551A] focus:ring-4 focus:ring-[#B4551A]/10';
 
 export default function MovimientoModal({ equipo, tipo, onCerrar, onConfirmar }) {
   const cfg = TIPOS[tipo] || TIPOS.egreso;
@@ -119,7 +119,7 @@ export default function MovimientoModal({ equipo, tipo, onCerrar, onConfirmar })
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{equipo.nombre}</p>
-          <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
             {equipo.codigo} · hoy hay {equipo.stock} en depósito
             {equipo.transito > 0 ? ` y ${equipo.transito} en camino` : ''}
           </p>
@@ -156,7 +156,7 @@ export default function MovimientoModal({ equipo, tipo, onCerrar, onConfirmar })
 
         <label className="flex flex-col gap-1.5 sm:col-span-2">
           <span className="text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF]">
-            Detalle <span className="text-[#B0A697] dark:text-[#6B7280]">(opcional)</span>
+            Detalle <span className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]">(opcional)</span>
           </span>
           <input
             type="text"

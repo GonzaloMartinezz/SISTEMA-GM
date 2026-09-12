@@ -126,7 +126,7 @@ export default function BaseDatosView() {
           </>
         }
       >
-        <div className="flex flex-col gap-4 border-b border-[#F0EAE1] dark:border-[#333333] px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4 border-b border-[var(--gm-borde-fuerte)] dark:border-[#333333] px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
           <FiltrosCategoria rubros={porRubro} valor={rubro} onChange={setRubro} total={equipos.length} />
           <Buscador
             valor={busqueda}

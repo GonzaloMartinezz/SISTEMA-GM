@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · EL MES
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · EL MES
 // ----------------------------------------------------------------------------
 // La vista de planificación. Al costado, el detalle del día que se toca: el
 // calendario sirve para elegir dónde meter algo, y el panel para ver qué hay
@@ -127,7 +127,7 @@ export default function MesView() {
               }
             />
           ) : (
-            <ul className="divide-y divide-[#F4EFE7]">
+            <ul className="divide-y divide-[var(--gm-divisor)]">
               {delDiaElegido.map((ev) => {
                 const tipo = getTipo(ev.tipo);
                 const cerrado = ev.estado !== 'pendiente';

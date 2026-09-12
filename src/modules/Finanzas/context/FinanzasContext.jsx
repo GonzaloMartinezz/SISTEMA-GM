@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-09 TESORERÍA · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // La aritmética no se toca: sigue viviendo en finanzasService (obtenerFinanzas,
 // liquidarMes, simularOperacion). Este contexto sólo la trae, la comparte con

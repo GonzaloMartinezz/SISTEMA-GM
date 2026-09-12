@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · HORIZONTES DE TIEMPO
+// SISTEMA GM · M-09 TESORERÍA · HORIZONTES DE TIEMPO
 // ----------------------------------------------------------------------------
 // El módulo se mira a cuatro distancias: la semana, el mes, el año y los cinco
 // años. Cada una usa lo que realmente hay:

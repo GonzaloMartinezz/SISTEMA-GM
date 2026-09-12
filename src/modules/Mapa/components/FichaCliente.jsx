@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 · LA FICHA DEL PUNTO
+// SISTEMA GM · M-06 · LA FICHA DEL PUNTO
 // ----------------------------------------------------------------------------
 // Lo que aparece al tocar un pin. Está pensada para resolver en el momento: los
 // tres botones de abajo son las tres cosas que uno hace parado frente al mapa
@@ -37,9 +37,9 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
   const proximo = cliente.proximoTipo ? getTipoCompromiso(cliente.proximoTipo) : null;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] shadow-[0_16px_40px_-16px_rgba(26,26,24,0.35)]">
+    <article className="overflow-hidden rounded-2xl border border-[var(--gm-borde)] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] shadow-[0_16px_40px_-16px_rgba(26,26,24,0.35)]">
       {/* -------------------------------- cabecera ------------------------- */}
-      <header className="flex items-start gap-2 border-b border-[#F0EAE1] dark:border-[#333333] px-4 py-3">
+      <header className="flex items-start gap-2 border-b border-[var(--gm-borde-fuerte)] dark:border-[#333333] px-4 py-3">
         <span
           className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
           style={{ backgroundColor: estado.color }}
@@ -58,7 +58,7 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[#B0A697] dark:text-[#6B7280] transition hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[var(--gm-texto-medio)] dark:text-[#6B7280] transition hover:bg-[#F3EDE4] dark:hover:bg-[#121212] hover:text-[#2A2118] dark:text-[#F9FAFB]"
           >
             <X size={14} />
           </button>
@@ -76,11 +76,11 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
 
         {/* ------------------------------ ubicación ------------------------ */}
         <div className="flex items-start gap-2">
-          <MapPin size={13} className="mt-0.5 shrink-0 text-[#B0A697] dark:text-[#6B7280]" />
+          <MapPin size={13} className="mt-0.5 shrink-0 text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />
           <div className="min-w-0 text-[12px] leading-relaxed">
             <p className="text-[#2A2118] dark:text-[#F9FAFB]">{cliente.direccion || 'Sin dirección cargada'}</p>
             <p className="text-[#948A7C]">{cliente.localidad}</p>
-            <p className="mt-0.5 font-mono text-[10px] tabular-nums text-[#B0A697] dark:text-[#6B7280]">
+            <p className="mt-0.5 font-mono text-[10px] tabular-nums text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
               {cliente.lat.toFixed(5)}, {cliente.lng.toFixed(5)}
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
             href={linkUbicacion(cliente)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] text-[12px] font-medium text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
           >
             <ExternalLink size={13} />
             Ver ubicación
@@ -140,7 +140,7 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
 
         {/* ------------------------------ contacto ------------------------- */}
         {!compacta && (
-          <div className="flex items-center gap-2 border-t border-[#F4EFE7] pt-3">
+          <div className="flex items-center gap-2 border-t border-[var(--gm-divisor)] pt-3">
             <Accion href={tel} icono={Phone} etiqueta="Llamar" />
             <Accion href={wa} icono={MessageCircle} etiqueta="WhatsApp" externo />
             <Accion
@@ -148,7 +148,7 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
               icono={Mail}
               etiqueta="Mail"
             />
-            <span className="ml-auto text-[10px] text-[#B0A697] dark:text-[#6B7280]">{cliente.codigo}</span>
+            <span className="ml-auto text-[10px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{cliente.codigo}</span>
           </div>
         )}
       </div>
@@ -159,7 +159,7 @@ export default function FichaCliente({ cliente, onCerrar, compacta = false }) {
 function Dato({ titulo, valor, alerta }) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
         {titulo}
       </dt>
       <dd className={`mt-0.5 text-[12px] ${alerta ? 'text-[#B4551A]' : 'text-[#2A2118] dark:text-[#F9FAFB]'}`}>
@@ -171,11 +171,11 @@ function Dato({ titulo, valor, alerta }) {
 
 function Accion({ href, icono: Icono, etiqueta, externo }) {
   const clase =
-    'inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#E8E0D5] dark:border-[#333333] text-[11px] font-medium transition';
+    'inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--gm-borde)] dark:border-[#333333] text-[11px] font-medium transition';
   if (!href) {
     return (
       <span
-        className={`${clase} cursor-not-allowed bg-[#FCFAF6] dark:bg-[#2D2D2D] text-[#C6BCAC]`}
+        className={`${clase} cursor-not-allowed bg-[#FCFAF6] dark:bg-[#2D2D2D] text-[var(--gm-texto-suave)]`}
         title={`Sin ${etiqueta.toLowerCase()} cargado`}
       >
         <Icono size={12} />

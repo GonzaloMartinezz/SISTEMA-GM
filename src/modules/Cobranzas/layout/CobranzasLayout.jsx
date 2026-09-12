@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-07 COBRANZAS · LAYOUT DEL MÓDULO
 // ============================================================================
 
 import React from 'react';
@@ -14,7 +14,8 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
-      numero={8}
+      idModulo="cobranzas"
+      numero={7}
       nombre="Cobranzas"
       icono={ShieldAlert}
       secciones={SECCIONES}

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-09 TESORERÍA · LAYOUT DEL MÓDULO
 // ============================================================================
 
 import React from 'react';
@@ -15,7 +15,8 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
-      numero={3}
+      idModulo="finanzas"
+      numero={9}
       nombre="Tesorería"
       icono={Wallet}
       secciones={SECCIONES}

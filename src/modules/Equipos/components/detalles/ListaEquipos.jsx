@@ -24,7 +24,7 @@ export default function ListaEquipos({ equipos = [], seleccionado, onSeleccionar
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-[#F0EAE1] dark:border-[#333333] px-5 py-4">
+      <div className="border-b border-[var(--gm-borde-fuerte)] dark:border-[#333333] px-5 py-4">
         <Buscador valor={busqueda} onChange={onBuscar} placeholder="Buscar equipo…" />
       </div>
 
@@ -68,7 +68,7 @@ export default function ListaEquipos({ equipos = [], seleccionado, onSeleccionar
                       >
                         {e.nombre}
                       </span>
-                      <span className="w-full truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+                      <span className="w-full truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                         {usd(e.precioUsd)} · {e.stock > 0 ? `${e.stock} en stock` : 'sin stock'}
                       </span>
                     </button>

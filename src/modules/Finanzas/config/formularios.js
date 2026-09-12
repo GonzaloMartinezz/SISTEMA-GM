@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · ESQUEMAS DE FORMULARIO
+// SISTEMA GM · M-09 TESORERÍA · ESQUEMAS DE FORMULARIO
 // ----------------------------------------------------------------------------
 // Alimentan al FormularioGm compartido. Son los mismos campos que aceptaba la
 // consola anterior: sólo cambió la forma de pedirlos.

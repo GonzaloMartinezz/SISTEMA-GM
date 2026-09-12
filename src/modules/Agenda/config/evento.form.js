@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · FORMULARIO DEL COMPROMISO
+// SISTEMA GM · M-04 · FORMULARIO DEL COMPROMISO
 // ----------------------------------------------------------------------------
 // El `estado` no está: se cambia con los botones de cerrar/cancelar, no en un
 // desplegable. Un compromiso se cierra cuando pasó algo, no cuando alguien

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · VENTAS Y COBROS
+// SISTEMA GM · M-07 COBRANZAS · VENTAS Y COBROS
 // ----------------------------------------------------------------------------
 // La pantalla principal del módulo: cada venta con su anticipo, su plan de
 // cuotas y cuánto falta cobrar. A la izquierda la lista, a la derecha la
@@ -110,7 +110,7 @@ export default function VentasView() {
           }
           cuerpoClassName="p-0"
         >
-          <div className="flex flex-wrap gap-1.5 border-b border-[#F0EAE1] px-5 py-3">
+          <div className="flex flex-wrap gap-1.5 border-b border-[var(--gm-borde-fuerte)] px-5 py-3">
             {FILTROS.map((f) => {
               const activo = estadoFiltro === f.id;
               const n = conteoPorEstado[f.id] ?? 0;
@@ -122,11 +122,11 @@ export default function VentasView() {
                   className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[12px] font-medium transition ${
                     activo
                       ? 'border-[#B4551A] bg-[#FBE5C8] text-[#7E3C0F]'
-                      : 'border-[#E8E0D5] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
+                      : 'border-[var(--gm-borde)] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
                   }`}
                 >
                   {f.nombre}
-                  <span className={activo ? 'text-[#8A3F11]' : 'text-[#B0A697]'}>{n}</span>
+                  <span className={activo ? 'text-[#8A3F11]' : 'text-[var(--gm-texto-medio)]'}>{n}</span>
                 </button>
               );
             })}
@@ -152,7 +152,7 @@ export default function VentasView() {
               }
             />
           ) : (
-            <ul className="divide-y divide-[#F4EFE7]">
+            <ul className="divide-y divide-[var(--gm-divisor)]">
               {ventasFiltradas.map((v) => (
                 <li key={v.codigo}>
                   <FilaVenta
@@ -181,7 +181,7 @@ export default function VentasView() {
             <Panel
               titulo="A quién hay que apurar"
               bajada="Agrupado por cliente, no por venta: al cliente lo llamás una vez, no una por venta."
-              acciones={<Users size={16} className="text-[#B0A697]" />}
+              acciones={<Users size={16} className="text-[var(--gm-texto-medio)]" />}
               cuerpoClassName={deudores.length ? 'p-0' : 'p-6'}
             >
               {deudores.length === 0 ? (
@@ -191,7 +191,7 @@ export default function VentasView() {
                   texto="Todas las ventas están saldadas. Disfrutalo."
                 />
               ) : (
-                <ul className="divide-y divide-[#F4EFE7]">
+                <ul className="divide-y divide-[var(--gm-divisor)]">
                   {deudores.slice(0, 8).map((d) => (
                     <li
                       key={d.clave}
@@ -204,7 +204,7 @@ export default function VentasView() {
                             <Chip tono="rosa">{usd(d.vencido)} vencido</Chip>
                           )}
                         </span>
-                        <span className="mt-0.5 block text-[11px] text-[#B0A697]">
+                        <span className="mt-0.5 block text-[11px] text-[var(--gm-texto-medio)]">
                           {d.localidad || 'Sin zona'}
                           {d.ventas > 1 && ` · ${plural(d.ventas, 'venta', 'ventas')}`}
                           {d.proximoVencimiento && ` · próxima ${fechaCorta(d.proximoVencimiento)}`}

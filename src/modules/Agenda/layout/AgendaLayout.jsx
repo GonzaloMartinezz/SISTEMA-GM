@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · LAYOUT DEL MÓDULO
 // ----------------------------------------------------------------------------
 // El navegador de fechas vive en el encabezado porque manda sobre las cuatro
 // secciones a la vez: es el "dónde estoy parado" del módulo entero.
@@ -18,7 +18,7 @@ function Cuerpo() {
   return (
     <LayoutModulo
       idModulo="agenda"
-      numero={5}
+      numero={4}
       nombre="Agenda Inteligente"
       icono={CalendarClock}
       secciones={SECCIONES}

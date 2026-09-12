@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · TARJETA DEL TABLERO
+// SISTEMA GM · M-03 · TARJETA DEL TABLERO
 // ----------------------------------------------------------------------------
 // Tarjeta blanca con una barrita del color de su etapa. Muestra lo mínimo para
 // decidir sin abrirla: quién, qué equipo, cuánta plata, hace cuánto que no se
@@ -71,7 +71,7 @@ export default function TarjetaLead({
         </p>
       )}
 
-      <div className="mt-3 flex items-center gap-1 border-t border-[#F4EFE7] pt-2.5">
+      <div className="mt-3 flex items-center gap-1 border-t border-[var(--gm-divisor)] pt-2.5">
         <BotonIcono
           etiqueta="Escribir por WhatsApp"
           icono={MessageCircle}

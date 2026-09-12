@@ -165,9 +165,9 @@ export default function PanelActualizacion({ abierto, resultado, onCerrar }) {
                       </span>
                     </p>
                     {p.detalleError && (
-                      <p className="mt-1 break-words font-mono text-[11px] leading-relaxed text-white/40">
-                        {p.detalleError}
-                      </p>
+                      <div className="mt-2">
+                        <DetalleError errores={p.detalleError} />
+                      </div>
                     )}
                   </li>
                 ))}
@@ -359,4 +359,53 @@ function Dato({ t, v, pie, alerta }) {
       {pie && <p className="text-[10px] text-white/25">{pie}</p>}
     </div>
   );
+}
+
+function DetalleError({ errores }) {
+  if (!errores) return null;
+
+  let lista = [];
+  if (typeof errores === 'string') {
+    try {
+      lista = JSON.parse(errores);
+    } catch (e) {
+      return (
+        <p className="break-words font-mono text-[11px] leading-relaxed text-white/40">
+          {errores}
+        </p>
+      );
+    }
+  } else if (Array.isArray(errores)) {
+    lista = errores;
+  } else {
+    return (
+      <p className="break-words font-mono text-[11px] leading-relaxed text-white/40">
+        {JSON.stringify(errores)}
+      </p>
+    );
+  }
+
+  if (Array.isArray(lista) && lista.length > 0) {
+    const limite = 5;
+    const mostrar = lista.slice(0, limite);
+    const faltan = lista.length - limite;
+
+    return (
+      <ul className="space-y-1.5 rounded bg-black/20 p-2.5">
+        {mostrar.map((err, i) => (
+          <li key={i} className="flex gap-2.5 font-mono text-[11px] text-white/40">
+            <span className="shrink-0 text-rose-400/50">Fila {err.fila || '?'}</span>
+            <span className="break-words text-white/60">{err.error || JSON.stringify(err)}</span>
+          </li>
+        ))}
+        {faltan > 0 && (
+          <li className="font-mono text-[11px] text-white/30 italic mt-1">
+            ... y {faltan} errores más
+          </li>
+        )}
+      </ul>
+    );
+  }
+
+  return null;
 }

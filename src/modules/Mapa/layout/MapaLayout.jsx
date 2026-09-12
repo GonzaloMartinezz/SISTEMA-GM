@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · LAYOUT DEL MÓDULO
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · LAYOUT DEL MÓDULO
 // ============================================================================
 
 import React from 'react';
@@ -14,7 +14,8 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
-      numero={7}
+      idModulo="sistema"
+      numero={6}
       nombre="Mapa y Logística"
       icono={Map}
       secciones={SECCIONES}

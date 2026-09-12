@@ -37,7 +37,7 @@ function MapController({ puntos, seleccionado }) {
   useEffect(() => {
     if (!puntos.length || encuadrado.current) return;
     encuadrado.current = true;
-    
+
     const bounds = L.latLngBounds(puntos.map(p => [p.lat, p.lng]));
     if (bounds.isValid()) {
       map.fitBounds(bounds, { padding: [40, 40] });
@@ -61,13 +61,13 @@ function MapController({ puntos, seleccionado }) {
 // Control manual de zoom para reemplazar los de leaflet
 function CustomZoomControl({ encuadrarTodo }) {
   const map = useMap();
-  
+
   return (
-    <div className="absolute right-3 top-3 z-[1000] flex flex-col overflow-hidden rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] shadow-[0_4px_16px_-6px_rgba(26,26,24,0.25)]">
+    <div className="absolute right-3 top-3 z-[1000] flex flex-col overflow-hidden rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] shadow-[0_4px_16px_-6px_rgba(26,26,24,0.25)]">
       <BotonMapa etiqueta="Acercar" icono={Plus} onClick={() => map.setZoom(map.getZoom() + 1)} />
-      <span className="h-px bg-[#F0EAE1]" />
+      <span className="h-px bg-[var(--gm-superficie-fuerte)]" />
       <BotonMapa etiqueta="Alejar" icono={Minus} onClick={() => map.setZoom(map.getZoom() - 1)} />
-      <span className="h-px bg-[#F0EAE1]" />
+      <span className="h-px bg-[var(--gm-superficie-fuerte)]" />
       <BotonMapa etiqueta="Ver todos los puntos" icono={Crosshair} onClick={encuadrarTodo} />
     </div>
   );
@@ -144,7 +144,7 @@ export default function MapaGm({
   }, [puntosValidos, seleccionado?.codigo, zoom]);
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-[#E8E0D5] dark:border-[#333333] bg-[#F3EDE4] dark:bg-[#121212] ${alto} ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl border border-[var(--gm-borde)] dark:border-[#333333] bg-[#F3EDE4] dark:bg-[#121212] ${alto} ${className}`}>
       {/* Añadimos estilos globales específicos para sobreescribir el popup default de leaflet y acomodar nuestros componentes */}
       <style>{`
         .leaflet-popup-content-wrapper { background: transparent; box-shadow: none; padding: 0; }
@@ -157,7 +157,7 @@ export default function MapaGm({
         }
         .animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
       `}</style>
-      
+
       <MapContainer
         center={CENTRO_POR_DEFECTO}
         zoom={zoom}
@@ -232,7 +232,7 @@ function BotonMapa({ etiqueta, icono: Icono, onClick }) {
       title={etiqueta}
       aria-label={etiqueta}
       onClick={onClick}
-      className="grid h-9 w-9 place-items-center text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118] dark:text-[#F9FAFB]"
+      className="grid h-9 w-9 place-items-center text-[#6E6559] dark:text-[#9CA3AF] transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D] hover:text-[#2A2118]"
     >
       <Icono size={16} />
     </button>

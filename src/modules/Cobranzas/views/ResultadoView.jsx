@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · RESULTADO DEL NEGOCIO
+// SISTEMA GM · M-07 COBRANZAS · RESULTADO DEL NEGOCIO
 // ----------------------------------------------------------------------------
 // "Ganancia, pérdida": esta es esa pantalla. Y está construida alrededor de
 // una distinción que casi nadie hace y que decide si el negocio se entiende o
@@ -139,7 +139,7 @@ export default function ResultadoView() {
                 className={`rounded-lg border px-2.5 py-1.5 text-[12px] font-medium transition ${
                   periodo === p.id
                     ? 'border-[#B4551A] bg-[#FBE5C8] text-[#7E3C0F]'
-                    : 'border-[#E8E0D5] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
+                    : 'border-[var(--gm-borde)] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
                 }`}
               >
                 {p.nombre}
@@ -176,11 +176,11 @@ export default function ResultadoView() {
         <Panel
           titulo="De lo que vendiste a lo que te quedó"
           bajada={`Últimos ${plural(ventana.length, 'mes', 'meses')}, escalón por escalón.`}
-          acciones={<Layers size={16} className="text-[#B0A697]" />}
+          acciones={<Layers size={16} className="text-[var(--gm-texto-medio)]" />}
         >
           <CascadaResultado pasos={pasos} />
 
-          <p className="mt-4 border-t border-[#F0EAE1] pt-3 text-[11px] leading-relaxed text-[#948A7C]">
+          <p className="mt-4 border-t border-[var(--gm-borde-fuerte)] pt-3 text-[11px] leading-relaxed text-[#948A7C]">
             Los retiros no están en esta cuenta a propósito: son plata tuya que sacaste, no un
             costo de operar. Si los descontaras, un mes en que te pagaste bien parecería un mes
             en que el negocio anduvo mal.
@@ -192,7 +192,7 @@ export default function ResultadoView() {
         <Panel
           titulo="En qué se fue la plata"
           bajada="Todos los egresos del período, por categoría."
-          acciones={<PieChart size={16} className="text-[#B0A697]" />}
+          acciones={<PieChart size={16} className="text-[var(--gm-texto-medio)]" />}
         >
           {categorias.length === 0 ? (
             <EstadoVacio titulo="Sin egresos" texto="No hay gastos cargados en este período." />
@@ -210,7 +210,7 @@ export default function ResultadoView() {
                       </span>
                       <span className="shrink-0 text-[13px] tabular-nums text-[#6E6559]">
                         {usd(c.monto)}
-                        <span className="ml-1.5 text-[11px] text-[#B0A697]">
+                        <span className="ml-1.5 text-[11px] text-[var(--gm-texto-medio)]">
                           {c.pct.toFixed(0)}%
                         </span>
                       </span>
@@ -222,7 +222,7 @@ export default function ResultadoView() {
                       />
                     </div>
                     {c.ayuda && (
-                      <p className="mt-1 text-[11px] text-[#B0A697]">{c.ayuda}</p>
+                      <p className="mt-1 text-[11px] text-[var(--gm-texto-medio)]">{c.ayuda}</p>
                     )}
                   </li>
                 );
@@ -240,11 +240,11 @@ function Tarjeta({ titulo, subtitulo, valor, pie, icono: Icono }) {
   const color = positivo ? ESTADO_COLOR.bien : ESTADO_COLOR.critico;
 
   return (
-    <section className="rounded-2xl border border-[#E8E0D5] bg-[#FCFAF6] px-5 py-4">
+    <section className="rounded-2xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-5 py-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[14px] font-semibold text-[#2A2118]">{titulo}</p>
-          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">
+          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">
             {subtitulo}
           </p>
         </div>

@@ -70,7 +70,7 @@ export default function CalendarioMes({ mes, onCambiarMes, eventos = [], selecci
         {DIAS.map((d) => (
           <div
             key={d}
-            className="pb-2 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#B0A697] dark:text-[#6B7280]"
+            className="pb-2 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]"
           >
             {d}
           </div>
@@ -92,7 +92,7 @@ export default function CalendarioMes({ mes, onCambiarMes, eventos = [], selecci
                 activo
                   ? 'border-[#2F6DA0] bg-[#FBE5C8] dark:bg-[#2A1608] font-semibold text-[#2F6DA0]'
                   : esHoy
-                    ? 'border-[#D5CABA] bg-[#FFFFFF] dark:bg-[#1E1E1E] font-semibold text-[#2A2118] dark:text-[#F9FAFB]'
+                    ? 'border-[#D5CABA] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] font-semibold text-[#2A2118] dark:text-[#F9FAFB]'
                     : 'border-transparent text-[#6E6559] dark:text-[#9CA3AF] hover:bg-[#F6F1E9] dark:hover:bg-[#2D2D2D]'
               }`}
             >
@@ -106,7 +106,7 @@ export default function CalendarioMes({ mes, onCambiarMes, eventos = [], selecci
                   />
                 ))}
                 {delDia.length > 3 && (
-                  <span className="text-[9px] font-semibold text-[#B0A697] dark:text-[#6B7280]">+{delDia.length - 3}</span>
+                  <span className="text-[9px] font-semibold text-[var(--gm-texto-medio)] dark:text-[#6B7280]">+{delDia.length - 3}</span>
                 )}
               </span>
             </button>
@@ -114,7 +114,7 @@ export default function CalendarioMes({ mes, onCambiarMes, eventos = [], selecci
         })}
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-[#F0EAE1] dark:border-[#333333] pt-4 text-[12px] text-[#948A7C]">
+      <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-[var(--gm-borde-fuerte)] dark:border-[#333333] pt-4 text-[12px] text-[#948A7C]">
         {Object.entries(COLOR_TIPO).map(([tipo, color]) => (
           <span key={tipo} className="inline-flex items-center gap-1.5 capitalize">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />

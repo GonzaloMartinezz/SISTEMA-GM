@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,25 +15,25 @@
    componente tenga que saber nada de esto.
 --------------------------------------------------------------------------- */
 :root {
-  --gm-fondo: #FAF6F0;
+  --gm-fondo: #F8FAFC;
   --gm-superficie: #FFFFFF;
-  --gm-superficie-suave: #FCFAF6;
-  --gm-superficie-fuerte: #F3EDE4;
-  --gm-borde: #E8E0D5;
-  --gm-borde-fuerte: #D5CABA;
-  --gm-divisor: #F0EAE1;
-  --gm-texto: #2A2118;
-  --gm-texto-medio: #6E6559;
-  --gm-texto-suave: #948A7C;
-  --gm-texto-tenue: #B0A697;
-  --gm-acento: #B4551A;
-  --gm-acento-fuerte: #8A3F11;
-  --gm-acento-suave-bg: #FBE5C8;
+  --gm-superficie-suave: #F1F5F9;
+  --gm-superficie-fuerte: #E2E8F0;
+  --gm-borde: #E2E8F0;
+  --gm-borde-fuerte: #CBD5E1;
+  --gm-divisor: #F1F5F9;
+  --gm-texto: #0F172A;
+  --gm-texto-medio: #475569;
+  --gm-texto-suave: #64748B;
+  --gm-texto-tenue: #94A3B8;
+  --gm-acento: #2563EB;
+  --gm-acento-fuerte: #1D4ED8;
+  --gm-acento-suave-bg: #DBEAFE;
   --gm-sobre-acento: #FFFFFF;
-  --gm-overlay: rgba(42,33,24,0.35);
-  --gm-sombra-panel: 0 1px 2px rgba(26,26,24,0.04), 0 8px 24px -14px rgba(26,26,24,0.14);
-  --gm-sombra-modal: 0 24px 64px -16px rgba(16,24,40,0.35);
-  --gm-sombra-tooltip: 0 8px 24px -8px rgba(16,24,40,0.18);
+  --gm-overlay: rgba(15,23,42,0.45);
+  --gm-sombra-panel: 0 1px 3px rgba(15,23,42,0.05), 0 10px 30px -10px rgba(15,23,42,0.08);
+  --gm-sombra-modal: 0 25px 50px -12px rgba(15,23,42,0.25);
+  --gm-sombra-tooltip: 0 10px 25px -5px rgba(15,23,42,0.15);
 }
 
 @layer base {

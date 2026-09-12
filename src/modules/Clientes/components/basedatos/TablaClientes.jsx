@@ -16,7 +16,7 @@ import { useTema } from '../../../../shared/gm-ui/TemaProvider';
 
 const TINTE_ESTADO = { activo: 'aqua', lead: 'azul', inactivo: 'gris' };
 
-const soloDigitos = (t = '') => t.replace(/\D/g, '');
+const soloDigitos = (t) => (t ? String(t).replace(/\D/g, '') : '');
 
 const linkWhatsApp = (tel) => {
   const n = soloDigitos(tel);
@@ -144,7 +144,7 @@ export default function TablaClientes({ clientes, onVerFicha, onEditar, onElimin
       onFilaClick={onVerFicha}
       orden={orden}
       onOrdenar={onOrdenar}
-      alto="max-h-[calc(100vh-380px)]"
+      alto="flex-1 min-h-0"
       vacioTitulo="No hay clientes que coincidan"
       vacioTexto="Cambiá el rubro o el texto de búsqueda, o cargá un cliente nuevo con el botón de arriba."
     />

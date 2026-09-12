@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · LA JORNADA
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · LA JORNADA
 // ----------------------------------------------------------------------------
 // La pantalla que se mira todo el día. A la izquierda el día hora por hora; a
 // la derecha lo que se necesita mientras se lo vive: qué sigue ahora, la ruta
@@ -229,7 +229,7 @@ export default function HoyView() {
               bajada="Lo que los otros módulos saben que falta hacer y todavía no agendaste."
               cuerpoClassName="p-0"
             >
-              <ul className="divide-y divide-[#F4EFE7]">
+              <ul className="divide-y divide-[var(--gm-divisor)]">
                 {pendientes.slice(0, 4).map((p) => (
                   <li key={p.clave} className="px-5 py-3">
                     <p className="truncate text-[13px] font-medium text-[var(--gm-texto)]">{p.titular}</p>
@@ -237,7 +237,7 @@ export default function HoyView() {
                   </li>
                 ))}
               </ul>
-              <div className="border-t border-[#F0EAE1] px-5 py-3">
+              <div className="border-t border-[var(--gm-borde-fuerte)] px-5 py-3">
                 <p className="text-[12px] text-[var(--gm-texto-suave)]">
                   {pendientes.length} pendientes en total · están todos en la sección{' '}
                   <span className="text-[var(--gm-texto-medio)]">Pendientes y Alertas</span>.

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · LA SEMANA
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · LA SEMANA
 // ----------------------------------------------------------------------------
 // Los siete días con su carga, para acomodar. La franja de arriba resume la
 // semana completa; abajo, arrastrando, se mueve lo que no entra.

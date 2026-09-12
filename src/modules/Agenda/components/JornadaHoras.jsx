@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · LA JORNADA HORA POR HORA
+// SISTEMA GM · M-04 · LA JORNADA HORA POR HORA
 // ----------------------------------------------------------------------------
 // El día dibujado sobre un eje de horas, que es la única forma de ver los
 // huecos. Una lista ordenada te dice qué tenés; esto te dice además dónde entra
@@ -75,7 +75,7 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
             <span className="w-12 shrink-0 -translate-y-1.5 pr-2 text-right text-[11px] tabular-nums text-[var(--gm-texto-tenue)]">
               {String(Math.floor(h / 60)).padStart(2, '0')}:00
             </span>
-            <span className="mt-px h-px flex-1 bg-[#F0EAE1]" />
+            <span className="mt-px h-px flex-1 bg-[var(--gm-superficie-fuerte)]" />
           </div>
         ))}
 
@@ -117,12 +117,12 @@ export default function JornadaHoras({ fecha, eventos, onEvento, onCerrar, onCan
                   left: `calc(${carril * ancho}% + 2px)`,
                   width: `calc(${ancho}% - 6px)`,
                   backgroundColor: cerrado ? '#F6F1E9' : `${tipo.color}14`,
-                  borderColor: cerrado ? '#E8E0D5' : `${tipo.color}55`,
+                  borderColor: cerrado ? 'var(--gm-borde)' : `${tipo.color}55`,
                   borderLeft: `3px solid ${cerrado ? '#D5CABA' : tipo.color}`,
                 }}
               >
                 <span className="flex items-center gap-1.5">
-                  <tipo.icono size={12} style={{ color: cerrado ? '#B0A697' : tipo.color }} />
+                  <tipo.icono size={12} style={{ color: cerrado ? 'var(--gm-texto-medio)' : tipo.color }} />
                   <span className="truncate text-[11px] tabular-nums text-[var(--gm-texto-medio)]">
                     {evento.hora}–{horaFin(evento)}
                   </span>

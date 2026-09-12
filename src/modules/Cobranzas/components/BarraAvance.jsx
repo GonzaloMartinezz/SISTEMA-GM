@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · BARRA DE AVANCE DE COBRO
+// SISTEMA GM · M-07 · BARRA DE AVANCE DE COBRO
 // ----------------------------------------------------------------------------
 // Cuánto de una venta ya entró. Tres tramos, no dos: cobrado, vencido y lo que
 // falta pero todavía no venció. Mostrar sólo "cobrado vs falta" esconde

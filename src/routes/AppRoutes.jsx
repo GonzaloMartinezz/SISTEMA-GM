@@ -129,7 +129,7 @@ export default function AppRoutes() {
         {/* La ruta vieja del inventario redirige, para no dejar enlaces muertos. */}
         <Route path="/inventory" element={<Navigate to="/equipamientos/stock" replace />} />
 
-        {/* ------------------ M-03 · Tesorería ------------------ */}
+        {/* ------------------ M-09 · Tesorería ------------------ */}
         {/* Modulo 3 rediseniado: resumen, movimientos, proyecciones y fiscal. */}
         <Route
           path="/tesoreria"
@@ -149,7 +149,7 @@ export default function AppRoutes() {
         {/* La ruta vieja de finanzas redirige, para no dejar enlaces muertos. */}
         <Route path="/finance" element={<Navigate to="/tesoreria/resumen" replace />} />
 
-        {/* ------------------ M-04 · Seguimientos ------------------ */}
+        {/* ------------------ M-03 · Seguimientos ------------------ */}
         {/* Modulo 4 rediseniado: proceso, avances, mensajeria y respuestas. */}
         <Route
           path="/seguimientos"
@@ -166,7 +166,7 @@ export default function AppRoutes() {
           <Route path="plantillas" element={<SgPlantillasView />} />
         </Route>
 
-        {/* ------------------ M-05 · Agenda Inteligente ------------------ */}
+        {/* ------------------ M-04 · Agenda Inteligente ------------------ */}
         {/* Modulo 5 rediseniado: hoy, semana, mes y la bandeja de pendientes. */}
         <Route
           path="/agenda-logistica"
@@ -183,7 +183,7 @@ export default function AppRoutes() {
           <Route path="pendientes" element={<AgPendientesView />} />
         </Route>
 
-        {/* ------------------ M-06 · Notario 360° ------------------ */}
+        {/* ------------------ M-05 · Notario 360° ------------------ */}
         {/* Modulo 6 rediseniado: notas de todo el sistema, trazabilidad,
             ficha 360 y el padron de cuentas. */}
         <Route
@@ -209,7 +209,7 @@ export default function AppRoutes() {
           <Route path="reportes" element={<Navigate to="/notario-360/trazabilidad" replace />} />
         </Route>
 
-        {/* ------------------ M-07 · Mapa y Logística ------------------ */}
+        {/* ------------------ M-06 · Mapa y Logística ------------------ */}
         {/* Modulo 7 rediseniado: mapa propio, agenda ubicada, ruta y cobertura. */}
         <Route
           path="/logistics"
@@ -229,7 +229,7 @@ export default function AppRoutes() {
         {/* La ruta vieja del mapa redirige, para no dejar enlaces muertos. */}
         <Route path="/mapa-logistica" element={<Navigate to="/logistics/mapa" replace />} />
 
-        {/* ------------------ M-08 · Cobranzas ------------------ */}
+        {/* ------------------ M-07 · Cobranzas ------------------ */}
         {/* Modulo 8 rediseniado: ventas con plan de cuotas, calendario de
             cobros, caja del negocio y resultado mes a mes. */}
         <Route

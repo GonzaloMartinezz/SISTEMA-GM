@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Los clientes ubicados, los compromisos de la agenda y el punto seleccionado,
 // que es lo que comparten las cuatro secciones: si tocás a un cliente en el

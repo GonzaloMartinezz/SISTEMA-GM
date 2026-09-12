@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · INGRESOS Y EGRESOS
+// SISTEMA GM · M-09 TESORERÍA · INGRESOS Y EGRESOS
 // ----------------------------------------------------------------------------
 // Las dos caras del negocio en una sola pantalla: la liquidación mes a mes y
 // los gastos fijos. Las dos con alta, edición y baja.

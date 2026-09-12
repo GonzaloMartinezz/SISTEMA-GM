@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-09 TESORERÍA · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Las cuatro pantallas del módulo. Son las mismas cuatro vistas que tenía la
 // consola anterior (resumen · ingresos y egresos · proyecciones · impuestos y

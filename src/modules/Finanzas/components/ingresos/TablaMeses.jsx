@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · LIQUIDACIÓN MES A MES
+// SISTEMA GM · M-09 TESORERÍA · LIQUIDACIÓN MES A MES
 // ----------------------------------------------------------------------------
 // La misma liquidación de siempre: ventas, costo de mercadería, margen bruto,
 // lo que cobrás vos (fijo + comisión) y el resultado. Las cuentas las hace
@@ -18,7 +18,7 @@ export default function TablaMeses({ meses = [], enMoneda, onEditar, onEliminar 
       render: (m) => (
         <div className="min-w-0">
           <p className="font-medium capitalize text-[#2A2118] dark:text-[#F9FAFB]">{m.etiqueta}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{m.mes}</p>
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{m.mes}</p>
         </div>
       ),
     },
@@ -38,7 +38,7 @@ export default function TablaMeses({ meses = [], enMoneda, onEditar, onEliminar 
       render: (m) => (
         <div className="min-w-0">
           <p className="font-medium text-[#2A2118] dark:text-[#F9FAFB]">{enMoneda(m.margenBrutoUsd)}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{m.margenPct.toFixed(1)}%</p>
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{m.margenPct.toFixed(1)}%</p>
         </div>
       ),
     },
@@ -48,7 +48,7 @@ export default function TablaMeses({ meses = [], enMoneda, onEditar, onEliminar 
       render: (m) => (
         <div className="min-w-0">
           <p className="font-medium text-[#2A2118] dark:text-[#F9FAFB]">{enMoneda(m.ingresosUsd)}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
             fijo {enMoneda(m.sueldoFijoUsd)} + com. {enMoneda(m.comisionUsd)}
           </p>
         </div>

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · EL MAPA
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · EL MAPA
 // ----------------------------------------------------------------------------
 // La pantalla principal: la lista a la izquierda, el mapa a la derecha, y los
 // dos apuntando al mismo cliente. Tocás en la lista y el mapa lo va a buscar;
@@ -22,6 +22,7 @@ import MapaGm from '../components/MapaGm';
 import PinMapa from '../components/PinMapa';
 import FichaCliente from '../components/FichaCliente';
 import FiltrosMapa from '../components/FiltrosMapa';
+import { useTema } from '../../../shared/gm-ui/TemaProvider';
 
 const usd = (v) => `US$ ${Math.round(Number(v || 0)).toLocaleString('es-AR')}`;
 
@@ -30,6 +31,12 @@ export default function MapaView() {
     clientes, clientesFiltrados, sinCoordenadas, cargando,
     seleccionado, setSeleccionado, hayFiltro,
   } = useMapa();
+  const { rubroColor, serie } = useTema();
+
+  const getPinColor = (p) => {
+    if (p.estado === 'lead') return serie.ambar;
+    return rubroColor[p.rubro] || '#948A7C';
+  };
 
   const conteoEstado = useMemo(() => {
     const c = {};
@@ -122,7 +129,7 @@ export default function MapaView() {
               texto="Probá limpiando los filtros o buscando otra cosa."
             />
           ) : (
-            <ul className="max-h-[520px] divide-y divide-[#F4EFE7] overflow-y-auto">
+            <ul className="max-h-[520px] divide-y divide-[var(--gm-divisor)] overflow-y-auto">
               {clientesFiltrados
                 .slice()
                 .sort((a, b) => (diasDesde(b.ultimaVisita) ?? 9999) - (diasDesde(a.ultimaVisita) ?? 9999))
@@ -141,7 +148,7 @@ export default function MapaView() {
                       >
                         <span
                           className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
-                          style={{ backgroundColor: estado.color }}
+                          style={{ backgroundColor: getPinColor(c) }}
                         />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
@@ -160,7 +167,7 @@ export default function MapaView() {
                             {dias == null ? 'nunca' : dias === 0 ? 'hoy' : `${dias}d`}
                           </span>
                           {c.montoEnJuego > 0 && (
-                            <span className="block text-[11px] text-[#B0A697] dark:text-[#6B7280]">{usd(c.montoEnJuego)}</span>
+                            <span className="block text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{usd(c.montoEnJuego)}</span>
                           )}
                         </span>
                       </button>
@@ -177,7 +184,7 @@ export default function MapaView() {
           onSeleccionar={setSeleccionado}
           alto="h-[604px]"
           renderPin={(p, activo) => (
-            <PinMapa color={getEstado(p.estado).color} activo={activo} etiqueta={p.nombre} />
+            <PinMapa color={getPinColor(p)} activo={activo} etiqueta={p.nombre} />
           )}
           renderFicha={(c) => <FichaCliente cliente={c} onCerrar={() => setSeleccionado(null)} />}
         />

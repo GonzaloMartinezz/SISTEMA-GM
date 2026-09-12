@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-05 NOTARIO 360 · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Las notas, el índice de entidades, la bitácora y las cuentas, más el buscador
 // que comparten las cuatro secciones.

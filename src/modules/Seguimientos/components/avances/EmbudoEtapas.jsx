@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · EMBUDO
+// SISTEMA GM · M-03 · EMBUDO
 // ----------------------------------------------------------------------------
 // Barras horizontales, no un triángulo. El triángulo clásico es lindo pero
 // miente: el ancho de cada franja depende de la altura del dibujo y no se puede

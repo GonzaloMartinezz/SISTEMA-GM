@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · RESUMEN
+// SISTEMA GM · M-09 TESORERÍA · RESUMEN
 // ----------------------------------------------------------------------------
 // La foto del negocio a la distancia que elijas arriba: semana, mes, 12 meses
 // o 5 años. Los cuatro indicadores y el gráfico principal responden al mismo
@@ -104,7 +104,7 @@ export default function ResumenView() {
         <Panel
           titulo="Salud financiera"
           bajada="Margen, cobertura de gastos y crecimiento en una sola nota."
-          acciones={<HeartPulse size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<HeartPulse size={16} className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />}
         >
           <MedidorSalud salud={salud} />
         </Panel>
@@ -112,7 +112,7 @@ export default function ResumenView() {
         <Panel
           titulo={`En qué se fue la venta · ${ultimo.etiqueta}`}
           bajada="Del último mes liquidado. No cambia con el período de arriba: es una foto del hoy."
-          acciones={<PieChart size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<PieChart size={16} className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />}
         >
           <ComposicionEgresos mes={ultimo} enMoneda={enMoneda} />
         </Panel>

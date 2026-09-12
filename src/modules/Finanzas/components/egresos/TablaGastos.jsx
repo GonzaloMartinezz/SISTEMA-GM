@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · GASTOS FIJOS
+// SISTEMA GM · M-09 TESORERÍA · GASTOS FIJOS
 // ----------------------------------------------------------------------------
 // Los gastos que están sí o sí todos los meses. Los semanales se muestran
 // también mensualizados (× 4,33), que es como entran al cálculo del egreso
@@ -28,7 +28,7 @@ export default function TablaGastos({ gastos = [], enMoneda, onEditar, onElimina
       render: (g) => (
         <div className="min-w-0">
           <p className="truncate font-medium text-[#2A2118] dark:text-[#F9FAFB]">{g.concepto}</p>
-          <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">{g.id}</p>
+          <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{g.id}</p>
         </div>
       ),
     },

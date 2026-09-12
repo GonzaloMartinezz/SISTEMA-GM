@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 · PROYECCIÓN DEL MAPA (Web Mercator)
+// SISTEMA GM · M-06 · PROYECCIÓN DEL MAPA (Web Mercator)
 // ----------------------------------------------------------------------------
 // El mapa del módulo no usa ninguna librería ni ninguna clave de API. Son estas
 // cuatro fórmulas y un mosaico de imágenes.

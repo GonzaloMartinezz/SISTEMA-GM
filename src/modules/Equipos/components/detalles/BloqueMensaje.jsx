@@ -19,7 +19,7 @@ function Interruptor({ activo, onChange, children }) {
       className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] transition ${
         activo
           ? 'border-[#B4551A] bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-          : 'border-[#E8E0D5] dark:border-[#333333] bg-[#FFFFFF] dark:bg-[#1E1E1E] text-[#948A7C] hover:border-[#D5CABA]'
+          : 'border-[var(--gm-borde)] dark:border-[#333333] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] text-[#948A7C] hover:border-[#D5CABA]'
       }`}
     >
       <span
@@ -61,7 +61,7 @@ export default function BloqueMensaje({ equipo, specs = [] }) {
         </Interruptor>
       </div>
 
-      <pre className="max-h-[320px] overflow-auto whitespace-pre-wrap rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D] px-4 py-3.5 font-sans text-[13px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB]">
+      <pre className="max-h-[320px] overflow-auto whitespace-pre-wrap rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] bg-[#FCFAF6] dark:bg-[#2D2D2D] px-4 py-3.5 font-sans text-[13px] leading-relaxed text-[#2A2118] dark:text-[#F9FAFB]">
         {texto}
       </pre>
 
@@ -79,7 +79,7 @@ export default function BloqueMensaje({ equipo, specs = [] }) {
         </BotonGm>
       </div>
 
-      <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+      <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
         El costo y el margen no se incluyen nunca: este bloque es para mandarle al cliente.
       </p>
     </div>

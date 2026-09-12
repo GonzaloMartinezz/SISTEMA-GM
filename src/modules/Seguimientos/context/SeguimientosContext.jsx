@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-03 SEGUIMIENTOS · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Un solo lugar donde viven los leads, el historial de etapas, los mensajes y
 // las plantillas, más los filtros que comparten las cuatro secciones. Si el

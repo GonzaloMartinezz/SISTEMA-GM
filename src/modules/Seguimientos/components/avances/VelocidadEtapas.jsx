@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · CUÁNTO TARDA CADA ETAPA
+// SISTEMA GM · M-03 · CUÁNTO TARDA CADA ETAPA
 // ----------------------------------------------------------------------------
 // El promedio se calcula sólo con tramos terminados. Una etapa que todavía no
 // vio salir a nadie no muestra un cero (que se leería como "es instantánea"):

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · COBERTURA POR ZONA
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · COBERTURA POR ZONA
 // ----------------------------------------------------------------------------
 // Esta pantalla no la pediste; la agrego porque es la pregunta que un mapa
 // contesta y una lista no: qué zona estás dejando de lado.
@@ -23,6 +23,7 @@ import { DIAS_ABANDONO, getEstado } from '../config/mapa.config';
 import MapaGm from '../components/MapaGm';
 import PinMapa from '../components/PinMapa';
 import FichaCliente from '../components/FichaCliente';
+import { useTema } from '../../../shared/gm-ui/TemaProvider';
 
 const usd = (v) => `US$ ${Math.round(Number(v || 0)).toLocaleString('es-AR')}`;
 
@@ -30,6 +31,12 @@ export default function CoberturaView() {
   const {
     zonas, clientes, cargando, seleccionado, setSeleccionado, zonaActiva, setZonaActiva,
   } = useMapa();
+  const { rubroColor, serie, estado } = useTema();
+
+  const getPinColor = (p) => {
+    if (p.estado === 'lead') return serie.ambar;
+    return rubroColor[p.rubro] || '#948A7C';
+  };
 
   const navigate = useNavigate();
 
@@ -81,7 +88,7 @@ export default function CoberturaView() {
         <Panel
           titulo="Zonas"
           bajada="Ordenadas por la plata que hay en juego. Tocá una para verla sola en el mapa."
-          acciones={<LayoutGrid size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+          acciones={<LayoutGrid size={16} className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />}
           cuerpoClassName={zonas.length ? 'p-0' : 'p-6'}
         >
           {cargando ? (
@@ -92,7 +99,7 @@ export default function CoberturaView() {
               texto="Cargá latitud y longitud en las fichas de clientes para ver la cobertura."
             />
           ) : (
-            <ul className="divide-y divide-[#F4EFE7]">
+            <ul className="divide-y divide-[var(--gm-divisor)]">
               {zonas.map((z) => {
                 const activa = zonaActiva === z.zona;
                 return (
@@ -132,7 +139,7 @@ export default function CoberturaView() {
                         />
                       </div>
 
-                      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 text-[11px] text-[#B0A697] dark:text-[#6B7280]">
+                      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                         <span>{z.conVenta} con venta abierta</span>
                         <span>·</span>
                         <span>
@@ -164,7 +171,7 @@ export default function CoberturaView() {
               const olvidado = d == null || d >= DIAS_ABANDONO;
               return (
                 <PinMapa
-                  color={olvidado ? ESTADO_COLOR.atencion : getEstado(p.estado).color}
+                  color={olvidado ? estado.atencion : getPinColor(p)}
                   activo={activo}
                   etiqueta={p.nombre}
                 />
@@ -176,7 +183,7 @@ export default function CoberturaView() {
           <Panel
             titulo="Los más olvidados"
             bajada={`Sin visitar nunca, o hace más de ${DIAS_ABANDONO} días.`}
-            acciones={<TriangleAlert size={16} className="text-[#B0A697] dark:text-[#6B7280]" />}
+            acciones={<TriangleAlert size={16} className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />}
             cuerpoClassName="p-0"
           >
             {(() => {
@@ -193,7 +200,7 @@ export default function CoberturaView() {
                   texto={`Todos los clientes tuvieron una visita en los últimos ${DIAS_ABANDONO} días.`}
                 />
               ) : (
-                <ul className="divide-y divide-[#F4EFE7]">
+                <ul className="divide-y divide-[var(--gm-divisor)]">
                   {lista.map(({ c, d }) => (
                     <li key={c.codigo}>
                       <button
@@ -201,7 +208,7 @@ export default function CoberturaView() {
                         onClick={() => setSeleccionado(c)}
                         className="flex w-full items-center gap-3 px-5 py-3 text-left transition hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]"
                       >
-                        <MapPin size={14} className="shrink-0 text-[#B0A697] dark:text-[#6B7280]" />
+                        <MapPin size={14} className="shrink-0 text-[var(--gm-texto-medio)] dark:text-[#6B7280]" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">
                             {c.nombre}
@@ -215,7 +222,7 @@ export default function CoberturaView() {
                             {d == null ? 'nunca' : `${d} días`}
                           </span>
                           {c.montoEnJuego > 0 && (
-                            <span className="block text-[11px] text-[#B0A697] dark:text-[#6B7280]">
+                            <span className="block text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                               {usd(c.montoEnJuego)}
                             </span>
                           )}
@@ -230,7 +237,7 @@ export default function CoberturaView() {
         </div>
       </div>
 
-      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[#B0A697] dark:text-[#6B7280]">
+      <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
         <Wallet size={14} className="mt-0.5 shrink-0" />
         La última visita sale de los compromisos de tipo visita marcados cumplidos en la Agenda. Si
         vas a ver a alguien y no lo cerrás ahí, para el sistema esa visita no ocurrió y la zona va a

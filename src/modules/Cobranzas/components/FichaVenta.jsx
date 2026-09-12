@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · FICHA DE LA VENTA
+// SISTEMA GM · M-07 · FICHA DE LA VENTA
 // ----------------------------------------------------------------------------
 // El detalle de una venta con su plan completo, cuota por cuota. Es la
 // pantalla que se abre cuando el cliente llama y hay que contestarle "te
@@ -40,16 +40,16 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
   const tel = soloDigitos(v.telefono || v.celular);
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8E0D5] bg-white">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--gm-borde)] bg-white">
       {/* ------------------------------ cabecera ------------------------------ */}
-      <header className="flex items-start gap-3 border-b border-[#F0EAE1] px-5 py-4">
+      <header className="flex items-start gap-3 border-b border-[var(--gm-borde-fuerte)] px-5 py-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-[16px] font-semibold leading-tight text-[#2A2118]">{v.cliente}</h3>
             <Chip tono={estado.tono} punto>{estado.nombre}</Chip>
           </div>
           <p className="mt-1 text-[13px] text-[#6E6559]">{v.detalle}</p>
-          <p className="mt-0.5 text-[11px] text-[#B0A697]">
+          <p className="mt-0.5 text-[11px] text-[var(--gm-texto-medio)]">
             {v.codigo} · vendida el {fechaLarga(v.fecha)}
             {v.titular ? ` · ${v.titular}` : ''}
           </p>
@@ -59,7 +59,7 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar ficha"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#B0A697] transition hover:bg-[#F3EDE4] hover:text-[#2A2118]"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-[#F3EDE4] hover:text-[#2A2118]"
           >
             <X size={15} />
           </button>
@@ -83,7 +83,7 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
         <section className="rounded-xl bg-[#FCFAF6] px-4 py-3.5">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">
                 Falta cobrar
               </p>
               <p
@@ -145,7 +145,7 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
         <section>
           <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
             <h4 className="text-[13px] font-semibold text-[#2A2118]">Plan de pago</h4>
-            <p className="text-[11px] text-[#B0A697]">
+            <p className="text-[11px] text-[var(--gm-texto-medio)]">
               {v.cuotasTotal > 0
                 ? `${v.cuotasPagadas} de ${plural(v.cuotasTotal, 'cuota pagada', 'cuotas pagadas')}`
                 : 'Venta de contado'}
@@ -153,13 +153,13 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
           </div>
 
           {cuotas.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-[#E8E0D5] px-4 py-6 text-center text-[13px] text-[#948A7C]">
+            <p className="rounded-xl border border-dashed border-[var(--gm-borde)] px-4 py-6 text-center text-[13px] text-[#948A7C]">
               {v.cuotasPactadas > 0
                 ? 'Se pactaron cuotas pero el plan todavía no está armado.'
                 : 'Se pagó todo junto, no hay cuotas que seguir.'}
             </p>
           ) : (
-            <ul className="divide-y divide-[#F4EFE7] overflow-hidden rounded-xl border border-[#EFE7DB]">
+            <ul className="divide-y divide-[var(--gm-divisor)] overflow-hidden rounded-xl border border-[#EFE7DB]">
               {cuotas.map((c) => {
                 const e = getEstadoCuota(c.estado);
                 return (
@@ -186,7 +186,7 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
                         </span>
                         <Chip tono={e.tono}>{e.nombre}</Chip>
                       </span>
-                      <span className="mt-0.5 block text-[11px] text-[#B0A697]">
+                      <span className="mt-0.5 block text-[11px] text-[var(--gm-texto-medio)]">
                         vence {fechaCorta(c.vencimiento)}
                         {c.estado === 'vencida' && ` · hace ${diasTexto(Math.abs(c.dias))}`}
                         {c.estado === 'pendiente' && c.dias >= 0 && ` · en ${diasTexto(c.dias)}`}
@@ -217,7 +217,7 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
           </section>
         )}
 
-        <p className="flex items-center gap-1.5 text-[11px] text-[#B0A697]">
+        <p className="flex items-center gap-1.5 text-[11px] text-[var(--gm-texto-medio)]">
           <CalendarClock size={12} />
           {v.ultimoCobro
             ? `Último movimiento el ${fechaCorta(v.ultimoCobro)}.`
@@ -232,12 +232,12 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
 function Dato({ titulo, valor, pie, alerta }) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">
         {titulo}
       </dt>
       <dd className="mt-1 text-[15px] tabular-nums text-[#2A2118]">{valor}</dd>
       {pie && (
-        <p className={`mt-0.5 text-[11px] ${alerta ? 'text-[#B4551A]' : 'text-[#B0A697]'}`}>{pie}</p>
+        <p className={`mt-0.5 text-[11px] ${alerta ? 'text-[#B4551A]' : 'text-[var(--gm-texto-medio)]'}`}>{pie}</p>
       )}
     </div>
   );
@@ -249,7 +249,7 @@ function Enlace({ href, icono: Icono, etiqueta, externo }) {
   if (!href) {
     return (
       <span
-        className={`${base} cursor-not-allowed border-[#E8E0D5] bg-[#FCFAF6] text-[#C6BCAC]`}
+        className={`${base} cursor-not-allowed border-[var(--gm-borde)] bg-[#FCFAF6] text-[var(--gm-texto-suave)]`}
         title={`Sin ${etiqueta.toLowerCase()} cargado`}
       >
         <Icono size={14} />
@@ -262,7 +262,7 @@ function Enlace({ href, icono: Icono, etiqueta, externo }) {
       href={href}
       target={externo ? '_blank' : undefined}
       rel={externo ? 'noreferrer' : undefined}
-      className={`${base} border-[#E8E0D5] bg-white text-[#6E6559] hover:bg-[#FCFAF6] hover:text-[#2A2118]`}
+      className={`${base} border-[var(--gm-borde)] bg-white text-[#6E6559] hover:bg-[#FCFAF6] hover:text-[#2A2118]`}
     >
       <Icono size={14} />
       {etiqueta}

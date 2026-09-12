@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · FICHA DEL COMPROMISO
+// SISTEMA GM · M-04 · FICHA DEL COMPROMISO
 // ----------------------------------------------------------------------------
 // Se abre al tocar un bloque de la agenda. Muestra el compromiso completo y
 // deja hacer lo que se hace en el momento: cerrarlo anotando qué pasó,
@@ -74,7 +74,7 @@ export default function ModalEvento({
         <div className="flex flex-wrap items-center gap-2">
           <span
             className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-medium"
-            style={{ backgroundColor: `${tipo.color}1A`, borderColor: `${tipo.color}66`, color: '#3D3225' }}
+            style={{ backgroundColor: `${tipo.color}1A`, borderColor: `${tipo.color}66`, color: 'var(--gm-texto)' }}
           >
             <tipo.icono size={13} style={{ color: tipo.color }} />
             {tipo.nombre}
@@ -124,7 +124,7 @@ export default function ModalEvento({
         )}
 
         {/* ----------------------------- acciones -------------------------- */}
-        <div className="flex flex-wrap items-center gap-2 border-t border-[#F0EAE1] pt-4">
+        <div className="flex flex-wrap items-center gap-2 border-t border-[var(--gm-borde-fuerte)] pt-4">
           <BotonGm
             variante="contorno"
             tamano="sm"

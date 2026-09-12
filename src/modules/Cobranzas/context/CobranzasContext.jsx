@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-07 COBRANZAS · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Ventas, cuotas, movimientos de caja y resultado mensual, cargados una vez y
 // compartidos por las cuatro secciones. La venta seleccionada también se

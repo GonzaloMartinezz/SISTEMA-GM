@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · ACCESO A DATOS
+// SISTEMA GM · M-03 SEGUIMIENTOS · ACCESO A DATOS
 // ----------------------------------------------------------------------------
 // Todo lo que el módulo le pide a Supabase pasa por acá. Las vistas nunca ven
 // un nombre de columna: hablan en el idioma del negocio (lead.clinica) y este

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · ARMADO DEL CALENDARIO
+// SISTEMA GM · M-07 COBRANZAS · ARMADO DEL CALENDARIO
 // ----------------------------------------------------------------------------
 // Convierte una lista plana de cuotas en la grilla del mes y en los tres
 // grupos que uno mira antes de arrancar el día: lo que quedó atrás, lo que

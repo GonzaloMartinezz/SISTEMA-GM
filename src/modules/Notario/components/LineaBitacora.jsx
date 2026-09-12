@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · LA LÍNEA DE TIEMPO DEL SISTEMA
+// SISTEMA GM · M-05 · LA LÍNEA DE TIEMPO DEL SISTEMA
 // ----------------------------------------------------------------------------
 // Los hechos agrupados por día, con una línea vertical que los cose. Cada uno
 // dice de qué módulo salió, porque eso es la mitad de la información: "pago
@@ -50,7 +50,7 @@ export default function LineaBitacora({ grupos, resolver, onHecho }) {
         <section key={dia}>
           <header className="mb-3 flex items-baseline gap-3">
             <h3 className="text-[13px] font-semibold capitalize text-[var(--gm-texto)]">{diaLargo(dia)}</h3>
-            <span className="h-px flex-1 bg-[#F0EAE1]" />
+            <span className="h-px flex-1 bg-[var(--gm-superficie-fuerte)]" />
             <span className="text-[11px] text-[var(--gm-texto-tenue)]">
               {hechos.length} {hechos.length === 1 ? 'movimiento' : 'movimientos'}
             </span>

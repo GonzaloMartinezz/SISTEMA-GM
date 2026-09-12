@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · REGISTRAR UN GASTO
+// SISTEMA GM · M-07 · REGISTRAR UN GASTO
 // ----------------------------------------------------------------------------
 // Todo lo que sale del negocio se carga acá: mercadería, fletes, sueldo,
 // impuestos, el depósito, y también lo que te llevás vos.
@@ -17,7 +17,7 @@ import BotonGm from '../../../shared/gm-ui/BotonGm';
 import { CATEGORIAS, MEDIOS, getCategoria, usd, hoyIso } from '../config/cobranzas.config';
 
 const INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[#B0A697] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[var(--gm-texto-medio)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
 
 const r2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
 
@@ -135,7 +135,7 @@ export default function ModalEgreso({
                   className={`rounded-lg border px-2.5 py-1.5 text-[12px] transition ${
                     f.gastoCodigo === g.codigo
                       ? 'border-[#B4551A] bg-[#FBE5C8] text-[#7E3C0F]'
-                      : 'border-[#E8E0D5] bg-white text-[#6E6559] hover:border-[#D5CABA] hover:bg-[#FCFAF6]'
+                      : 'border-[var(--gm-borde)] bg-white text-[#6E6559] hover:border-[#D5CABA] hover:bg-[#FCFAF6]'
                   }`}
                 >
                   {g.concepto} · {usd(g.montoUsd)}

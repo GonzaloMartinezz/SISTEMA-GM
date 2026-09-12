@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · DE LO VENDIDO A LO QUE QUEDA
+// SISTEMA GM · M-07 · DE LO VENDIDO A LO QUE QUEDA
 // ----------------------------------------------------------------------------
 // La cascada del período: se arranca del total vendido y cada escalón resta
 // algo hasta llegar a la ganancia. Es la explicación completa de por qué el

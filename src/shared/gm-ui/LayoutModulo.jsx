@@ -15,7 +15,7 @@
 // exactamente como siempre: sólo modo claro, sin interruptor.
 // ============================================================================
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { AlertTriangle } from 'lucide-react';
 import BarraLateralModulo from './BarraLateralModulo';
@@ -34,14 +34,30 @@ function LayoutModuloInterior({
   acciones,
 }) {
   const { tema, variablesCss, tinte } = useTema();
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   return (
     <div
-      className="gm-escala flex h-full w-full flex-col bg-[var(--gm-fondo)] text-[var(--gm-texto)] lg:flex-row"
+      className="gm-escala flex h-full w-full flex-col bg-[var(--gm-fondo)] text-[var(--gm-texto)] lg:flex-row relative"
       data-tema={tema}
       style={variablesCss}
     >
-      <BarraLateralModulo numero={numero} nombre={nombre} icono={icono} secciones={secciones} />
+      {/* Overlay para móvil */}
+      {menuAbierto && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMenuAbierto(false)}
+        />
+      )}
+
+      <BarraLateralModulo
+        numero={numero}
+        nombre={nombre}
+        icono={icono}
+        secciones={secciones}
+        menuAbierto={menuAbierto}
+        setMenuAbierto={setMenuAbierto}
+      />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <EncabezadoSeccion
@@ -51,6 +67,7 @@ function LayoutModuloInterior({
           cargando={cargando}
           ultimoCambio={ultimoCambio}
           acciones={acciones}
+          setMenuAbierto={setMenuAbierto}
         />
 
         {error && (

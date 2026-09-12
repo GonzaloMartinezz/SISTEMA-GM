@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · RESPUESTAS RÁPIDAS
+// SISTEMA GM · M-03 SEGUIMIENTOS · RESPUESTAS RÁPIDAS
 // ----------------------------------------------------------------------------
 // El taller de textos. Cada respuesta se guarda con su canal y, si corresponde,
 // con la etapa en la que conviene usarla: eso es lo que después hace que el

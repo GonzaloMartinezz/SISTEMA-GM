@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // El módulo contesta cuatro preguntas, en el orden en que aparecen en el día:
 //   ¿dónde está cada cliente?      -> Mapa

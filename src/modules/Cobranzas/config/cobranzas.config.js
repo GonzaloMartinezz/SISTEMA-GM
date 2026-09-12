@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · CONFIGURACIÓN DEL MÓDULO
+// SISTEMA GM · M-07 COBRANZAS · CONFIGURACIÓN DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Todo lo que el módulo considera "una regla del negocio" vive acá y en ningún
 // otro lado: los estados, las categorías de gasto, los umbrales de alarma y el

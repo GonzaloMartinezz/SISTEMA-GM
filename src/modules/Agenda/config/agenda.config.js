@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · VOCABULARIO DEL MÓDULO
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · VOCABULARIO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Tipos de compromiso, estados, prioridades y los parámetros de la jornada.
 // Todo lo que en el módulo viejo estaba desparramado por cinco componentes
@@ -115,10 +115,10 @@ export const minutosDeViaje = (km) => Math.round((km / KM_POR_HORA) * 60);
 /** Los módulos que alimentan la bandeja de pendientes, con su nombre para
  *  mostrar. Los ids son los mismos que emite gm_v_agenda_pendientes. */
 export const ORIGENES = {
-  seguimientos: { nombre: 'Seguimientos', modulo: 'M-04', tono: 'aqua' },
+  seguimientos: { nombre: 'Seguimientos', modulo: 'M-03', tono: 'aqua' },
   equipamientos: { nombre: 'Equipamientos', modulo: 'M-02', tono: 'naranja' },
-  logistica: { nombre: 'Logística', modulo: 'M-07', tono: 'azul' },
-  cobranzas: { nombre: 'Cobranzas', modulo: 'M-08', tono: 'amarillo' },
+  logistica: { nombre: 'Logística', modulo: 'M-06', tono: 'azul' },
+  cobranzas: { nombre: 'Cobranzas', modulo: 'M-07', tono: 'amarillo' },
   postventa: { nombre: 'Post Venta', modulo: 'M-09', tono: 'rosa' },
   manual: { nombre: 'Cargado a mano', modulo: '', tono: 'gris' },
 };

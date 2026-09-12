@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · FLUJO DE CAJA
+// SISTEMA GM · M-09 TESORERÍA · FLUJO DE CAJA
 // ----------------------------------------------------------------------------
 // Ingresos y egresos por período, con la línea del acumulado encima. El
 // acumulado es lo que importa: dice si el negocio junta plata o la quema.

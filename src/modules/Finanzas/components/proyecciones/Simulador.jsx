@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · SIMULADOR DE RENTABILIDAD
+// SISTEMA GM · M-09 TESORERÍA · SIMULADOR DE RENTABILIDAD
 // ----------------------------------------------------------------------------
 // La pregunta de todos los días: "si le hago 15% de descuento, ¿me sigue
 // conviniendo?". La cuenta la hace simularOperacion() en el servicio; acá se
@@ -11,7 +11,7 @@ import { Calculator } from 'lucide-react';
 import { simularOperacion } from '../../../../shared/finanzas/finanzasService';
 
 const BASE_INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] dark:border-[#333333] bg-[#FFFFFF] dark:bg-[#1E1E1E] px-3.5 text-[14px] text-[#2A2118] dark:text-[#F9FAFB] outline-none transition focus:border-[#B4551A] focus:ring-4 focus:ring-[#B4551A]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] px-3.5 text-[14px] text-[#2A2118] dark:text-[#F9FAFB] outline-none transition focus:border-[#B4551A] focus:ring-4 focus:ring-[#B4551A]/10';
 
 const SEMAFORO = [
   { min: 25, texto: 'Conviene', color: '#1F6F53', fondo: '#DFF0E8' },
@@ -64,8 +64,8 @@ export default function Simulador({ comisionPct = 8, enMoneda }) {
         ))}
       </div>
 
-      <div className="rounded-xl border border-[#E8E0D5] dark:border-[#333333] p-4">
-        <div className="divide-y divide-[#F4EFE7]">
+      <div className="rounded-xl border border-[var(--gm-borde)] dark:border-[#333333] p-4">
+        <div className="divide-y divide-[var(--gm-divisor)]">
           <Fila etiqueta="Precio final al cliente" valor={enMoneda(r.precioFinal)} />
           <Fila etiqueta={`Comisión ${comisionPct}%`} valor={`− ${enMoneda(r.comisionUsd)}`} negativo />
           <Fila etiqueta="Margen antes de comisión" valor={enMoneda(r.margenUsd)} />

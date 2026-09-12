@@ -20,7 +20,7 @@ import EstadoVacio from '../../../../shared/gm-ui/EstadoVacio';
 const TONO_RUBRO = { Odontología: 'azul', Veterinaria: 'aqua', 'Diagnóstico por Imagen': 'naranja' };
 const TONO_CANAL = { whatsapp: 'aqua', mail: 'azul', llamada: 'amarillo' };
 
-const soloDigitos = (t = '') => t.replace(/\D/g, '');
+const soloDigitos = (t) => String(t || '').replace(/\D/g, '');
 const waLink = (tel) => {
   const n = soloDigitos(tel || '');
   return n ? `https://wa.me/${n.length <= 10 ? `54${n}` : n}` : null;
@@ -38,7 +38,7 @@ const fechaCorta = (v) =>
 function Dato({ etiqueta, valor }) {
   return (
     <div className="min-w-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">{etiqueta}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{etiqueta}</p>
       <p className="mt-1 break-words text-[14px] text-[#2A2118] dark:text-[#F9FAFB]">{valor || '—'}</p>
     </div>
   );
@@ -93,7 +93,7 @@ export default function FichaClientePanel({ cliente, leads = [], mensajes = [], 
             {cliente.clasificacion && <Chip tono="gris">{cliente.clasificacion}</Chip>}
           </div>
           <p className="mt-1 text-[14px] text-[#6E6559] dark:text-[#9CA3AF]">{nombreProf || 'Profesional sin cargar'}</p>
-          <p className="mt-0.5 text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="mt-0.5 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
             {cliente.codigo} · cliente desde {fechaCorta(cliente.cliente_desde)}
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function FichaClientePanel({ cliente, leads = [], mensajes = [], 
                 <li key={m.id} className="rounded-xl border border-[#EFE7DB] p-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <Chip tono={TONO_CANAL[m.canal] || 'gris'}>{m.canal}</Chip>
-                    <span className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+                    <span className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                       {m.direccion === 'recibido' ? 'Recibido' : 'Enviado'} · {fechaCorta(m.fecha)}
                     </span>
                   </div>
@@ -207,7 +207,7 @@ export default function FichaClientePanel({ cliente, leads = [], mensajes = [], 
                 <li key={e.id} className="flex items-center gap-4 rounded-xl border border-[#EFE7DB] p-4">
                   <div className="w-16 shrink-0 text-center">
                     <p className="text-[18px] font-semibold leading-none text-[#2A2118] dark:text-[#F9FAFB]">{e.hora}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-wide text-[#B0A697] dark:text-[#6B7280]">
+                    <p className="mt-1 text-[11px] uppercase tracking-wide text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                       {fechaCorta(e.fecha)}
                     </p>
                   </div>

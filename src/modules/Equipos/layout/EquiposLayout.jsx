@@ -13,6 +13,7 @@ function Cuerpo() {
 
   return (
     <LayoutModulo
+      idModulo="equipos"
       numero={2}
       nombre="Equipamientos"
       icono={Package}

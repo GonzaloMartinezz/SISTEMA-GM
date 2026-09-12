@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-07 COBRANZAS · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // El módulo contesta cuatro preguntas, en el orden en que aparecen en la
 // cabeza de uno cuando abre el sistema a la mañana:

@@ -33,9 +33,9 @@ function BarraStock({ equipo }) {
     <div className="w-full min-w-[110px]">
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{equipo.stock}</span>
-        <span className="text-[11px] text-[#B0A697] dark:text-[#6B7280]">mín. {equipo.minStock}</span>
+        <span className="text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">mín. {equipo.minStock}</span>
       </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#F0EAE1]">
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
         <div className="h-full rounded-full" style={{ width: `${ancho}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -51,7 +51,7 @@ export default function TablaStock({ equipos, onMovimiento, orden, onOrdenar }) 
       render: (e) => (
         <div className="min-w-0">
           <p className="truncate font-medium text-[#2A2118] dark:text-[#F9FAFB]">{e.nombre}</p>
-          <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">{e.codigo} · {e.tipo}</p>
+          <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{e.codigo} · {e.tipo}</p>
         </div>
       ),
     },
@@ -77,7 +77,7 @@ export default function TablaStock({ equipos, onMovimiento, orden, onOrdenar }) 
             {e.transito}
           </span>
         ) : (
-          <span className="text-[#B0A697] dark:text-[#6B7280]">—</span>
+          <span className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]">—</span>
         ),
     },
     {
@@ -86,7 +86,7 @@ export default function TablaStock({ equipos, onMovimiento, orden, onOrdenar }) 
       ordenable: true,
       render: (e) =>
         e.mesesCobertura == null ? (
-          <span className="text-[#B0A697] dark:text-[#6B7280]">sin ventas</span>
+          <span className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]">sin ventas</span>
         ) : (
           <span className="text-[#6E6559] dark:text-[#9CA3AF]">
             {e.mesesCobertura} {e.mesesCobertura === 1 ? 'mes' : 'meses'}

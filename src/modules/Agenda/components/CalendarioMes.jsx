@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · EL MES
+// SISTEMA GM · M-04 · EL MES
 // ----------------------------------------------------------------------------
 // Rejilla de lunes a domingo. Cada celda muestra los primeros compromisos y una
 // barra fina de carga abajo: a esta escala no importa QUÉ hay cada día sino
@@ -65,7 +65,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                         ? esFinDeSemana(iso)
                           ? 'border-[#EFE7DB] bg-[var(--gm-fondo)]  hover:border-[var(--gm-borde-fuerte)]'
                           : 'border-[var(--gm-borde)]  bg-[var(--gm-superficie)]  hover:border-[var(--gm-borde-fuerte)]'
-                        : 'border-[#F0EAE1]  bg-[#FBF8F3]'
+                        : 'border-[var(--gm-borde-fuerte)]  bg-[#FBF8F3]'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -75,7 +75,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                         ? 'bg-[#B4551A] text-white'
                         : delMes
                           ? 'text-[var(--gm-texto)] '
-                          : 'text-[#C6BCAC]'
+                          : 'text-[var(--gm-texto-suave)]'
                     }`}
                   >
                     {numeroDia(iso)}
@@ -105,7 +105,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                         className={`flex items-center gap-1 overflow-hidden rounded px-1 py-0.5 text-[10px] leading-tight ${
                           cerrado ? 'opacity-50 line-through' : ''
                         }`}
-                        style={{ backgroundColor: `${tipo.color}18`, color: '#3D3225' }}
+                        style={{ backgroundColor: `${tipo.color}18`, color: 'var(--gm-texto)' }}
                       >
                         <span
                           className="h-1.5 w-1.5 shrink-0 rounded-full"
@@ -124,7 +124,7 @@ export default function CalendarioMes({ celdas, eventosDe, seleccion, onDia, onE
                 </div>
 
                 {eventos.length > 0 && (
-                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-[#F0EAE1]">
+                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-[var(--gm-superficie-fuerte)]">
                     <span
                       className="block h-full rounded-full"
                       style={{

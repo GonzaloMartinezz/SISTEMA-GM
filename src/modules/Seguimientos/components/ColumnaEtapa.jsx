@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · COLUMNA DEL TABLERO
+// SISTEMA GM · M-03 · COLUMNA DEL TABLERO
 // ----------------------------------------------------------------------------
 // Encabezado con la etapa, cuántas oportunidades tiene y cuánta plata suma.
 // La barra de abajo es la probabilidad de la etapa, no el avance de la columna:

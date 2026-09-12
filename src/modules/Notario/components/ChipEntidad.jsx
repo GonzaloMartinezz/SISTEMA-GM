@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · A QUÉ ESTÁ PEGADA UNA NOTA
+// SISTEMA GM · M-05 · A QUÉ ESTÁ PEGADA UNA NOTA
 // ----------------------------------------------------------------------------
 // Muestra la clase (Cliente, Equipo, Venta…) y el nombre de la cosa, no el
 // código pelado. "EQ-102" no le dice nada a nadie; "Autoclave 12 litros" sí.
@@ -41,7 +41,7 @@ export default function ChipEntidad({ entidad, codigo, resuelta, className = '',
       style={{
         backgroundColor: perdida ? '#F6F1E9' : t.bg,
         color: perdida ? '#948A7C' : t.fg,
-        borderColor: perdida ? '#E8E0D5' : `${t.fg}33`,
+        borderColor: perdida ? 'var(--gm-borde)' : `${t.fg}33`,
       }}
     >
       <e.icono size={12} className="shrink-0" />

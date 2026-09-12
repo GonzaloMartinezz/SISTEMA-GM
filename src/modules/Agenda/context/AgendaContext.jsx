@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · CONTEXTO DEL MÓDULO
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · CONTEXTO DEL MÓDULO
 // ----------------------------------------------------------------------------
 // El estado que comparten las cuatro vistas: la fecha en la que estás parado,
 // los compromisos del rango cargado y la bandeja de pendientes.

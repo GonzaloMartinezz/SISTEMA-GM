@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-05 NOTARIO 360 · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Este módulo es la memoria del sistema. Los otros ocho hacen: venden, cobran,
 // entregan, agendan. Este anota y recuerda.

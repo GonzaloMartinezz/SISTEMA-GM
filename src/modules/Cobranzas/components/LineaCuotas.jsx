@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · LÍNEA DE CUOTAS
+// SISTEMA GM · M-07 · LÍNEA DE CUOTAS
 // ----------------------------------------------------------------------------
 // El plan de pago de una venta, de un vistazo: un casillero por cuota, en
 // orden, con el anticipo adelante porque cronológicamente va primero.

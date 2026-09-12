@@ -37,7 +37,7 @@ export default function HistorialMovimientos({ movimientos = [], limite = 12 }) 
   }
 
   return (
-    <ul className="divide-y divide-[#F4EFE7]">
+    <ul className="divide-y divide-[var(--gm-divisor)]">
       {movimientos.slice(0, limite).map((m) => {
         const e = ESTILO[m.tipo] || ESTILO.ingreso;
         const Icono = e.icono;
@@ -52,7 +52,7 @@ export default function HistorialMovimientos({ movimientos = [], limite = 12 }) 
 
             <div className="min-w-0 flex-1">
               <p className="truncate text-[14px] text-[#2A2118] dark:text-[#F9FAFB]">{m.equipoNombre}</p>
-              <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+              <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
                 {m.motivo || m.tipo}
                 {m.operador ? ` · ${m.operador}` : ''}
               </p>
@@ -62,7 +62,7 @@ export default function HistorialMovimientos({ movimientos = [], limite = 12 }) 
               <p className="text-[15px] font-semibold" style={{ color: e.fg }}>
                 {e.signo}{m.cantidad}
               </p>
-              <p className="mt-0.5 text-[11px] text-[#B0A697] dark:text-[#6B7280]">{cuando(m.fecha)}</p>
+              <p className="mt-0.5 text-[11px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{cuando(m.fecha)}</p>
             </div>
           </li>
         );

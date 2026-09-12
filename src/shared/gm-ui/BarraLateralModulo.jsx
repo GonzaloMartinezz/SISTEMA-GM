@@ -9,36 +9,48 @@
 
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 
-export default function BarraLateralModulo({ numero, nombre, icono: Icono, secciones = [] }) {
+export default function BarraLateralModulo({ numero, nombre, icono: Icono, secciones = [], menuAbierto, setMenuAbierto }) {
   const navigate = useNavigate();
 
   return (
-    <aside className="flex shrink-0 flex-col border-b border-[var(--gm-borde)] bg-[var(--gm-superficie)] lg:h-full lg:w-[264px] lg:border-b-0 lg:border-r">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 w-64 lg:w-[264px] flex shrink-0 flex-col bg-[var(--gm-superficie)] border-r border-[var(--gm-borde)] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        menuAbierto ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
       {/* Identidad del módulo */}
-      <div className="hidden items-center gap-3 px-6 py-6 lg:flex">
+      <div className="flex items-center gap-3 px-6 py-6">
         {Icono && (
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento)]">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento)] shrink-0">
             <Icono size={21} strokeWidth={2} />
           </span>
         )}
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--gm-texto-medio)]">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--gm-texto-medio)] truncate">
             Módulo {numero}
           </p>
-          <p className="text-[17px] leading-tight text-[var(--gm-texto)]">{nombre}</p>
+          <p className="text-[17px] leading-tight text-[var(--gm-texto)] truncate">{nombre}</p>
         </div>
+        <button
+          type="button"
+          onClick={() => setMenuAbierto(false)}
+          className="lg:hidden p-2 -mr-2 rounded-xl text-[var(--gm-texto-medio)] hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)] transition-colors shrink-0"
+        >
+          <X size={20} strokeWidth={2} />
+        </button>
       </div>
 
       {/* Secciones */}
-      <nav className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto lg:px-3 lg:py-0">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-2">
         {secciones.map((s) => (
           <NavLink
             key={s.id}
             to={s.ruta}
+            onClick={() => setMenuAbierto(false)}
             className={({ isActive }) =>
-              `group relative flex shrink-0 items-center gap-3 rounded-xl px-3.5 py-3 text-[14px] transition-colors lg:shrink ${
+              `group relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-[14px] transition-colors shrink-0 ${
                 isActive
                   ? 'bg-[var(--gm-acento-suave-bg)] text-[var(--gm-acento-fuerte)]'
                   : 'text-[var(--gm-texto-medio)] hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]'
@@ -70,7 +82,7 @@ export default function BarraLateralModulo({ numero, nombre, icono: Icono, secci
       </nav>
 
       {/* Salida al Portal Hub */}
-      <div className="hidden border-t border-[var(--gm-divisor)] p-3 lg:block">
+      <div className="border-t border-[var(--gm-divisor)] p-3">
         <button
           type="button"
           onClick={() => navigate('/')}

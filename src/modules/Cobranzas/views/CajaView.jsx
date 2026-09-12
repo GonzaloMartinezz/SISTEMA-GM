@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · CAJA Y MOVIMIENTOS
+// SISTEMA GM · M-07 COBRANZAS · CAJA Y MOVIMIENTOS
 // ----------------------------------------------------------------------------
 // Toda la plata del negocio en un solo hilo: lo que entró por cobros y lo que
 // salió por mercadería, fletes, sueldo, impuestos, gastos y retiros.
@@ -156,7 +156,7 @@ export default function CajaView() {
           }
           cuerpoClassName="p-0"
         >
-          <div className="flex flex-wrap items-center gap-1.5 border-b border-[#F0EAE1] px-5 py-3">
+          <div className="flex flex-wrap items-center gap-1.5 border-b border-[var(--gm-borde-fuerte)] px-5 py-3">
             {FLUJOS.map((f) => (
               <button
                 key={f.id}
@@ -165,7 +165,7 @@ export default function CajaView() {
                 className={`rounded-lg border px-2.5 py-1.5 text-[12px] font-medium transition ${
                   flujo === f.id
                     ? 'border-[#B4551A] bg-[#FBE5C8] text-[#7E3C0F]'
-                    : 'border-[#E8E0D5] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
+                    : 'border-[var(--gm-borde)] bg-white text-[#6E6559] hover:bg-[#FCFAF6]'
                 }`}
               >
                 {f.nombre}
@@ -176,7 +176,7 @@ export default function CajaView() {
               <select
                 value={categoria}
                 onChange={(e) => setCategoria(e.target.value)}
-                className="ml-auto h-8 rounded-lg border border-[#E8E0D5] bg-white px-2 text-[12px] text-[#6E6559] outline-none focus:border-[#2F6DA0]"
+                className="ml-auto h-8 rounded-lg border border-[var(--gm-borde)] bg-white px-2 text-[12px] text-[#6E6559] outline-none focus:border-[#2F6DA0]"
               >
                 <option value="todas">Todas las categorías</option>
                 {categoriasDelMes.map((c) => (
@@ -199,7 +199,7 @@ export default function CajaView() {
               }
             />
           ) : (
-            <ul className="max-h-[560px] divide-y divide-[#F4EFE7] overflow-y-auto">
+            <ul className="max-h-[560px] divide-y divide-[var(--gm-divisor)] overflow-y-auto">
               {filtrados.map((m) => {
                 const esIngreso = m.flujo === 'ingreso';
                 const cat = getCategoria(m.categoria);
@@ -221,7 +221,7 @@ export default function CajaView() {
                         <span className="text-[13px] text-[#2A2118]">{m.concepto}</span>
                         {!esIngreso && <Chip tono="gris">{cat.nombre}</Chip>}
                       </span>
-                      <span className="mt-0.5 block truncate text-[11px] text-[#B0A697]">
+                      <span className="mt-0.5 block truncate text-[11px] text-[var(--gm-texto-medio)]">
                         {fechaCorta(m.fecha)} · {m.contraparte} · {getMedio(m.medio).nombre}
                         {m.comprobante && ` · ${m.comprobante}`}
                         {m.referencia && ` · ${m.referencia}`}
@@ -245,7 +245,7 @@ export default function CajaView() {
         <Panel
           titulo="Por dónde se te va"
           bajada={`Los egresos de ${mesLargo(mesVisible)}, ordenados por peso.`}
-          acciones={<Download size={16} className="text-[#B0A697]" />}
+          acciones={<Download size={16} className="text-[var(--gm-texto-medio)]" />}
         >
           {porCategoriaDelMes.length === 0 ? (
             <EstadoVacio
@@ -266,7 +266,7 @@ export default function CajaView() {
                         </span>
                         <span className="shrink-0 text-[13px] tabular-nums text-[#6E6559]">
                           {usd(c.monto)}
-                          <span className="ml-1.5 text-[11px] text-[#B0A697]">
+                          <span className="ml-1.5 text-[11px] text-[var(--gm-texto-medio)]">
                             {c.pct.toFixed(0)}%
                           </span>
                         </span>
@@ -282,7 +282,7 @@ export default function CajaView() {
                 })}
               </ul>
 
-              <p className="mt-4 border-t border-[#F0EAE1] pt-3 text-[11px] leading-relaxed text-[#948A7C]">
+              <p className="mt-4 border-t border-[var(--gm-borde-fuerte)] pt-3 text-[11px] leading-relaxed text-[#948A7C]">
                 El retiro figura como categoría pero no es un costo del negocio: es plata que ya
                 ganaste y estás sacando. En la pantalla de Resultado se descuenta aparte, para que
                 el margen no te castigue por pagarte.

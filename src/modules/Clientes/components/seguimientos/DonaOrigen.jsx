@@ -61,7 +61,7 @@ export default function DonaOrigen({ leads = [], dimension = 'especialidad', eti
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[28px] font-semibold leading-none text-[#2A2118] dark:text-[#F9FAFB]">{total}</span>
-          <span className="mt-1 text-[11px] uppercase tracking-[0.1em] text-[#B0A697] dark:text-[#6B7280]">en curso</span>
+          <span className="mt-1 text-[11px] uppercase tracking-[0.1em] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">en curso</span>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export default function DonaOrigen({ leads = [], dimension = 'especialidad', eti
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: d.color }} />
             <span className="min-w-0 flex-1 truncate text-[14px] text-[#6E6559] dark:text-[#9CA3AF]">{d.nombre}</span>
             <span className="text-[14px] font-semibold text-[#2A2118] dark:text-[#F9FAFB]">{d.valor}</span>
-            <span className="w-11 text-right text-[13px] text-[#B0A697] dark:text-[#6B7280]">
+            <span className="w-11 text-right text-[13px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
               {Math.round((d.valor / total) * 100)}%
             </span>
           </li>

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · INGRESOS Y EGRESOS DEL HORIZONTE
+// SISTEMA GM · M-09 TESORERÍA · INGRESOS Y EGRESOS DEL HORIZONTE
 // ----------------------------------------------------------------------------
 // El gráfico principal del módulo: ingresos y egresos como áreas, el neto como
 // línea. Se adapta al horizonte elegido (semana, mes, 12 meses, 5 años).

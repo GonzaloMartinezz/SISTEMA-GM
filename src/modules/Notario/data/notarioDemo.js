@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · DATOS DE DEMOSTRACIÓN
+// SISTEMA GM · M-05 · DATOS DE DEMOSTRACIÓN
 // ----------------------------------------------------------------------------
 // Sólo se usan cuando el sistema corre sin Supabase configurado. Con la base
 // conectada, este archivo no se toca.

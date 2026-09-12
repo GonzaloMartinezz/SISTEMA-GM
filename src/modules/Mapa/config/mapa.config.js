@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · VOCABULARIO Y PARÁMETROS
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · VOCABULARIO Y PARÁMETROS
 // ============================================================================
 
 import { Building2, MapPin, Phone, MessageCircle, Mail, CheckSquare, Truck } from 'lucide-react';
@@ -56,7 +56,7 @@ export const minutosDeViaje = (km) => Math.round((km / KM_POR_HORA) * 60);
 export const ESTADOS = {
   corriente: { nombre: 'Al día', color: ESTADO_COLOR.bien, tono: 'aqua' },
   mora: { nombre: 'En mora', color: ESTADO_COLOR.critico, tono: 'rosa' },
-  lead: { nombre: 'Venta en curso', color: SERIE.azul, tono: 'azul' },
+  lead: { nombre: 'Venta en curso', color: SERIE.ambar, tono: 'amarillo' },
   inactivo: { nombre: 'Inactivo', color: '#948A7C', tono: 'gris' },
 };
 

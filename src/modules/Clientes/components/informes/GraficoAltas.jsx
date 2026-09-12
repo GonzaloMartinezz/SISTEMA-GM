@@ -90,7 +90,7 @@ export default function GraficoAltas({ clientes = [], meses = 12 }) {
       </div>
 
       {sinFecha > 0 && (
-        <p className="mt-3 text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+        <p className="mt-3 text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
           {sinFecha} {sinFecha === 1 ? 'cuenta no tiene' : 'cuentas no tienen'} cargada la fecha de alta y
           quedan fuera de este gráfico.
         </p>

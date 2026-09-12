@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · ACCESO A DATOS
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · ACCESO A DATOS
 // ----------------------------------------------------------------------------
 // Dos fuentes bien distintas, y la diferencia importa:
 //

@@ -46,7 +46,7 @@ export default function AlertasReposicion({ equipos = [], onReponer }) {
             key={e.codigo}
             className="rounded-xl border p-4 transition"
             style={{
-              borderColor: grave ? '#EDCBB4' : '#E8E0D5',
+              borderColor: grave ? '#EDCBB4' : 'var(--gm-borde)',
               backgroundColor: grave ? '#FBEAE0' : 'transparent',
             }}
           >
@@ -77,9 +77,9 @@ export default function AlertasReposicion({ equipos = [], onReponer }) {
                   {e.transito} en camino
                 </span>
               ) : (
-                <span className="text-[#B0A697] dark:text-[#6B7280]">nada en camino</span>
+                <span className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]">nada en camino</span>
               )}
-              <span className="text-[#B0A697] dark:text-[#6B7280]">reponer ≈ {usd(faltan * e.costoUsd)}</span>
+              <span className="text-[var(--gm-texto-medio)] dark:text-[#6B7280]">reponer ≈ {usd(faltan * e.costoUsd)}</span>
             </div>
 
             {e.transito > 0 && (

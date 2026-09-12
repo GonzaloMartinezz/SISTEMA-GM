@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 NOTARIO 360 · TRAZABILIDAD
+// SISTEMA GM · M-05 NOTARIO 360 · TRAZABILIDAD
 // ----------------------------------------------------------------------------
 // "¿En qué quedamos?" es la pregunta más cara del negocio, porque la respuesta
 // está repartida: el último mensaje en Seguimientos, la visita en la Agenda, el
@@ -147,7 +147,7 @@ export default function TrazabilidadView() {
                     } ${total === 0 ? 'opacity-50' : ''}`}
                   >
                     {m.codigo} {m.nombre}{' '}
-                    <span className={activo ? 'text-[var(--gm-acento-fuerte)]/70' : 'text-[#C6BCAC]'}>{total}</span>
+                    <span className={activo ? 'text-[var(--gm-acento-fuerte)]/70' : 'text-[var(--gm-texto-suave)]'}>{total}</span>
                   </button>
                 );
               })}
@@ -204,13 +204,13 @@ export default function TrazabilidadView() {
                   }`}
                   style={
                     activo
-                      ? { backgroundColor: `${c.color}1A`, borderColor: `${c.color}66`, color: '#3D3225' }
-                      : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#948A7C' }
+                      ? { backgroundColor: `${c.color}1A`, borderColor: `${c.color}66`, color: 'var(--gm-texto)' }
+                      : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: '#948A7C' }
                   }
                 >
-                  <c.icono size={13} style={{ color: activo ? c.color : '#C6BCAC' }} />
+                  <c.icono size={13} style={{ color: activo ? c.color : 'var(--gm-texto-suave)' }} />
                   {c.nombre}
-                  <span className={activo ? 'text-[var(--gm-texto-medio)]' : 'text-[#C6BCAC]'}>{total}</span>
+                  <span className={activo ? 'text-[var(--gm-texto-medio)]' : 'text-[var(--gm-texto-suave)]'}>{total}</span>
                 </button>
               );
             })}

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-06 · FILTROS DE LAS NOTAS
+// SISTEMA GM · M-05 · FILTROS DE LAS NOTAS
 // ----------------------------------------------------------------------------
 // Dos filas: por clase de nota y por de qué habla. Ninguno seleccionado quiere
 // decir "todos", no "ninguno" — es la convención que hace que el estado inicial
@@ -36,14 +36,14 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
               className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition"
               style={
                 activo
-                  ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: '#3D3225' }
-                  : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#948A7C' }
+                  ? { backgroundColor: `${t.color}1A`, borderColor: `${t.color}66`, color: 'var(--gm-texto)' }
+                  : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: '#948A7C' }
               }
             >
-              <t.icono size={13} style={{ color: activo ? t.color : '#C6BCAC' }} />
+              <t.icono size={13} style={{ color: activo ? t.color : 'var(--gm-texto-suave)' }} />
               {t.nombre}
               {conteoTipo[t.id] != null && (
-                <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[#C6BCAC]'}>
+                <span className={activo ? 'text-[var(--gm-texto-medio)] ' : 'text-[var(--gm-texto-suave)]'}>
                   {conteoTipo[t.id]}
                 </span>
               )}
@@ -69,13 +69,13 @@ export default function FiltrosNotas({ conteoTipo = {}, conteoEntidad = {} }) {
               style={
                 activo
                   ? { backgroundColor: t.bg, borderColor: `${t.fg}55`, color: t.fg }
-                  : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#948A7C' }
+                  : { backgroundColor: '#FFFFFF', borderColor: 'var(--gm-borde)', color: '#948A7C' }
               }
             >
               <e.icono size={13} />
               {e.plural || e.nombre}
               {conteoEntidad[e.id] != null && (
-                <span className={activo ? '' : 'text-[#C6BCAC]'}>{conteoEntidad[e.id]}</span>
+                <span className={activo ? '' : 'text-[var(--gm-texto-suave)]'}>{conteoEntidad[e.id]}</span>
               )}
             </button>
           );

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · RUTA DEL DÍA
+// SISTEMA GM · M-04 · RUTA DEL DÍA
 // ----------------------------------------------------------------------------
 // El cálculo geográfico (Haversine, vecino más cercano, link de Maps) sigue
 // viviendo en shared/geo/ruteo: es el mismo que usa el módulo de logística y no

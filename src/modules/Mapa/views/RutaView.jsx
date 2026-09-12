@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 MAPA Y LOGÍSTICA · LA RUTA DEL DÍA
+// SISTEMA GM · M-06 MAPA Y LOGÍSTICA · LA RUTA DEL DÍA
 // ----------------------------------------------------------------------------
 // El orden más corto para las salidas de un día, dibujado sobre el mapa.
 //
@@ -147,7 +147,7 @@ export default function RutaView() {
       <Panel sinEncabezado cuerpoClassName="px-5 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5]">
+            <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
               {DIAS.map((d) => (
                 <button
                   key={d.id}
@@ -162,7 +162,7 @@ export default function RutaView() {
               ))}
             </div>
 
-            <div className="flex overflow-hidden rounded-xl border border-[#E8E0D5]">
+            <div className="flex overflow-hidden rounded-xl border border-[var(--gm-borde)]">
               <button
                 type="button"
                 onClick={() => setModo('cercania')}
@@ -227,7 +227,7 @@ export default function RutaView() {
               texto="No hay visitas ni entregas agendadas con ubicación. Un día de escritorio."
             />
           ) : (
-            <ol className="divide-y divide-[#F4EFE7]">
+            <ol className="divide-y divide-[var(--gm-divisor)]">
               <li className="flex items-center gap-3 px-5 py-3">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#F3EDE4] text-[#6E6559]">
                   <Navigation size={14} />
@@ -261,7 +261,7 @@ export default function RutaView() {
                           {p.cliente || p.titulo}
                         </span>
                         <span className="block truncate text-[12px] text-[#948A7C]">{p.titulo}</span>
-                        <span className="text-[11px] text-[#B0A697]">
+                        <span className="text-[11px] text-[var(--gm-texto-medio)]">
                           {p.hora} · {p.localidad || p.direccion || 'sin zona'}
                         </span>
                       </span>
@@ -269,7 +269,7 @@ export default function RutaView() {
                         <span className="block text-[12px] tabular-nums text-[#6E6559]">
                           {p.tramo.toFixed(1)} km
                         </span>
-                        <span className="block text-[11px] tabular-nums text-[#B0A697]">
+                        <span className="block text-[11px] tabular-nums text-[var(--gm-texto-medio)]">
                           {p.acumulado.toFixed(1)} acum.
                         </span>
                       </span>
@@ -279,7 +279,7 @@ export default function RutaView() {
                         rel="noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         title="Cómo llegar a esta parada"
-                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-[#E8E0D5] text-[#6E6559] transition hover:bg-white hover:text-[#B4551A]"
+                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-[var(--gm-borde)] text-[#6E6559] transition hover:bg-white hover:text-[#B4551A]"
                       >
                         <Navigation size={13} />
                       </a>
@@ -330,7 +330,7 @@ export default function RutaView() {
       </div>
 
       {salidas.length > 6 && (
-        <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[#B0A697]">
+        <p className="flex items-start gap-2 px-1 text-[12px] leading-relaxed text-[var(--gm-texto-medio)]">
           <TriangleAlert size={14} className="mt-0.5 shrink-0" />
           Con más de seis paradas el orden por cercanía deja de ser confiable: se va a la más
           próxima cada vez, sin mirar el recorrido completo. Con esta cantidad conviene revisarlo a

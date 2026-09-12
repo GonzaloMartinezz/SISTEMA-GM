@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · CÁLCULOS DE AVANCE
+// SISTEMA GM · M-03 SEGUIMIENTOS · CÁLCULOS DE AVANCE
 // ----------------------------------------------------------------------------
 // Todo lo que se dibuja en la sección "Avances" sale de acá, y todo sale del
 // historial real de etapas que escribe la base. Nada se estima.

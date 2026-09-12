@@ -46,7 +46,7 @@ export default function EmbudoPipeline({ leads = [] }) {
           <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
             <div className="flex items-baseline gap-2">
               <span className="text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{f.etiqueta}</span>
-              <span className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">{f.descripcion}</span>
+              <span className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{f.descripcion}</span>
             </div>
             <div className="flex items-baseline gap-3 text-[13px]">
               <span className="font-semibold text-[#2A2118] dark:text-[#F9FAFB]">

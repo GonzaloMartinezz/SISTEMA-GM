@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-03 TESORERÍA · VENTAS Y RESULTADO POR MES
+// SISTEMA GM · M-09 TESORERÍA · VENTAS Y RESULTADO POR MES
 // ----------------------------------------------------------------------------
 // Las ventas en barras y el resultado como línea. Sirve para ver la trampa
 // clásica: meses que vendieron mucho y dejaron poco.

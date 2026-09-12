@@ -29,7 +29,7 @@ export default function TablaEquipos({ equipos, onVerFicha, onEditar, onEliminar
       render: (e) => (
         <div className="min-w-0">
           <p className="truncate font-medium text-[#2A2118] dark:text-[#F9FAFB]">{e.nombre}</p>
-          <p className="truncate text-[12px] text-[#B0A697] dark:text-[#6B7280]">
+          <p className="truncate text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">
             {e.codigo}
             {e.marca ? ` · ${e.marca}` : ''}
             {e.modelo ? ` ${e.modelo}` : ''}
@@ -59,7 +59,7 @@ export default function TablaEquipos({ equipos, onVerFicha, onEditar, onEliminar
       render: (e) => (
         <div className="min-w-0">
           <p className="font-medium text-[#2A2118] dark:text-[#F9FAFB]">{usd(e.precioUsd)}</p>
-          <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">deja {usd(e.margenUsd)} · {e.margenPct}%</p>
+          <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">deja {usd(e.margenUsd)} · {e.margenPct}%</p>
         </div>
       ),
     },
@@ -73,7 +73,7 @@ export default function TablaEquipos({ equipos, onVerFicha, onEditar, onEliminar
             {e.stock} {e.stock === 1 ? 'unidad' : 'unidades'}
           </p>
           {e.transito > 0 && (
-            <p className="text-[12px] text-[#B0A697] dark:text-[#6B7280]">+{e.transito} en camino</p>
+            <p className="text-[12px] text-[var(--gm-texto-medio)] dark:text-[#6B7280]">+{e.transito} en camino</p>
           )}
         </div>
       ),

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 · ESCRIBIRLE AL LEAD
+// SISTEMA GM · M-03 · ESCRIBIRLE AL LEAD
 // ----------------------------------------------------------------------------
 // Se elige el canal, se toma una respuesta rápida (o se escribe de cero) y se
 // manda. La plantilla llega con las variables ya reemplazadas por los datos del

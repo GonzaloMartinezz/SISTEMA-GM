@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · INGRESOS Y EGRESOS POR MES
+// SISTEMA GM · M-07 · INGRESOS Y EGRESOS POR MES
 // ----------------------------------------------------------------------------
 // Dos barras por mes —lo que entró y lo que salió— y encima la línea de la
 // caja acumulada. Las barras contestan "cómo me fue este mes"; la línea
@@ -76,11 +76,11 @@ function Globo({ active, payload }) {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div className="rounded-xl border border-[#E8E0D5] bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(26,26,24,0.3)]">
+    <div className="rounded-xl border border-[var(--gm-borde)] bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(26,26,24,0.3)]">
       <p className="text-[12px] font-semibold text-[#2A2118]">{d.etiqueta}</p>
       <p className="mt-1 text-[12px] text-[#2E9B76]">Entró {usd(d.entro)}</p>
       <p className="text-[12px] text-[#B4551A]">Salió {usd(Math.abs(d.salio))}</p>
-      <p className="mt-1 border-t border-[#F0EAE1] pt-1 text-[12px] text-[#6E6559]">
+      <p className="mt-1 border-t border-[var(--gm-borde-fuerte)] pt-1 text-[12px] text-[#6E6559]">
         Del mes: <strong>{usd(d.entro + d.salio)}</strong>
       </p>
       <p className="text-[12px] text-[#2F6DA0]">Acumulado: {usd(d.acumulado)}</p>

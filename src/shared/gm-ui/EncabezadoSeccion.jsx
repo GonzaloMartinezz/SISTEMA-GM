@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Menu } from 'lucide-react';
 import BotonGm from './BotonGm';
 import InterruptorTema from './InterruptorTema';
 import { useTema, useTemaDisponible } from './TemaProvider';
@@ -32,6 +32,7 @@ export default function EncabezadoSeccion({
   cargando,
   ultimoCambio,
   acciones,
+  setMenuAbierto,
 }) {
   const { pathname } = useLocation();
   const activa = secciones.find((s) => pathname.endsWith(`/${s.ruta}`)) || secciones[0] || {};
@@ -40,16 +41,25 @@ export default function EncabezadoSeccion({
 
   return (
     <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--gm-borde)] bg-[var(--gm-superficie)] px-6 py-5 lg:px-8">
-      <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--gm-texto-medio)]">
-          Sistema GM · {modulo}
-        </p>
+      <div className="flex items-center gap-4 min-w-0">
+        <button
+          type="button"
+          onClick={() => setMenuAbierto(true)}
+          className="lg:hidden p-2 -ml-2 rounded-xl text-[var(--gm-texto-medio)] hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)] transition-colors"
+        >
+          <Menu size={24} strokeWidth={2} />
+        </button>
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--gm-texto-medio)]">
+            Sistema GM · {modulo}
+          </p>
         <h1 className="mt-1 text-[24px] font-semibold leading-tight tracking-tight text-[var(--gm-texto)]">
           {activa.nombre}
         </h1>
         {activa.bajada && (
           <p className="mt-1 text-[14px] text-[var(--gm-texto-medio)]">{activa.bajada}</p>
         )}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">

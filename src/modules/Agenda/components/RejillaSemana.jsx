@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · LA SEMANA EN SIETE COLUMNAS
+// SISTEMA GM · M-04 · LA SEMANA EN SIETE COLUMNAS
 // ----------------------------------------------------------------------------
 // Cada columna es un día, con su barra de carga arriba. La barra es lo que hace
 // útil esta vista: mirando siete listas no se ve cuál día está saturado y cuál
@@ -96,12 +96,12 @@ export default function RejillaSemana({ dias, eventosDe, onEvento, onNuevo, onMo
                     }`}
                     style={{
                       backgroundColor: cerrado ? '#F6F1E9' : `${tipo.color}14`,
-                      borderColor: cerrado ? '#E8E0D5' : `${tipo.color}44`,
+                      borderColor: cerrado ? 'var(--gm-borde)' : `${tipo.color}44`,
                       borderLeft: `3px solid ${cerrado ? '#D5CABA' : tipo.color}`,
                     }}
                   >
                     <span className="flex items-center gap-1.5">
-                      <tipo.icono size={11} style={{ color: cerrado ? '#B0A697' : tipo.color }} />
+                      <tipo.icono size={11} style={{ color: cerrado ? 'var(--gm-texto-medio)' : tipo.color }} />
                       <span className="text-[11px] tabular-nums text-[var(--gm-texto-medio)]">{ev.hora}</span>
                     </span>
                     <p

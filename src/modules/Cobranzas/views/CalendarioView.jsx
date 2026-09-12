@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · CALENDARIO DE COBROS
+// SISTEMA GM · M-07 COBRANZAS · CALENDARIO DE COBROS
 // ----------------------------------------------------------------------------
 // "Fechas de cobros por mes para mantenerme al tanto de los pagos": esta es
 // esa pantalla. El mes con la plata que entra cada día, y al costado las tres
@@ -153,7 +153,7 @@ export default function CalendarioView() {
           )}
 
           {diaActivo && delDia.length > 0 && (
-            <section className="mt-4 rounded-xl border border-[#E8E0D5] bg-[#FCFAF6] px-4 py-3">
+            <section className="mt-4 rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3">
               <p className="text-[12px] font-semibold text-[#2A2118]">{fechaLarga(diaActivo)}</p>
               <ul className="mt-2 space-y-1.5">
                 {delDia.map((c) => {
@@ -173,7 +173,7 @@ export default function CalendarioView() {
                         <button
                           type="button"
                           onClick={() => abrirCobro(c)}
-                          className="rounded-md border border-[#E8E0D5] bg-white px-2 py-0.5 text-[11px] text-[#B4551A] transition hover:bg-[#FBE5C8]"
+                          className="rounded-md border border-[var(--gm-borde)] bg-white px-2 py-0.5 text-[11px] text-[#B4551A] transition hover:bg-[#FBE5C8]"
                         >
                           Cobrar
                         </button>
@@ -191,7 +191,7 @@ export default function CalendarioView() {
           <Panel
             titulo="Lo que hay que resolver"
             bajada="De lo más urgente a lo que puede esperar."
-            acciones={<CalendarClock size={16} className="text-[#B0A697]" />}
+            acciones={<CalendarClock size={16} className="text-[var(--gm-texto-medio)]" />}
             cuerpoClassName="p-0"
           >
             <Grupo
@@ -224,7 +224,7 @@ export default function CalendarioView() {
           <Panel
             titulo="Lo que se viene"
             bajada="Los próximos seis meses, con cuotas ya pactadas. No es un pronóstico: está firmado."
-            acciones={<TrendingUp size={16} className="text-[#B0A697]" />}
+            acciones={<TrendingUp size={16} className="text-[var(--gm-texto-medio)]" />}
           >
             {futuro.every((f) => f.monto === 0) ? (
               <EstadoVacio
@@ -252,7 +252,7 @@ export default function CalendarioView() {
                         }}
                       />
                     </div>
-                    <p className="mt-1 text-[11px] text-[#B0A697]">
+                    <p className="mt-1 text-[11px] text-[var(--gm-texto-medio)]">
                       {f.cuotas > 0
                         ? `${plural(f.cuotas, 'cuota', 'cuotas')} de ${plural(f.clientes, 'cliente', 'clientes')}`
                         : 'sin vencimientos'}
@@ -280,11 +280,11 @@ function Grupo({ titulo, icono: Icono, color, cuotas, onCobrar, vacio, ultimo })
   const total = cuotas.reduce((a, c) => a + c.saldoUsd, 0);
 
   return (
-    <section className={ultimo ? '' : 'border-b border-[#F0EAE1]'}>
+    <section className={ultimo ? '' : 'border-b border-[var(--gm-borde-fuerte)]'}>
       <div className="flex items-center gap-2 bg-[#FCFAF6] px-5 py-2.5">
         <Icono size={13} style={{ color }} />
         <span className="text-[12px] font-semibold text-[#2A2118]">{titulo}</span>
-        <span className="text-[11px] text-[#B0A697]">
+        <span className="text-[11px] text-[var(--gm-texto-medio)]">
           {cuotas.length > 0 ? `${cuotas.length} · ${usdCorto(total)}` : '—'}
         </span>
       </div>
@@ -292,12 +292,12 @@ function Grupo({ titulo, icono: Icono, color, cuotas, onCobrar, vacio, ultimo })
       {cuotas.length === 0 ? (
         <p className="px-5 py-3 text-[12px] text-[#948A7C]">{vacio}</p>
       ) : (
-        <ul className="divide-y divide-[#F4EFE7]">
+        <ul className="divide-y divide-[var(--gm-divisor)]">
           {cuotas.slice(0, 6).map((c) => (
             <li key={c.codigo} className="flex items-center gap-3 px-5 py-2.5">
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[13px] text-[#2A2118]">{c.cliente}</span>
-                <span className="block truncate text-[11px] text-[#B0A697]">
+                <span className="block truncate text-[11px] text-[var(--gm-texto-medio)]">
                   cuota {c.numero} · vence {fechaCorta(c.vencimiento)}
                   {c.dias < 0 && ` · hace ${diasTexto(Math.abs(c.dias))}`}
                   {c.cobradoUsd > 0 && ` · entraron ${usd(c.cobradoUsd)}`}
@@ -309,14 +309,14 @@ function Grupo({ titulo, icono: Icono, color, cuotas, onCobrar, vacio, ultimo })
               <button
                 type="button"
                 onClick={() => onCobrar(c)}
-                className="shrink-0 rounded-lg border border-[#E8E0D5] bg-white px-2 py-1 text-[11px] font-medium text-[#B4551A] transition hover:bg-[#FBE5C8]"
+                className="shrink-0 rounded-lg border border-[var(--gm-borde)] bg-white px-2 py-1 text-[11px] font-medium text-[#B4551A] transition hover:bg-[#FBE5C8]"
               >
                 Cobrar
               </button>
             </li>
           ))}
           {cuotas.length > 6 && (
-            <li className="px-5 py-2 text-[11px] text-[#B0A697]">
+            <li className="px-5 py-2 text-[11px] text-[var(--gm-texto-medio)]">
               y {plural(cuotas.length - 6, 'cobro más', 'cobros más')} en este grupo.
             </li>
           )}

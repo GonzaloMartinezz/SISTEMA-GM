@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-07 · FILTROS DEL MAPA
+// SISTEMA GM · M-06 · FILTROS DEL MAPA
 // ----------------------------------------------------------------------------
 // Por estado de la relación y por rubro. Ninguno prendido quiere decir "todos".
 // El chip de zona aparece solo cuando venís de tocar una zona en Cobertura.
@@ -9,8 +9,11 @@ import React from 'react';
 import { RotateCcw } from 'lucide-react';
 import { ESTADOS } from '../config/mapa.config';
 import { useMapa } from '../context/MapaContext';
+import { useTema } from '../../../shared/gm-ui/TemaProvider';
+import { RUBRO_TONO } from '../../../shared/gm-ui/tokens';
 
 export default function FiltrosMapa({ conteoEstado = {}, conteoRubro = {} }) {
+  const { tinte, rubroColor } = useTema();
   const {
     estadosVisibles, toggleEstado, rubrosVisibles, toggleRubro, rubros,
     zonaActiva, setZonaActiva, hayFiltro, limpiarFiltros,
@@ -27,43 +30,53 @@ export default function FiltrosMapa({ conteoEstado = {}, conteoRubro = {} }) {
             key={id}
             type="button"
             onClick={() => toggleEstado(id)}
-            aria-pressed={activo}
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition"
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
+              !activo ? 'bg-[var(--gm-superficie)] border-[var(--gm-borde)] text-[var(--gm-texto-medio)] hover:bg-[var(--gm-superficie-suave)]' : ''
+            }`}
             style={
               activo
-                ? { backgroundColor: `${e.color}1A`, borderColor: `${e.color}66`, color: '#3D3225' }
-                : { backgroundColor: '#FFFFFF', borderColor: '#E8E0D5', color: '#948A7C' }
+                ? { backgroundColor: `${e.color}1A`, borderColor: `${e.color}66`, color: 'var(--gm-texto)' }
+                : {}
             }
           >
             <span
               className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: activo ? e.color : '#DDD3C4' }}
+              style={{ backgroundColor: activo ? e.color : 'var(--gm-divisor)' }}
             />
             {e.nombre}
-            <span className={activo ? 'text-[#6E6559] dark:text-[#9CA3AF]' : 'text-[#C6BCAC]'}>{total}</span>
+            <span className={activo ? 'text-[var(--gm-texto-suave)]' : 'text-[var(--gm-texto-suave)]'}>{total}</span>
           </button>
         );
       })}
 
       {rubros.length > 1 && (
         <>
-          <span className="mx-1 hidden h-5 w-px bg-[#E8E0D5] sm:block" aria-hidden="true" />
+          <span className="mx-1 hidden h-5 w-px bg-[var(--gm-borde)] sm:block" aria-hidden="true" />
           {rubros.map((r) => {
             const activo = rubrosVisibles.includes(r);
+            const tono = RUBRO_TONO[r] || 'gris';
+            const t = tinte[tono];
             return (
               <button
                 key={r}
                 type="button"
                 onClick={() => toggleRubro(r)}
                 aria-pressed={activo}
-                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
-                  activo
-                    ? 'border-[#B4551A66] bg-[#FBE5C8] dark:bg-[#2A1608] text-[#8A3F11]'
-                    : 'border-[#E8E0D5] dark:border-[#333333] bg-white dark:bg-[#1E1E1E] text-[#948A7C] hover:bg-[#FCFAF6] dark:hover:bg-[#2D2D2D]'
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
+                  !activo ? 'bg-[var(--gm-superficie)] border-[var(--gm-borde)] text-[var(--gm-texto-medio)] hover:bg-[var(--gm-superficie-suave)]' : ''
                 }`}
+                style={
+                  activo
+                    ? { backgroundColor: t.bg, borderColor: t.borde || t.bg, color: t.fg }
+                    : {}
+                }
               >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: activo ? (rubroColor[r] || 'var(--gm-texto-medio)') : 'var(--gm-divisor)' }}
+                />
                 {r}{' '}
-                <span className={activo ? 'text-[#8A3F11]/70' : 'text-[#C6BCAC]'}>
+                <span className={activo ? 'opacity-70' : 'text-[var(--gm-texto-suave)]'}>
                   {conteoRubro[r] || 0}
                 </span>
               </button>

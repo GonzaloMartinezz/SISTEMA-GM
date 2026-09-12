@@ -37,12 +37,12 @@ export default function RankingLocalidades({ clientes = [], limite = 8 }) {
         <li key={f.localidad}>
           <div className="mb-1.5 flex items-baseline justify-between gap-3">
             <span className="flex min-w-0 items-baseline gap-2">
-              <span className="w-4 shrink-0 text-[12px] font-semibold text-[#B0A697] dark:text-[#6B7280]">{i + 1}</span>
+              <span className="w-4 shrink-0 text-[12px] font-semibold text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{i + 1}</span>
               <span className="truncate text-[14px] text-[#2A2118] dark:text-[#F9FAFB]">{f.localidad}</span>
             </span>
             <span className="shrink-0 text-[13px]">
               <span className="font-semibold text-[#2A2118] dark:text-[#F9FAFB]">{f.cantidad}</span>
-              <span className="ml-1.5 text-[#B0A697] dark:text-[#6B7280]">{Math.round((f.cantidad / total) * 100)}%</span>
+              <span className="ml-1.5 text-[var(--gm-texto-medio)] dark:text-[#6B7280]">{Math.round((f.cantidad / total) * 100)}%</span>
             </span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-[#F3EDE4] dark:bg-[#121212]">

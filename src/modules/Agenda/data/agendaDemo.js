@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 · COMPROMISOS DE DEMOSTRACIÓN
+// SISTEMA GM · M-04 · COMPROMISOS DE DEMOSTRACIÓN
 // ----------------------------------------------------------------------------
 // Sólo se usan cuando el sistema corre sin Supabase configurado (por ejemplo
 // una copia de prueba). Con la base conectada, este archivo no se toca.

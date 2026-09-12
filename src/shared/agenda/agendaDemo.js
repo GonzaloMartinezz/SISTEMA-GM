@@ -1,7 +1,7 @@
 // ============================================================================
 // SISTEMA GM · CAPA COMPARTIDA · AGENDA Y GEOLOCALIZACIÓN (datos demo)
 // ----------------------------------------------------------------------------
-// La Agenda (M-05) y el Mapa (M-07) leen de acá: los mismos eventos que se
+// La Agenda (M-04) y el Mapa (M-06) leen de acá: los mismos eventos que se
 // programan son los que el ruteo cruza con las ubicaciones.
 // ============================================================================
 

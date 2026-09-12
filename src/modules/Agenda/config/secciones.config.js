@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-05 AGENDA INTELIGENTE · SECCIONES DEL MÓDULO
+// SISTEMA GM · M-04 AGENDA INTELIGENTE · SECCIONES DEL MÓDULO
 // ----------------------------------------------------------------------------
 // Cuatro distancias para mirar el tiempo, en el orden en que se usan:
 // el día se mira todo el tiempo, la semana para acomodar, el mes para planear,

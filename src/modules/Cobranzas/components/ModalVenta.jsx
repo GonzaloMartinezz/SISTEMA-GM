@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 · NUEVA VENTA
+// SISTEMA GM · M-07 · NUEVA VENTA
 // ----------------------------------------------------------------------------
 // Cargar una venta es cargar un compromiso a futuro, así que el formulario
 // muestra el plan de cuotas ANTES de guardar: cuánto queda cada cuota y qué
@@ -17,7 +17,7 @@ import BotonGm from '../../../shared/gm-ui/BotonGm';
 import { MEDIOS, usd, usdExacto, fechaCorta, hoyIso, plural } from '../config/cobranzas.config';
 
 const INPUT =
-  'h-11 w-full rounded-xl border border-[#E8E0D5] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[#B0A697] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
+  'h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[var(--gm-texto-medio)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
 
 const r2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
 
@@ -229,7 +229,7 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
 
         {/* --------------------- el anticipo, si ya entró -------------------- */}
         {r2(f.anticipoUsd) > 0 && (
-          <section className="rounded-xl border border-[#E8E0D5] bg-[#FCFAF6] px-4 py-3.5">
+          <section className="rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3.5">
             <label className="flex items-center gap-2.5">
               <input
                 type="checkbox"
@@ -267,9 +267,9 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
 
         {/* ----------------------- vista previa del plan --------------------- */}
         {plan.cuotas.length > 0 && (
-          <section className="rounded-xl border border-[#E8E0D5] bg-[#FCFAF6] px-4 py-3.5">
+          <section className="rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3.5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0A697]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--gm-texto-medio)]">
                 Así queda el plan
               </p>
               <p className="text-[12px] text-[#6E6559]">

@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-04 SEGUIMIENTOS · ETAPAS, TEMPERATURA Y PRIORIDAD
+// SISTEMA GM · M-03 SEGUIMIENTOS · ETAPAS, TEMPERATURA Y PRIORIDAD
 // ----------------------------------------------------------------------------
 // Las cinco etapas son un orden, no cinco categorías sueltas: van de "recién
 // lo saludé" a "ya cobré". Por eso el color es una rampa de un solo tono que se

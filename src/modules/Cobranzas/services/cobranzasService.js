@@ -1,5 +1,5 @@
 // ============================================================================
-// SISTEMA GM · M-08 COBRANZAS · ACCESO A DATOS
+// SISTEMA GM · M-07 COBRANZAS · ACCESO A DATOS
 // ----------------------------------------------------------------------------
 // Todas las lecturas van contra vistas, nunca contra las tablas crudas. El
 // saldo de una venta, el estado de una cuota y el resultado del mes se
