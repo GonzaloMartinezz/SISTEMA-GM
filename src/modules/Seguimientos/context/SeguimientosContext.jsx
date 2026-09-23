@@ -19,7 +19,7 @@ import React, {
 import {
   listarLeads, listarHistorial, listarPlantillas, listarMensajesDeLeads,
   moverLead, crearLead, actualizarLead, eliminarLead,
-  registrarInteraccion, guardarPlantilla, eliminarPlantilla,
+  registrarInteraccion, marcarRespondido, guardarPlantilla, eliminarPlantilla,
 } from '../services/leadsService';
 import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
 import { ETAPAS, ETAPAS_ID, getEtapa, DIAS_FRIO } from '../config/pipeline.config';
@@ -119,6 +119,16 @@ export function SeguimientosProvider({ children }) {
     setMensajes(await listarMensajesDeLeads());
   }, []);
 
+  /** Marca (o desmarca) un mensaje ya enviado como respondido por el lead. */
+  const marcarMensajeRespondido = useCallback(async (mensajeId, valor) => {
+    setMensajes((prev) => prev.map((m) => (m.id === mensajeId ? { ...m, respondido: valor } : m)));
+    try {
+      await marcarRespondido(mensajeId, valor);
+    } catch (e) {
+      setMensajes(await listarMensajesDeLeads()); // se revierte si falla
+    }
+  }, []);
+
   const guardarLead = useCallback(async (lead, esNuevo) => {
     if (esNuevo) await crearLead(lead);
     else await actualizarLead(lead.id, lead);
@@ -198,14 +208,14 @@ export function SeguimientosProvider({ children }) {
       busqueda, setBusqueda, etapasVisibles, toggleEtapa,
       soloPrioridadAlta, setSoloPrioridadAlta, limpiarFiltros, hayFiltro,
       metricas,
-      recargar: cargar, cambiarEtapa, marcarContacto,
+      recargar: cargar, cambiarEtapa, marcarContacto, marcarMensajeRespondido,
       guardarLead, borrarLead, guardarUnaPlantilla, borrarUnaPlantilla,
     }),
     [
       leadsFiltrados, leads, historial, plantillas, mensajes, porCodigo,
       cargando, error, ultimoCambio, busqueda, etapasVisibles,
       soloPrioridadAlta, limpiarFiltros, hayFiltro, metricas,
-      cargar, cambiarEtapa, marcarContacto, guardarLead, borrarLead,
+      cargar, cambiarEtapa, marcarContacto, marcarMensajeRespondido, guardarLead, borrarLead,
       guardarUnaPlantilla, borrarUnaPlantilla, toggleEtapa,
     ]
   );

@@ -11,7 +11,7 @@
 // ============================================================================
 
 import React, { useMemo, useState } from 'react';
-import { Mail, MessageCircle, Send, Inbox, Clock } from 'lucide-react';
+import { Check, Mail, MessageCircle, Send, Inbox, Clock } from 'lucide-react';
 import Panel from '../../../shared/gm-ui/Panel';
 import Tabla from '../../../shared/gm-ui/Tabla';
 import Chip from '../../../shared/gm-ui/Chip';
@@ -36,7 +36,8 @@ const fechaHora = (v) =>
   });
 
 export default function MensajeriaView() {
-  const { leads, mensajes, plantillas, porCodigo, cargando, marcarContacto } = useSeguimientos();
+  const { leads, mensajes, plantillas, porCodigo, cargando, marcarContacto, marcarMensajeRespondido } =
+    useSeguimientos();
   const [mensaje, setMensaje] = useState(null);
 
   const pendientes = useMemo(
@@ -132,14 +133,24 @@ export default function MensajeriaView() {
       clave: 'respondido',
       titulo: 'Respuesta',
       ancho: '11%',
-      render: (m) =>
-        m.respondido ? (
-          <Chip tono="aqua" punto>
-            Respondió
-          </Chip>
-        ) : (
-          <span className="text-[12px] text-[var(--gm-texto-tenue)]">—</span>
-        ),
+      render: (m) => (
+        <button
+          type="button"
+          title={m.respondido ? 'Marcar como sin respuesta' : 'Marcar como respondido'}
+          onClick={(e) => { e.stopPropagation(); marcarMensajeRespondido(m.id, !m.respondido); }}
+          className="inline-flex items-center gap-1 rounded-lg px-1.5 py-1 transition hover:bg-[var(--gm-superficie-fuerte)]"
+        >
+          {m.respondido ? (
+            <Chip tono="aqua" punto>
+              Respondió
+            </Chip>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[12px] text-[var(--gm-texto-tenue)]">
+              <Check size={12} /> marcar
+            </span>
+          )}
+        </button>
+      ),
     },
   ];
 
