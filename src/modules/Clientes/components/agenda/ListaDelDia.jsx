@@ -7,7 +7,7 @@
 // ============================================================================
 
 import React from 'react';
-import { CalendarCheck, CalendarPlus, Check, MapPin, Phone, Video } from 'lucide-react';
+import { CalendarCheck, CalendarPlus, Check, MapPin, Pencil, Phone, Trash2, Video } from 'lucide-react';
 import Chip from '../../../../shared/gm-ui/Chip';
 import EstadoVacio from '../../../../shared/gm-ui/EstadoVacio';
 import { linkGoogleCalendar } from '../../../../shared/agenda/agendaService';
@@ -15,7 +15,7 @@ import { linkGoogleCalendar } from '../../../../shared/agenda/agendaService';
 const ICONO_TIPO = { visita: MapPin, llamada: Phone, reunion: Video };
 const TONO_ESTADO = { realizado: 'aqua', pendiente: 'amarillo', cancelado: 'gris' };
 
-export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
+export default function ListaDelDia({ eventos = [], onMarcarRealizado, onEditar, onEliminar }) {
   if (!eventos.length) {
     return (
       <EstadoVacio
@@ -74,6 +74,26 @@ export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
                   className="grid h-9 w-9 place-items-center rounded-xl text-[#948A7C] transition hover:bg-[#FBE5C8] dark:hover:bg-[#2A1608] hover:text-[#2F6DA0]"
                 >
                   <Check size={16} />
+                </button>
+              )}
+              {onEditar && (
+                <button
+                  type="button"
+                  title="Editar"
+                  onClick={() => onEditar(e)}
+                  className="grid h-9 w-9 place-items-center rounded-xl text-[#948A7C] transition hover:bg-[#FBE5C8] dark:hover:bg-[#2A1608] hover:text-[#2F6DA0]"
+                >
+                  <Pencil size={15} />
+                </button>
+              )}
+              {onEliminar && (
+                <button
+                  type="button"
+                  title="Eliminar"
+                  onClick={() => onEliminar(e)}
+                  className="grid h-9 w-9 place-items-center rounded-xl text-[#948A7C] transition hover:bg-rose-500/10 hover:text-rose-500"
+                >
+                  <Trash2 size={15} />
                 </button>
               )}
             </div>

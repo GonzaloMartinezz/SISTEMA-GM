@@ -7,7 +7,9 @@
 // ============================================================================
 
 import React, { useMemo } from 'react';
-import { ArrowDownLeft, ArrowUpRight, Mail, MessageCircle, MessagesSquare, Phone } from 'lucide-react';
+import {
+  ArrowDownLeft, ArrowUpRight, Check, Mail, MessageCircle, MessagesSquare, Phone, Trash2, Undo2,
+} from 'lucide-react';
 import Avatar from '../../../../shared/gm-ui/Avatar';
 import Chip from '../../../../shared/gm-ui/Chip';
 import EstadoVacio from '../../../../shared/gm-ui/EstadoVacio';
@@ -32,7 +34,7 @@ const tituloDia = (iso) => {
 const hora = (iso) =>
   iso ? new Date(iso).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) : '';
 
-export default function ListaMensajes({ mensajes = [] }) {
+export default function ListaMensajes({ mensajes = [], onMarcarRespondido, onEliminar }) {
   const grupos = useMemo(() => {
     const mapa = new Map();
     mensajes.forEach((m) => {
@@ -75,6 +77,31 @@ export default function ListaMensajes({ mensajes = [] }) {
                   className="flex gap-3.5 rounded-2xl border border-[#EFE7DB] bg-[var(--gm-superficie)] dark:bg-[#1E1E1E] p-4 transition hover:border-[#D5CABA]"
                 >
                   <Avatar nombre={m.cliente} tamano="md" />
+
+                  {(onMarcarRespondido || onEliminar) && (
+                    <div className="order-last flex shrink-0 flex-col items-end gap-1">
+                      {onMarcarRespondido && !recibido && (
+                        <button
+                          type="button"
+                          title={m.respondido ? 'Marcar como sin respuesta' : 'Marcar como respondido'}
+                          onClick={() => onMarcarRespondido(m)}
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+                        >
+                          {m.respondido ? <Undo2 size={14} /> : <Check size={14} />}
+                        </button>
+                      )}
+                      {onEliminar && (
+                        <button
+                          type="button"
+                          title="Eliminar"
+                          onClick={() => onEliminar(m)}
+                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-rose-500/10 hover:text-rose-500"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  )}
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">

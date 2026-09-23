@@ -7,7 +7,7 @@
 // ============================================================================
 
 import React, { useMemo } from 'react';
-import { Flame } from 'lucide-react';
+import { Flame, Pencil, Trash2 } from 'lucide-react';
 import Tabla from '../../../../shared/gm-ui/Tabla';
 import Chip from '../../../../shared/gm-ui/Chip';
 import Avatar from '../../../../shared/gm-ui/Avatar';
@@ -22,7 +22,7 @@ const temperatura = (dias = 0) => {
   return { texto: 'Frío', tono: 'rosa' };
 };
 
-export default function InteraccionesRecientes({ leads = [], onVerLead }) {
+export default function InteraccionesRecientes({ leads = [], onVerLead, onEditar, onEliminar }) {
   const filas = useMemo(
     () => [...leads].sort((a, b) => (b.diasSinContacto || 0) - (a.diasSinContacto || 0)),
     [leads]
@@ -85,6 +85,35 @@ export default function InteraccionesRecientes({ leads = [], onVerLead }) {
           </Chip>
         );
       },
+    },
+    {
+      clave: 'acciones',
+      titulo: '',
+      ancho: 84,
+      render: (l) => (
+        <div className="flex items-center justify-end gap-1">
+          {onEditar && (
+            <button
+              type="button"
+              title="Editar"
+              onClick={(e) => { e.stopPropagation(); onEditar(l); }}
+              className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+            >
+              <Pencil size={15} />
+            </button>
+          )}
+          {onEliminar && (
+            <button
+              type="button"
+              title="Eliminar"
+              onClick={(e) => { e.stopPropagation(); onEliminar(l); }}
+              className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-rose-500/10 hover:text-rose-500"
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
+        </div>
+      ),
     },
   ];
 

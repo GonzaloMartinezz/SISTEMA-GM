@@ -10,12 +10,13 @@ import React, { useMemo, useState } from 'react';
 import { CalendarDays, CalendarPlus, Download, MapPin, Phone } from 'lucide-react';
 import { useClientes } from '../context/ClientesContext';
 import {
-  cambiarEstadoEvento, generarICS, guardarEvento,
+  actualizarEvento, cambiarEstadoEvento, eliminarEvento, generarICS, guardarEvento,
 } from '../../../shared/agenda/agendaService';
 import Panel from '../../../shared/gm-ui/Panel';
 import BotonGm from '../../../shared/gm-ui/BotonGm';
 import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
 import FormularioGm from '../../../shared/gm-ui/FormularioGm';
+import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
 import CalendarioMes from '../components/agenda/CalendarioMes';
 import ListaDelDia from '../components/agenda/ListaDelDia';
 import ProximasInteracciones from '../components/seguimientos/ProximasInteracciones';
@@ -32,6 +33,8 @@ export default function AgendaClientesView() {
   });
   const [dia, setDia] = useState(hoyISO);
   const [alta, setAlta] = useState(false);
+  const [editando, setEditando] = useState(null); // evento a editar, o null
+  const [borrando, setBorrando] = useState(null);
   const [locales, setLocales] = useState({}); // estados cambiados en esta sesión
 
   const conEstado = useMemo(
@@ -90,8 +93,15 @@ export default function AgendaClientesView() {
     [clientes, dia]
   );
 
-  const crear = async (form) => {
-    await guardarEvento({ ...form, duracion: Number(form.duracion) || 30 });
+  const guardar = async (form) => {
+    const cambios = { ...form, duracion: Number(form.duracion) || 30 };
+    if (editando?.id) await actualizarEvento(editando.id, cambios);
+    else await guardarEvento(cambios);
+    await recargar();
+  };
+
+  const eliminarActual = async () => {
+    await eliminarEvento(borrando.id);
     await recargar();
   };
 
@@ -157,7 +167,12 @@ export default function AgendaClientesView() {
           {cargando ? (
             <p className="py-10 text-center text-[14px] text-[var(--gm-texto-medio)]">Cargando agenda…</p>
           ) : (
-            <ListaDelDia eventos={delDia} onMarcarRealizado={marcarRealizado} />
+            <ListaDelDia
+              eventos={delDia}
+              onMarcarRealizado={marcarRealizado}
+              onEditar={setEditando}
+              onEliminar={setBorrando}
+            />
           )}
         </Panel>
       </div>
@@ -167,13 +182,27 @@ export default function AgendaClientesView() {
       </Panel>
 
       <FormularioGm
-        abierto={alta}
-        titulo="Nueva cita"
-        bajada="Queda cargada en la agenda del sistema y se puede pasar a Google Calendar desde la jornada."
+        abierto={alta || !!editando}
+        titulo={editando ? 'Editar cita' : 'Nueva cita'}
+        bajada={
+          editando
+            ? 'Los cambios se reflejan en el calendario y en la ficha del cliente.'
+            : 'Queda cargada en la agenda del sistema y se puede pasar a Google Calendar desde la jornada.'
+        }
         campos={campos}
-        onCerrar={() => setAlta(false)}
-        onGuardar={crear}
-        textoBoton="Agendar"
+        valores={editando || undefined}
+        onCerrar={() => { setAlta(false); setEditando(null); }}
+        onGuardar={guardar}
+        textoBoton={editando ? 'Guardar cambios' : 'Agendar'}
+      />
+
+      <ConfirmarGm
+        abierto={!!borrando}
+        detalle={borrando ? `Se va a eliminar la cita "${borrando.titulo}".` : ''}
+        advertencia="Esta acción no se puede deshacer."
+        textoBoton="Eliminar"
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={eliminarActual}
       />
     </div>
   );

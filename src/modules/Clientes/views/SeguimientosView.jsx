@@ -11,11 +11,16 @@
 // ============================================================================
 
 import React, { useMemo, useState } from 'react';
-import { Activity, DollarSign, Percent, Timer } from 'lucide-react';
+import { Activity, DollarSign, Percent, Plus, Timer } from 'lucide-react';
 import { useClientes } from '../context/ClientesContext';
 import { getEtapa } from '../../Seguimientos/config/pipeline.config';
+import { crearLead, actualizarLead, eliminarLead } from '../../Seguimientos/services/leadsService';
+import { CAMPOS_LEAD, aFormularioLead } from '../../Seguimientos/config/lead.form';
 import Panel from '../../../shared/gm-ui/Panel';
 import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
+import BotonGm from '../../../shared/gm-ui/BotonGm';
+import FormularioGm from '../../../shared/gm-ui/FormularioGm';
+import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
 import { usd } from '../../../shared/gm-ui/graficos';
 import EmbudoPipeline from '../components/seguimientos/EmbudoPipeline';
 import ProximasInteracciones from '../components/seguimientos/ProximasInteracciones';
@@ -24,8 +29,21 @@ import InteraccionesRecientes from '../components/seguimientos/InteraccionesReci
 import FichaLeadPanel from '../components/seguimientos/FichaLeadPanel';
 
 export default function SeguimientosView() {
-  const { leads, eventos, cargando } = useClientes();
+  const { leads, eventos, cargando, recargar } = useClientes();
   const [lead, setLead] = useState(null);
+  const [editando, setEditando] = useState(null); // null | {} (alta) | lead (edición)
+  const [borrando, setBorrando] = useState(null);
+
+  const guardarLead = async (form) => {
+    if (editando?.id) await actualizarLead(editando.id, form);
+    else await crearLead(form);
+    await recargar();
+  };
+
+  const eliminarLeadActual = async () => {
+    await eliminarLead(borrando.id);
+    await recargar();
+  };
 
   const resumen = useMemo(() => {
     const abiertos = leads.filter((l) => l.etapa !== 'cerrado');
@@ -116,12 +134,46 @@ export default function SeguimientosView() {
           titulo="Interacciones recientes"
           bajada="Ordenadas por cuánto hace que no se toca la cuenta. Hacé clic en una fila para ver la ficha."
           cuerpoClassName="p-0"
+          acciones={
+            <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
+              Nueva oportunidad
+            </BotonGm>
+          }
         >
-          <InteraccionesRecientes leads={leads} onVerLead={setLead} />
+          <InteraccionesRecientes
+            leads={leads}
+            onVerLead={setLead}
+            onEditar={setEditando}
+            onEliminar={setBorrando}
+          />
         </Panel>
       </div>
 
       {lead && <FichaLeadPanel lead={lead} onCerrar={() => setLead(null)} />}
+
+      <FormularioGm
+        abierto={!!editando}
+        titulo={editando?.id ? 'Editar oportunidad' : 'Nueva oportunidad'}
+        bajada={
+          editando?.id
+            ? 'Los cambios impactan en el tablero de Seguimientos y en la ficha del cliente.'
+            : 'Cargá los datos de la oportunidad para sumarla al pipeline.'
+        }
+        campos={CAMPOS_LEAD}
+        valores={editando?.id ? aFormularioLead(editando) : undefined}
+        onCerrar={() => setEditando(null)}
+        onGuardar={guardarLead}
+        textoBoton={editando?.id ? 'Guardar cambios' : 'Crear oportunidad'}
+      />
+
+      <ConfirmarGm
+        abierto={!!borrando}
+        detalle={borrando ? `Se va a eliminar la oportunidad "${borrando.clinica}".` : ''}
+        advertencia="Se borra del pipeline junto con su historial de etapas. Esta acción no se puede deshacer."
+        textoBoton="Eliminar"
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={eliminarLeadActual}
+      />
     </div>
   );
 }
