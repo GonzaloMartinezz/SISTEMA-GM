@@ -10,15 +10,51 @@
 // comparan; dos barras que arrancan del mismo margen, sí.
 // ============================================================================
 
-import React, { useMemo, useState } from 'react';
-import { Landmark, NotebookPen, TriangleAlert, Users } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Landmark, NotebookPen, Pencil, Plus, TriangleAlert, Users } from 'lucide-react';
 import Panel from '../../../shared/gm-ui/Panel';
 import Tabla from '../../../shared/gm-ui/Tabla';
 import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
+import BotonGm from '../../../shared/gm-ui/BotonGm';
 import Chip from '../../../shared/gm-ui/Chip';
 import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
+import FormularioGm from '../../../shared/gm-ui/FormularioGm';
 import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
 import { useNotario } from '../context/NotarioContext';
+import { listarClientes } from '../../../shared/cuentas/cuentasService';
+
+const CAMPOS_CUENTA = (clientes) => [
+  {
+    clave: 'clienteId',
+    etiqueta: 'Cliente',
+    tipo: 'select',
+    ancho: 2,
+    requerido: true,
+    opciones: clientes.map((c) => ({ valor: c.id, texto: `${c.codigo} · ${c.negocio}` })),
+  },
+  { clave: 'tipo', etiqueta: 'Tipo', tipo: 'texto' },
+  { clave: 'estado', etiqueta: 'Estado', tipo: 'texto', placeholder: 'EN MORA / CORRIENTE' },
+  { clave: 'etapa', etiqueta: 'Etapa', tipo: 'texto' },
+  { clave: 'progreso', etiqueta: 'Progreso (%)', tipo: 'numero', defecto: 0 },
+  { clave: 'montoNegociado', etiqueta: 'Monto negociado', tipo: 'moneda', defecto: 0 },
+  {
+    clave: 'moneda',
+    etiqueta: 'Moneda',
+    tipo: 'select',
+    defecto: 'ARS',
+    opciones: [
+      { valor: 'ARS', texto: 'ARS' },
+      { valor: 'USD', texto: 'USD' },
+    ],
+  },
+  { clave: 'responsable', etiqueta: 'Responsable', tipo: 'texto' },
+  { clave: 'sucursal', etiqueta: 'Sucursal', tipo: 'texto' },
+  { clave: 'convenio', etiqueta: 'Convenio', tipo: 'texto' },
+  { clave: 'alta', etiqueta: 'Fecha de alta', tipo: 'fecha' },
+  { clave: 'vencimiento', etiqueta: 'Vencimiento', tipo: 'fecha' },
+  { clave: 'bloqueos', etiqueta: 'Bloqueos', tipo: 'texto', ancho: 2 },
+  { clave: 'proximoPaso', etiqueta: 'Próximo paso', tipo: 'area', ancho: 2 },
+];
 
 const ars = (v) => `$ ${Math.round(Number(v || 0)).toLocaleString('es-AR')}`;
 
@@ -34,8 +70,16 @@ const fecha = (iso) =>
   iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('es-AR') : '—';
 
 export default function CuentasView() {
-  const { cuentas, notas, busqueda, cargando } = useNotario();
+  const { cuentas, notas, busqueda, cargando, guardarCuenta } = useNotario();
   const [activa, setActiva] = useState(null);
+  const [editando, setEditando] = useState(null); // null | {} (alta) | cuenta (edición)
+  const [clientes, setClientes] = useState([]);
+
+  useEffect(() => {
+    listarClientes().then(setClientes);
+  }, []);
+
+  const guardar = (form) => guardarCuenta(form, !editando?.numero);
 
   const filtradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -134,6 +178,21 @@ export default function CuentasView() {
         );
       },
     },
+    {
+      clave: 'acciones',
+      titulo: '',
+      ancho: '40',
+      render: (c) => (
+        <button
+          type="button"
+          title="Editar"
+          onClick={(e) => { e.stopPropagation(); setEditando(c); }}
+          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+        >
+          <Pencil size={14} />
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -167,6 +226,11 @@ export default function CuentasView() {
         titulo="Padrón de cuentas"
         bajada="Tocá una fila para ver su detalle y lo que tenés anotado de ella."
         cuerpoClassName="p-0"
+        acciones={
+          <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
+            Nueva cuenta
+          </BotonGm>
+        }
       >
         {cargando ? (
           <p className="py-16 text-center text-[14px] text-[var(--gm-texto-suave)]">Cargando el padrón…</p>
@@ -243,6 +307,21 @@ export default function CuentasView() {
           </Panel>
         </div>
       )}
+
+      <FormularioGm
+        abierto={!!editando}
+        titulo={editando?.numero ? 'Editar cuenta' : 'Nueva cuenta'}
+        bajada={
+          editando?.numero
+            ? 'Los cambios impactan en el padrón y en la Ficha 360° del cliente.'
+            : 'El número de cuenta lo asigna el sistema automáticamente.'
+        }
+        campos={CAMPOS_CUENTA(clientes)}
+        valores={editando?.numero ? editando : undefined}
+        onCerrar={() => setEditando(null)}
+        onGuardar={guardar}
+        textoBoton={editando?.numero ? 'Guardar cambios' : 'Crear cuenta'}
+      />
     </div>
   );
 }

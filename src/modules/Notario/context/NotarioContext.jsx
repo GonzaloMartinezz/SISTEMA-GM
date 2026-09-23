@@ -16,6 +16,7 @@ import React, {
 import {
   listarNotas, listarEntidades, listarBitacora, listarCuentas,
   crearNota, actualizarNota, fijarNota, eliminarNota,
+  crearCuenta, actualizarCuenta,
 } from '../services/notarioService';
 import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
 
@@ -108,6 +109,12 @@ export function NotarioProvider({ children }) {
     await cargar();
   }, [cargar]);
 
+  const guardarCuenta = useCallback(async (cuenta, esNueva) => {
+    if (esNueva) await crearCuenta(cuenta);
+    else await actualizarCuenta(cuenta.numero, cuenta);
+    await cargar();
+  }, [cargar]);
+
   const limpiarFiltros = useCallback(() => {
     setBusqueda('');
     setTiposVisibles([]);
@@ -195,13 +202,13 @@ export function NotarioProvider({ children }) {
       etiquetaActiva, setEtiquetaActiva,
       hayFiltro, limpiarFiltros,
       resolver, notasDe, bitacoraDe,
-      recargar: cargar, guardarNota, alternarFijada, borrarNota,
+      recargar: cargar, guardarNota, alternarFijada, borrarNota, guardarCuenta,
     }),
     [
       notas, notasFiltradas, entidades, bitacora, cuentas, etiquetas,
       cargando, error, ultimoCambio, busqueda, tiposVisibles, entidadesVisibles,
       etiquetaActiva, hayFiltro, limpiarFiltros, resolver, notasDe, bitacoraDe,
-      cargar, guardarNota, alternarFijada, borrarNota,
+      cargar, guardarNota, alternarFijada, borrarNota, guardarCuenta,
     ]
   );
 

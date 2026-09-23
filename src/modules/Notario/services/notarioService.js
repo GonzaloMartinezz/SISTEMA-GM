@@ -187,6 +187,7 @@ const aCuenta = (r) => ({
   numero: r.numero,
   cliente: r.gm_clientes?.negocio || null,
   clienteCodigo: r.gm_clientes?.codigo || null,
+  clienteId: r.cliente_id || null,
   tipo: r.tipo,
   estado: r.estado,
   etapa: r.etapa,
@@ -216,4 +217,45 @@ export async function listarCuentas() {
     return [];
   }
   return (data || []).map(aCuenta);
+}
+
+/** Formulario de cuenta -> fila de gm_cuentas. Sin `numero`: lo pone el trigger. */
+const aFilaCuenta = (c) => ({
+  cliente_id: c.clienteId || null,
+  tipo: c.tipo || null,
+  estado: c.estado || null,
+  etapa: c.etapa || null,
+  progreso: c.progreso === '' || c.progreso == null ? 0 : Number(c.progreso),
+  responsable: c.responsable || null,
+  monto_negociado: c.montoNegociado === '' || c.montoNegociado == null ? 0 : Number(c.montoNegociado),
+  moneda: c.moneda || 'ARS',
+  alta: c.alta || null,
+  vencimiento: c.vencimiento || null,
+  proximo_paso: c.proximoPaso || null,
+  sucursal: c.sucursal || null,
+  convenio: c.convenio || null,
+  bloqueos: c.bloqueos || null,
+});
+
+export async function crearCuenta(cuenta) {
+  if (modoDemo()) return { ...cuenta, numero: `CTA-${Date.now()}` };
+  const { data, error } = await supabase
+    .from('gm_cuentas')
+    .insert(aFilaCuenta(cuenta))
+    .select('*, gm_clientes(codigo, negocio)')
+    .single();
+  if (error) throw new Error(error.message);
+  return aCuenta(data);
+}
+
+export async function actualizarCuenta(numero, cambios) {
+  if (modoDemo()) return { ...cambios, numero };
+  const { data, error } = await supabase
+    .from('gm_cuentas')
+    .update(aFilaCuenta(cambios))
+    .eq('numero', numero)
+    .select('*, gm_clientes(codigo, negocio)')
+    .single();
+  if (error) throw new Error(error.message);
+  return aCuenta(data);
 }
