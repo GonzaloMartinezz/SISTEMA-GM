@@ -115,9 +115,14 @@ export function SeguimientosProvider({ children }) {
           : l
       )
     );
-    await registrarInteraccion(codigo, datos);
-    setMensajes(await listarMensajesDeLeads());
-  }, []);
+    try {
+      await registrarInteraccion(codigo, datos);
+      setMensajes(await listarMensajesDeLeads());
+    } catch (e) {
+      setError(`No se pudo registrar el contacto con ${codigo}: ${e.message}`);
+      await cargar(); // se revierte el optimista: si no se guardó, no hay que mostrarlo como guardado
+    }
+  }, [cargar]);
 
   /** Marca (o desmarca) un mensaje ya enviado como respondido por el lead. */
   const marcarMensajeRespondido = useCallback(async (mensajeId, valor) => {

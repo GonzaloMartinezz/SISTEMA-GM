@@ -72,10 +72,7 @@ export async function listarNotas() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('[notario] listarNotas', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aNota);
 }
 
@@ -133,10 +130,7 @@ export async function listarEntidades() {
     return ENTIDADES_DEMO.map((e) => ({ ...e }));
   }
   const { data, error } = await supabase.from('gm_v_entidades').select('*').order('entidad');
-  if (error) {
-    console.error('[notario] listarEntidades', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aEntidad);
 }
 
@@ -171,10 +165,7 @@ export async function listarBitacora(limite = 400) {
     .order('fecha', { ascending: false })
     .limit(limite);
 
-  if (error) {
-    console.error('[notario] listarBitacora', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aHecho);
 }
 
@@ -213,10 +204,7 @@ export async function listarCuentas() {
     .select('*, gm_clientes(codigo, negocio)')
     .order('numero');
 
-  if (error) {
-    console.error('[notario] listarCuentas', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aCuenta);
 }
 

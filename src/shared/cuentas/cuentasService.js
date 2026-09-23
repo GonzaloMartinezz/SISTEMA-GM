@@ -40,10 +40,7 @@ export async function listarCuentas() {
     .select('id, titular, cuenta, comercial')
     .order('id');
 
-  if (error) {
-    console.error('[cuentasService] listarCuentas:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return data || [];
 }
 
@@ -58,10 +55,7 @@ export async function obtenerCuenta(codigo) {
   q = codigo ? q.eq('id', codigo) : q.order('id').limit(1);
 
   const { data, error } = await q.maybeSingle();
-  if (error) {
-    console.error('[cuentasService] obtenerCuenta:', error.message);
-    return null;
-  }
+  if (error) throw new Error(error.message);
   return data;
 }
 
@@ -136,10 +130,7 @@ export async function listarClientes({ rubro, busqueda } = {}) {
   if (busqueda) q = q.or(`negocio.ilike.%${busqueda}%,profesional_apellido.ilike.%${busqueda}%`);
 
   const { data, error } = await q;
-  if (error) {
-    console.error('[cuentasService] listarClientes:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return data || [];
 }
 

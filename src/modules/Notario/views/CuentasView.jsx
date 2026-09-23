@@ -81,9 +81,12 @@ export default function CuentasView() {
   const [inactivando, setInactivando] = useState(null);
   const [mostrarInactivas, setMostrarInactivas] = useState(false);
   const [clientes, setClientes] = useState([]);
+  const [errorClientes, setErrorClientes] = useState('');
 
   useEffect(() => {
-    listarClientes().then(setClientes);
+    listarClientes()
+      .then(setClientes)
+      .catch((e) => setErrorClientes(e.message || 'No se pudo cargar la lista de clientes.'));
   }, []);
 
   const guardar = (form) => guardarCuenta(form, !editando?.numero);
@@ -231,6 +234,12 @@ export default function CuentasView() {
 
   return (
     <div className="space-y-6">
+      {errorClientes && (
+        <p className="flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[#FBEAE0] px-3.5 py-2.5 text-[13px] text-[#A63A0C]">
+          <TriangleAlert size={14} className="mt-0.5 shrink-0" />
+          No se pudo cargar la lista de clientes para el formulario: {errorClientes}
+        </p>
+      )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <TarjetaKpi
           etiqueta="Cuentas activas"

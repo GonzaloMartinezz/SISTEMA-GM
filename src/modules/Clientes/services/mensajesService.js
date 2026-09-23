@@ -40,10 +40,7 @@ export async function listarMensajes({ desde, canal, limite = 300 } = {}) {
   if (canal) q = q.eq('canal', canal);
 
   const { data, error } = await q;
-  if (error) {
-    console.error('[mensajesService] listarMensajes:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aMensaje);
 }
 

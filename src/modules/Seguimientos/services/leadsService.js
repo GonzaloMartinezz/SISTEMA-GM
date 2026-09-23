@@ -85,10 +85,7 @@ export async function listarLeads() {
     .select('*, gm_clientes(codigo)')
     .order('codigo');
 
-  if (error) {
-    console.error('[seguimientos] listarLeads', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
 
   return (data || []).map((r) =>
     aLead({
@@ -182,10 +179,7 @@ export async function listarHistorial() {
     .order('lead_codigo')
     .order('desde');
 
-  if (error) {
-    console.error('[seguimientos] listarHistorial', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aTramo);
 }
 
@@ -213,10 +207,7 @@ export async function registrarInteraccion(codigo, { canal = 'WhatsApp', texto =
     .update({ interacciones: (data?.interacciones || 0) + 1, ultimo_contacto: HOY() })
     .eq('codigo', codigo);
 
-  if (error) {
-    console.error('[seguimientos] registrarInteraccion', error.message);
-    return false;
-  }
+  if (error) throw new Error(error.message);
 
   if (texto) {
     const { error: errMsg } = await supabase.from('gm_mensajes').insert({
@@ -227,7 +218,9 @@ export async function registrarInteraccion(codigo, { canal = 'WhatsApp', texto =
       asunto,
       texto,
     });
-    if (errMsg) console.error('[seguimientos] registrarMensaje', errMsg.message);
+    // Si esto falla, el contacto ya quedó registrado en el lead pero el mensaje
+    // no quedó en el historial: se avisa igual, para que se vuelva a mandar.
+    if (errMsg) throw new Error(`Se registró el contacto pero no el mensaje: ${errMsg.message}`);
   }
 
   return true;
@@ -255,10 +248,7 @@ export async function listarMensajesDeLeads(limite = 200) {
     .order('fecha', { ascending: false })
     .limit(limite);
 
-  if (error) {
-    console.error('[seguimientos] listarMensajesDeLeads', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aMensaje);
 }
 
@@ -293,10 +283,7 @@ export async function listarPlantillas() {
     .eq('activa', true)
     .order('codigo');
 
-  if (error) {
-    console.error('[seguimientos] listarPlantillas', error.message);
-    return PLANTILLAS_DEMO.map((p) => ({ ...p }));
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aPlantilla);
 }
 

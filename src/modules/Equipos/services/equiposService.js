@@ -44,10 +44,7 @@ export async function listarEquipos() {
   if (modoDemo()) return [];
 
   const { data, error } = await supabase.from('gm_v_stock').select('*').order('codigo');
-  if (error) {
-    console.error('[equiposService] listarEquipos:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aEquipo);
 }
 
@@ -60,10 +57,7 @@ export async function listarSpecs() {
     .select('id, codigo, equipo_id, label, valor, orden, gm_equipos(codigo)')
     .order('orden');
 
-  if (error) {
-    console.error('[equiposService] listarSpecs:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
 
   return (data || []).map((s) => ({
     id: s.id,
@@ -85,10 +79,7 @@ export async function listarMovimientos({ limite = 200 } = {}) {
     .order('created_at', { ascending: false })
     .limit(limite);
 
-  if (error) {
-    console.error('[equiposService] listarMovimientos:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
 
   return (data || []).map((m) => ({
     id: m.id,

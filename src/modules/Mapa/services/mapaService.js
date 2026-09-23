@@ -52,10 +52,7 @@ export async function listarClientes() {
     return CLIENTES_DEMO.map((c) => ({ ...c }));
   }
   const { data, error } = await supabase.from('gm_v_mapa_clientes').select('*').order('nombre');
-  if (error) {
-    console.error('[mapa] listarClientes', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aCliente);
 }
 
@@ -67,10 +64,7 @@ export async function contarSinCoordenadas() {
     .select('id', { count: 'exact', head: true })
     .eq('activo', true)
     .is('latitud', null);
-  if (error) {
-    console.error('[mapa] contarSinCoordenadas', error.message);
-    return 0;
-  }
+  if (error) throw new Error(error.message);
   return count || 0;
 }
 
@@ -109,9 +103,6 @@ export async function listarCompromisos(desde, hasta) {
     .order('fecha')
     .order('hora');
 
-  if (error) {
-    console.error('[mapa] listarCompromisos', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aCompromiso);
 }

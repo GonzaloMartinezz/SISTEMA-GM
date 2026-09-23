@@ -80,10 +80,7 @@ export async function listarVentas() {
     .from('gm_v_ventas')
     .select('*')
     .order('fecha', { ascending: false });
-  if (error) {
-    console.error('[cobranzas] listarVentas', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aVenta);
 }
 
@@ -121,10 +118,7 @@ export async function listarCuotas() {
     .from('gm_v_cuotas')
     .select('*')
     .order('vencimiento');
-  if (error) {
-    console.error('[cobranzas] listarCuotas', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aCuota);
 }
 
@@ -155,10 +149,7 @@ export async function listarCaja(desde, hasta) {
   if (desde) q = q.gte('fecha', desde);
   if (hasta) q = q.lte('fecha', hasta);
   const { data, error } = await q.order('fecha', { ascending: false });
-  if (error) {
-    console.error('[cobranzas] listarCaja', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aMovimiento);
 }
 
@@ -193,10 +184,7 @@ export async function listarResultado() {
     return RESULTADO_DEMO.map((m) => ({ ...m }));
   }
   const { data, error } = await supabase.from('gm_v_resultado').select('*').order('mes');
-  if (error) {
-    console.error('[cobranzas] listarResultado', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aMes);
 }
 
@@ -211,10 +199,7 @@ export async function listarClientes() {
     .select('codigo, negocio, profesional_apellido, profesional_nombre, rubro, localidad')
     .eq('activo', true)
     .order('negocio');
-  if (error) {
-    console.error('[cobranzas] listarClientes', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map((r) => ({
     codigo: r.codigo,
     nombre: r.negocio,
@@ -231,10 +216,7 @@ export async function listarEquipos() {
     .select('codigo, nombre, marca, categoria, costo_usd, precio_usd')
     .eq('activo', true)
     .order('nombre');
-  if (error) {
-    console.error('[cobranzas] listarEquipos', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map((r) => ({
     codigo: r.codigo,
     nombre: r.nombre,
@@ -252,10 +234,7 @@ export async function listarGastosRecurrentes() {
     .select('codigo, concepto, categoria, periodicidad, monto_usd')
     .eq('activo', true)
     .order('concepto');
-  if (error) {
-    console.error('[cobranzas] listarGastosRecurrentes', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map((r) => ({
     codigo: r.codigo,
     concepto: r.concepto,
@@ -314,8 +293,15 @@ export async function crearVenta(v) {
       p_venta: data.codigo,
       p_reemplazar: false,
     });
-    if (e2) console.error('[cobranzas] gm_generar_cuotas', e2.message);
-    else cuotasCreadas = Number(n) || 0;
+    // La venta ya quedó creada (con código data.codigo) aunque esto falle: si se
+    // pactaron cuotas y no se generó el plan, es un problema serio y silencioso
+    // — mejor avisarlo fuerte que dejar una venta financiada sin plan de pago.
+    if (e2) {
+      throw new Error(
+        `La venta ${data.codigo} se guardó, pero no se pudo generar el plan de cuotas: ${e2.message}. Usá "Rehacer plan" en la ficha de la venta para reintentar.`
+      );
+    }
+    cuotasCreadas = Number(n) || 0;
   }
 
   // El anticipo pactado no es plata cobrada. Sólo se registra como cobro si el
@@ -483,10 +469,7 @@ export async function listarCobros() {
     .from('gm_cobros')
     .select('*')
     .order('fecha', { ascending: false });
-  if (error) {
-    console.error('[cobranzas] listarCobros', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aCobro);
 }
 

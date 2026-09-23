@@ -96,10 +96,7 @@ export async function listarEventos(desde, hasta) {
     .order('fecha')
     .order('hora');
 
-  if (error) {
-    console.error('[agenda] listarEventos', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aEvento);
 }
 
@@ -185,10 +182,7 @@ export async function listarPendientes() {
     .order('urgencia')
     .order('modulo');
 
-  if (error) {
-    console.error('[agenda] listarPendientes', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aPendiente);
 }
 

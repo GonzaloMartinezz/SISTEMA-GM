@@ -44,10 +44,7 @@ export async function listarEventos(fecha) {
   if (fecha) q = q.eq('fecha', fecha);
 
   const { data, error } = await q;
-  if (error) {
-    console.error('[agendaService] listarEventos:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
   return (data || []).map(aEvento);
 }
 
@@ -63,10 +60,7 @@ export async function listarClientesGeo() {
     .eq('activo', true)
     .not('latitud', 'is', null);
 
-  if (error) {
-    console.error('[agendaService] listarClientesGeo:', error.message);
-    return [];
-  }
+  if (error) throw new Error(error.message);
 
   return (data || []).map((c) => ({
     id: c.codigo,
