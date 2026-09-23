@@ -203,6 +203,7 @@ const aCuenta = (r) => ({
   convenio: r.convenio,
   bloqueos: r.bloqueos,
   avisos: r.avisos || [],
+  activa: r.activa !== false,
 });
 
 export async function listarCuentas() {
@@ -253,6 +254,35 @@ export async function actualizarCuenta(numero, cambios) {
   const { data, error } = await supabase
     .from('gm_cuentas')
     .update(aFilaCuenta(cambios))
+    .eq('numero', numero)
+    .select('*, gm_clientes(codigo, negocio)')
+    .single();
+  if (error) throw new Error(error.message);
+  return aCuenta(data);
+}
+
+/**
+ * Baja "blanda": la cuenta y todo lo que cuelga de ella (domicilios,
+ * períodos, pagos, movimientos, llamados, notas, visitas) quedan intactos.
+ * Sólo deja de contarse como activa. Reactivar es la misma función al revés.
+ */
+export async function inactivarCuenta(numero) {
+  if (modoDemo()) return { numero, activa: false };
+  const { data, error } = await supabase
+    .from('gm_cuentas')
+    .update({ activa: false })
+    .eq('numero', numero)
+    .select('*, gm_clientes(codigo, negocio)')
+    .single();
+  if (error) throw new Error(error.message);
+  return aCuenta(data);
+}
+
+export async function reactivarCuenta(numero) {
+  if (modoDemo()) return { numero, activa: true };
+  const { data, error } = await supabase
+    .from('gm_cuentas')
+    .update({ activa: true })
     .eq('numero', numero)
     .select('*, gm_clientes(codigo, negocio)')
     .single();
