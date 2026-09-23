@@ -20,12 +20,15 @@ import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
 import { usd } from '../../../shared/gm-ui/graficos';
 import FiltrosCategoria from '../components/basedatos/FiltrosCategoria';
 import TablaEquipos from '../components/basedatos/TablaEquipos';
+import GraficoCapitalPorRubro from '../components/basedatos/GraficoCapitalPorRubro';
 
 const texto = (e) =>
   [e.codigo, e.nombre, e.marca, e.modelo, e.rubro, e.tipo].filter(Boolean).join(' ').toLowerCase();
 
 export default function BaseDatosView() {
-  const { equipos, porRubro, resumen, cargando, altaEquipo, editarEquipo, bajaEquipo } = useEquipos();
+  const {
+    equipos, porRubro, inmovilizadoPorRubro, resumen, cargando, altaEquipo, editarEquipo, bajaEquipo,
+  } = useEquipos();
   const navigate = useNavigate();
 
   const [busqueda, setBusqueda] = useState('');
@@ -109,6 +112,14 @@ export default function BaseDatosView() {
           tendencia={resumen.criticos > 0 ? 'baja' : 'igual'}
         />
       </div>
+
+      {/* ------------------------- Capital por rubro --------------------------- */}
+      <Panel
+        titulo="Capital inmovilizado por rubro"
+        bajada="Dónde está trabada la plata del depósito, para saber dónde reponer y dónde frenar."
+      >
+        <GraficoCapitalPorRubro datos={inmovilizadoPorRubro} />
+      </Panel>
 
       {/* ------------------------------ Catálogo ------------------------------ */}
       <Panel

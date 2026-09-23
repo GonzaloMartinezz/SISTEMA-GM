@@ -136,6 +136,23 @@ export function EquiposProvider({ children }) {
     return [...mapa.entries()].map(([rubro, cantidad]) => ({ rubro, cantidad }));
   }, [equipos]);
 
+  /**
+   * El mismo capital inmovilizado que ya se suma en la KPI, partido por
+   * rubro. Sirve para el gráfico de "Base de Datos": no alcanza con saber
+   * que hay US$ X trabados, importa saber en cuál de los tres rubros están.
+   */
+  const inmovilizadoPorRubro = useMemo(() => {
+    const mapa = new Map();
+    equipos.forEach((e) => {
+      const r = e.rubro || 'Sin rubro';
+      const actual = mapa.get(r) || { rubro: r, inmovilizado: 0, unidades: 0 };
+      actual.inmovilizado += e.inmovilizadoUsd;
+      actual.unidades += e.stock;
+      mapa.set(r, actual);
+    });
+    return [...mapa.values()].sort((a, b) => b.inmovilizado - a.inmovilizado);
+  }, [equipos]);
+
   const resumen = useMemo(() => {
     const inmovilizado = equipos.reduce((s, e) => s + e.inmovilizadoUsd, 0);
     const potencial = equipos.reduce((s, e) => s + e.stock * e.precioUsd, 0);
@@ -157,14 +174,14 @@ export function EquiposProvider({ children }) {
   const valor = useMemo(
     () => ({
       equipos, specs, movimientos, cargando, error, ultimoCambio,
-      specsPorEquipo, porRubro, resumen,
+      specsPorEquipo, porRubro, inmovilizadoPorRubro, resumen,
       recargar: cargar,
       altaEquipo, editarEquipo, bajaEquipo,
       guardarFicha, borrarFicha, registrarMovimiento,
     }),
     [
       equipos, specs, movimientos, cargando, error, ultimoCambio,
-      specsPorEquipo, porRubro, resumen, cargar,
+      specsPorEquipo, porRubro, inmovilizadoPorRubro, resumen, cargar,
       altaEquipo, editarEquipo, bajaEquipo, guardarFicha, borrarFicha, registrarMovimiento,
     ]
   );
