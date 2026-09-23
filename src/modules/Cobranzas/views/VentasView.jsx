@@ -18,6 +18,7 @@ import Chip from '../../../shared/gm-ui/Chip';
 import BotonGm from '../../../shared/gm-ui/BotonGm';
 import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
 import FilaEstadisticas from '../../../shared/gm-ui/FilaEstadisticas';
+import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
 import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
 import { useCobranzas } from '../context/CobranzasContext';
 import FilaVenta from '../components/FilaVenta';
@@ -38,11 +39,13 @@ export default function VentasView() {
     ventasFiltradas, ventas, clientes, equipos, cargando,
     ventaActiva, setVentaActiva, ventaSeleccionada, cuotasDeLaVenta,
     estadoFiltro, setEstadoFiltro, conteoPorEstado,
-    resumenCartera, deudores, nuevoCobro, nuevaVenta,
+    resumenCartera, deudores, nuevoCobro, nuevaVenta, editarVenta, borrarVenta,
   } = useCobranzas();
 
   const [cobrando, setCobrando] = useState(false);
   const [creando, setCreando] = useState(false);
+  const [editando, setEditando] = useState(null);
+  const [borrando, setBorrando] = useState(null);
 
   // Si la venta abierta desaparece del filtro, se cierra la ficha en vez de
   // quedar mostrando algo que ya no está en la lista de al lado.
@@ -175,6 +178,8 @@ export default function VentasView() {
                 cuotas={cuotasDeLaVenta}
                 onCerrar={() => setVentaActiva(null)}
                 onCobrar={() => setCobrando(true)}
+                onEditar={setEditando}
+                onEliminar={setBorrando}
               />
             </div>
           ) : (
@@ -243,6 +248,25 @@ export default function VentasView() {
         equipos={equipos}
         onCerrar={() => setCreando(false)}
         onGuardar={nuevaVenta}
+      />
+
+      <ModalVenta
+        abierto={Boolean(editando)}
+        venta={editando}
+        clientes={clientes}
+        equipos={equipos}
+        onCerrar={() => setEditando(null)}
+        onGuardar={(datos) => editarVenta(editando.codigo, datos)}
+      />
+
+      <ConfirmarGm
+        abierto={Boolean(borrando)}
+        titulo="¿Eliminar esta venta?"
+        detalle={borrando ? `${borrando.cliente} · ${borrando.codigo} · ${borrando.detalle}` : ''}
+        advertencia="Se borran también todas sus cuotas y todos los cobros que se le imputaron: el historial de esta venta deja de existir. Los gastos que se habían vinculado a ella (flete, instalación) no se borran, sólo quedan sin vincular. No se puede deshacer."
+        textoBoton="Eliminar venta"
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={() => borrarVenta(borrando.codigo)}
       />
     </div>
   );

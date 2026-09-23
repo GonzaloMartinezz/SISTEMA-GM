@@ -385,6 +385,171 @@ export async function crearEgreso(e) {
   return { codigo: data.codigo };
 }
 
+/**
+ * Edita los datos de una venta ya cargada. Si el total, el anticipo, la
+ * cantidad de cuotas o la fecha de la primera cambian, el plan se rehace
+ * automáticamente (respetando las cuotas que ya tienen pagos) para que la
+ * venta y su plan nunca queden desincronizados.
+ */
+export async function actualizarVenta(codigo, v) {
+  if (modoDemo()) {
+    await demora(180);
+    return { codigo, cuotas: Number(v.cuotas) || 0 };
+  }
+
+  let clienteId = null;
+  if (v.clienteCodigo) {
+    const { data: c } = await supabase
+      .from('gm_clientes').select('id').eq('codigo', v.clienteCodigo).maybeSingle();
+    clienteId = c?.id || null;
+  }
+  if (!clienteId) throw new Error('Elegí un cliente para la venta.');
+
+  let equipoId = null;
+  if (v.equipoCodigo) {
+    const { data: e } = await supabase
+      .from('gm_equipos').select('id').eq('codigo', v.equipoCodigo).maybeSingle();
+    equipoId = e?.id || null;
+  }
+
+  const fila = {
+    cliente_id: clienteId,
+    equipo_id: equipoId,
+    detalle: v.detalle || null,
+    fecha: v.fecha,
+    total_usd: Number(v.totalUsd) || 0,
+    costo_usd: Number(v.costoUsd) || 0,
+    anticipo_usd: Number(v.anticipoUsd) || 0,
+    cuotas: Number(v.cuotas) || 0,
+    primer_vencimiento: v.primerVencimiento || null,
+    interes_pct: Number(v.interesPct) || 0,
+    vendedor: v.vendedor || null,
+    nota: v.nota || null,
+  };
+
+  const { error } = await supabase.from('gm_ventas').update(fila).eq('codigo', codigo);
+  if (error) throw new Error(error.message);
+
+  let cuotasActualizadas = 0;
+  if (fila.cuotas > 0) {
+    const { data: n, error: e2 } = await supabase.rpc('gm_generar_cuotas', {
+      p_venta: codigo,
+      p_reemplazar: true,
+    });
+    if (e2) throw new Error(e2.message);
+    cuotasActualizadas = Number(n) || 0;
+  }
+
+  return { codigo, cuotas: cuotasActualizadas };
+}
+
+/**
+ * Borra una venta y todo lo que depende de ella (cobros y cuotas). Los
+ * egresos que se habían vinculado a esta venta NO se borran, sólo pierden
+ * el vínculo: son gastos reales que ya salieron de la caja. Es irreversible,
+ * por eso vive en una única función de la base y no en pasos sueltos desde
+ * el frontend.
+ */
+export async function eliminarVenta(codigo) {
+  if (modoDemo()) {
+    await demora(150);
+    return true;
+  }
+  const { error } = await supabase.rpc('gm_eliminar_venta', { p_venta: codigo });
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// Cobros y gastos individuales (editar / borrar un movimiento ya cargado)
+// ---------------------------------------------------------------------------
+
+const aCobro = (r) => ({
+  codigo: r.codigo,
+  ventaCodigo: r.venta_codigo,
+  cuotaCodigo: r.cuota_codigo || null,
+  fecha: r.fecha,
+  montoUsd: n0(r.monto_usd),
+  medio: r.medio,
+  comprobante: r.comprobante || null,
+  concepto: r.concepto,
+  nota: r.nota || null,
+});
+
+/** Todos los cobros registrados, para poder editarlos o borrarlos. */
+export async function listarCobros() {
+  if (modoDemo()) return [];
+  const { data, error } = await supabase
+    .from('gm_cobros')
+    .select('*')
+    .order('fecha', { ascending: false });
+  if (error) {
+    console.error('[cobranzas] listarCobros', error.message);
+    return [];
+  }
+  return (data || []).map(aCobro);
+}
+
+/**
+ * Edita un cobro ya registrado. Sólo toca esa fila: no reparte de nuevo la
+ * plata entre cuotas, porque el reparto original (hecho por gm_registrar_cobro)
+ * ya quedó guardado como filas separadas. El saldo de la cuota y de la venta
+ * se recalculan solos porque son vistas.
+ */
+export async function actualizarCobro(codigo, cambios) {
+  if (modoDemo()) return { codigo, ...cambios };
+  // Sólo se tocan las claves que llegan: así un editor liviano (como el de la
+  // caja) no corre el riesgo de vaciar el vínculo con la venta o la cuota,
+  // que ni siquiera muestra.
+  const fila = {};
+  if (cambios.fecha !== undefined) fila.fecha = cambios.fecha;
+  if (cambios.montoUsd !== undefined) fila.monto_usd = Number(cambios.montoUsd) || 0;
+  if (cambios.medio !== undefined) fila.medio = cambios.medio || 'transferencia';
+  if (cambios.comprobante !== undefined) fila.comprobante = cambios.comprobante || null;
+  if (cambios.concepto !== undefined) fila.concepto = cambios.concepto || 'cuota';
+  if (cambios.nota !== undefined) fila.nota = cambios.nota || null;
+  const { error } = await supabase.from('gm_cobros').update(fila).eq('codigo', codigo);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+export async function eliminarCobro(codigo) {
+  if (modoDemo()) return true;
+  const { error } = await supabase.from('gm_cobros').delete().eq('codigo', codigo);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+/** Edita un gasto (egreso) ya registrado. Nada depende de un egreso, así que
+ *  no hay ningún efecto en cascada. */
+export async function actualizarEgreso(codigo, e) {
+  if (modoDemo()) return { codigo, ...e };
+  // Igual que en el cobro: sólo se pisan las claves que llegan.
+  const fila = {};
+  if (e.fecha !== undefined) fila.fecha = e.fecha;
+  if (e.concepto !== undefined) fila.concepto = e.concepto;
+  if (e.categoria !== undefined) fila.categoria = e.categoria || 'operativo';
+  if (e.montoUsd !== undefined) fila.monto_usd = Number(e.montoUsd) || 0;
+  if (e.montoArs !== undefined) fila.monto_ars = e.montoArs ? Number(e.montoArs) : null;
+  if (e.tipoCambio !== undefined) fila.tipo_cambio = e.tipoCambio ? Number(e.tipoCambio) : null;
+  if (e.medio !== undefined) fila.medio = e.medio || 'transferencia';
+  if (e.comprobante !== undefined) fila.comprobante = e.comprobante || null;
+  if (e.proveedor !== undefined) fila.proveedor = e.proveedor || null;
+  if (e.gastoCodigo !== undefined) fila.gasto_codigo = e.gastoCodigo || null;
+  if (e.ventaCodigo !== undefined) fila.venta_codigo = e.ventaCodigo || null;
+  if (e.nota !== undefined) fila.nota = e.nota || null;
+  const { error } = await supabase.from('gm_egresos').update(fila).eq('codigo', codigo);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+export async function eliminarEgreso(codigo) {
+  if (modoDemo()) return true;
+  const { error } = await supabase.from('gm_egresos').delete().eq('codigo', codigo);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
 /** Rehace el plan de cuotas de una venta, respetando las que ya tienen pagos. */
 export async function regenerarPlan(ventaCodigo) {
   if (modoDemo()) {

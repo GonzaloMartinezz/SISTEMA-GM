@@ -11,7 +11,7 @@
 
 import React from 'react';
 import {
-  Banknote, CalendarClock, Mail, MessageCircle, Phone, Receipt, X,
+  Banknote, CalendarClock, Mail, MessageCircle, Pencil, Phone, Receipt, Trash2, X,
 } from 'lucide-react';
 import Chip from '../../../shared/gm-ui/Chip';
 import BotonGm from '../../../shared/gm-ui/BotonGm';
@@ -31,7 +31,7 @@ const linkWhatsApp = (tel) => {
   return `https://wa.me/${con54}`;
 };
 
-export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }) {
+export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar, onEditar, onEliminar }) {
   if (!v) return null;
 
   const estado = getEstadoVenta(v.estadoCobro);
@@ -77,6 +77,16 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
           <Enlace href={tel ? `tel:${tel}` : null} icono={Phone} etiqueta="Llamar" />
           <Enlace href={wa} icono={MessageCircle} etiqueta="WhatsApp" externo />
           <Enlace href={v.email ? `mailto:${v.email}` : null} icono={Mail} etiqueta="Mail" />
+          {onEditar && (
+            <BotonGm variante="contorno" tamano="sm" icono={Pencil} onClick={() => onEditar(v)}>
+              Editar
+            </BotonGm>
+          )}
+          {onEliminar && (
+            <BotonGm variante="fantasma" tamano="sm" icono={Trash2} onClick={() => onEliminar(v)}>
+              Eliminar
+            </BotonGm>
+          )}
         </div>
 
         {/* ---------------------------- el saldo --------------------------- */}

@@ -11,15 +11,19 @@
 // ============================================================================
 
 import React, { useMemo, useState } from 'react';
-import { ArrowDownLeft, ArrowUpRight, Download, Plus, Wallet } from 'lucide-react';
+import {
+  ArrowDownLeft, ArrowUpRight, Download, Pencil, Plus, Trash2, Wallet,
+} from 'lucide-react';
 import Panel from '../../../shared/gm-ui/Panel';
 import Chip from '../../../shared/gm-ui/Chip';
 import BotonGm from '../../../shared/gm-ui/BotonGm';
 import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
 import FilaEstadisticas from '../../../shared/gm-ui/FilaEstadisticas';
+import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
 import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
 import { useCobranzas } from '../context/CobranzasContext';
 import ModalEgreso from '../components/ModalEgreso';
+import ModalEditarMovimiento from '../components/ModalEditarMovimiento';
 import { resumenCaja } from '../utils/finanzas';
 import {
   CATEGORIAS, getCategoria, getMedio, usd, fechaCorta, mesLargo, plural,
@@ -35,11 +39,26 @@ const FLUJOS = [
 export default function CajaView() {
   const {
     movimientos, cargando, mesVisible, setMesVisible, gastos, ventas, nuevoEgreso,
+    editarCobro, borrarCobro, editarEgreso, borrarEgreso,
   } = useCobranzas();
 
   const [flujo, setFlujo] = useState('todo');
   const [categoria, setCategoria] = useState('todas');
   const [cargandoGasto, setCargandoGasto] = useState(false);
+  const [editando, setEditando] = useState(null);
+  const [borrando, setBorrando] = useState(null);
+
+  const guardarEdicion = (datos) => (
+    editando.flujo === 'ingreso'
+      ? editarCobro(editando.codigo, datos)
+      : editarEgreso(editando.codigo, datos)
+  );
+
+  const confirmarBorrado = () => (
+    borrando.flujo === 'ingreso'
+      ? borrarCobro(borrando.codigo)
+      : borrarEgreso(borrando.codigo)
+  );
 
   const delMes = useMemo(
     () => movimientos.filter((m) => claveMes(m.fecha) === mesVisible),
@@ -234,6 +253,25 @@ export default function CajaView() {
                     >
                       {esIngreso ? '+' : '−'} {usd(m.montoUsd)}
                     </span>
+
+                    <span className="flex shrink-0 items-center gap-0.5">
+                      <button
+                        type="button"
+                        title="Editar"
+                        onClick={() => setEditando(m)}
+                        className="grid h-7 w-7 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                      <button
+                        type="button"
+                        title="Eliminar"
+                        onClick={() => setBorrando(m)}
+                        className="grid h-7 w-7 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </span>
                   </li>
                 );
               })}
@@ -298,6 +336,26 @@ export default function CajaView() {
         ventas={ventas}
         onCerrar={() => setCargandoGasto(false)}
         onGuardar={nuevoEgreso}
+      />
+
+      <ModalEditarMovimiento
+        movimiento={editando}
+        onCerrar={() => setEditando(null)}
+        onGuardar={guardarEdicion}
+      />
+
+      <ConfirmarGm
+        abierto={Boolean(borrando)}
+        titulo={borrando?.flujo === 'ingreso' ? '¿Eliminar este cobro?' : '¿Eliminar este gasto?'}
+        detalle={borrando ? `${fechaCorta(borrando.fecha)} · ${borrando.concepto} · ${usd(borrando.montoUsd)}` : ''}
+        advertencia={
+          borrando?.flujo === 'ingreso'
+            ? 'La cuota o la venta a la que se había imputado este pago vuelve a mostrar ese saldo como pendiente. No se puede deshacer.'
+            : 'Este gasto deja de contarse en el resultado del mes. No se puede deshacer.'
+        }
+        textoBoton="Eliminar"
+        onCerrar={() => setBorrando(null)}
+        onConfirmar={confirmarBorrado}
       />
     </div>
   );

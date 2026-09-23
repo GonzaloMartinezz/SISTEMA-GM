@@ -19,6 +19,8 @@ import {
   listarVentas, listarCuotas, listarCaja, listarResultado,
   listarClientes, listarEquipos, listarGastosRecurrentes,
   crearVenta, registrarCobro, crearEgreso,
+  actualizarVenta, eliminarVenta, actualizarCobro, eliminarCobro,
+  actualizarEgreso, eliminarEgreso,
 } from '../services/cobranzasService';
 import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
 import { cartera, deudaPorCliente, totales } from '../utils/finanzas';
@@ -165,6 +167,38 @@ export function CobranzasProvider({ children }) {
     return r;
   }, [cargar]);
 
+  const editarVenta = useCallback(async (codigo, datos) => {
+    const r = await actualizarVenta(codigo, datos);
+    await cargar();
+    return r;
+  }, [cargar]);
+
+  const borrarVenta = useCallback(async (codigo) => {
+    await eliminarVenta(codigo);
+    if (ventaActiva === codigo) setVentaActiva(null);
+    await cargar();
+  }, [cargar, ventaActiva]);
+
+  const editarCobro = useCallback(async (codigo, datos) => {
+    await actualizarCobro(codigo, datos);
+    await cargar();
+  }, [cargar]);
+
+  const borrarCobro = useCallback(async (codigo) => {
+    await eliminarCobro(codigo);
+    await cargar();
+  }, [cargar]);
+
+  const editarEgreso = useCallback(async (codigo, datos) => {
+    await actualizarEgreso(codigo, datos);
+    await cargar();
+  }, [cargar]);
+
+  const borrarEgreso = useCallback(async (codigo) => {
+    await eliminarEgreso(codigo);
+    await cargar();
+  }, [cargar]);
+
   const valor = useMemo(
     () => ({
       ventas, cuotas, movimientos, meses, clientes, equipos, gastos,
@@ -175,6 +209,7 @@ export function CobranzasProvider({ children }) {
       ventaActiva, setVentaActiva, ventaSeleccionada, cuotasDeLaVenta, cuotasPorVenta,
       ventasFiltradas, resumenCartera, deudores, resumenPeriodo,
       nuevaVenta, nuevoCobro, nuevoEgreso,
+      editarVenta, borrarVenta, editarCobro, borrarCobro, editarEgreso, borrarEgreso,
     }),
     [
       ventas, cuotas, movimientos, meses, clientes, equipos, gastos,
@@ -183,6 +218,7 @@ export function CobranzasProvider({ children }) {
       ventaActiva, ventaSeleccionada, cuotasDeLaVenta, cuotasPorVenta,
       ventasFiltradas, resumenCartera, deudores, resumenPeriodo,
       nuevaVenta, nuevoCobro, nuevoEgreso,
+      editarVenta, borrarVenta, editarCobro, borrarCobro, editarEgreso, borrarEgreso,
     ]
   );
 

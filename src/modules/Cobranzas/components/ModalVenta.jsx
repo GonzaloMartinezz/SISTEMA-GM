@@ -33,21 +33,40 @@ const masMeses = (iso, n) => {
 const VACIO = {
   clienteCodigo: '', equipoCodigo: '', detalle: '', fecha: '',
   totalUsd: '', costoUsd: '', anticipoUsd: '', cuotas: '',
-  primerVencimiento: '', interesPct: '0', nota: '',
+  primerVencimiento: '', interesPct: '0', nota: '', vendedor: '',
   anticipoCobrado: true, medioAnticipo: 'transferencia', comprobanteAnticipo: '',
 };
 
-export default function ModalVenta({ abierto, clientes = [], equipos = [], onCerrar, onGuardar }) {
+export default function ModalVenta({ abierto, venta, clientes = [], equipos = [], onCerrar, onGuardar }) {
   const [f, setF] = useState(VACIO);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
+  const editando = Boolean(venta);
 
   useEffect(() => {
     if (!abierto) return;
-    const hoy = hoyIso();
-    setF({ ...VACIO, fecha: hoy, primerVencimiento: masMeses(hoy, 1) });
+    if (venta) {
+      setF({
+        ...VACIO,
+        clienteCodigo: venta.clienteCodigo || '',
+        equipoCodigo: venta.equipoCodigo || '',
+        detalle: venta.detalle || '',
+        fecha: venta.fecha || hoyIso(),
+        totalUsd: String(venta.totalUsd ?? ''),
+        costoUsd: String(venta.costoUsd ?? ''),
+        anticipoUsd: String(venta.anticipoUsd ?? ''),
+        cuotas: String(venta.cuotasPactadas || venta.cuotasTotal || ''),
+        primerVencimiento: venta.primerVencimiento || '',
+        interesPct: String(venta.interesPct ?? '0'),
+        nota: venta.nota || '',
+        vendedor: venta.vendedor || '',
+      });
+    } else {
+      const hoy = hoyIso();
+      setF({ ...VACIO, fecha: hoy, primerVencimiento: masMeses(hoy, 1) });
+    }
     setError('');
-  }, [abierto]);
+  }, [abierto, venta]);
 
   const set = (k) => (e) =>
     setF((x) => ({ ...x, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
@@ -96,6 +115,10 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
   const margenPct = r2(f.totalUsd) > 0 ? (margen / r2(f.totalUsd)) * 100 : 0;
 
   const guardar = async () => {
+    if (!f.clienteCodigo) {
+      setError('Elegí un cliente.');
+      return;
+    }
     if (!f.detalle.trim() && !f.equipoCodigo) {
       setError('Poné qué vendiste.');
       return;
@@ -111,7 +134,7 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
     setGuardando(true);
     setError('');
     try {
-      await onGuardar({
+      const datos = {
         clienteCodigo: f.clienteCodigo || null,
         equipoCodigo: f.equipoCodigo || null,
         detalle: f.detalle.trim() || null,
@@ -123,10 +146,14 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
         primerVencimiento: f.primerVencimiento || null,
         interesPct: r2(f.interesPct),
         nota: f.nota.trim() || null,
-        anticipoCobrado: f.anticipoCobrado,
-        medioAnticipo: f.medioAnticipo,
-        comprobanteAnticipo: f.comprobanteAnticipo.trim() || null,
-      });
+        vendedor: f.vendedor.trim() || null,
+      };
+      if (!editando) {
+        datos.anticipoCobrado = f.anticipoCobrado;
+        datos.medioAnticipo = f.medioAnticipo;
+        datos.comprobanteAnticipo = f.comprobanteAnticipo.trim() || null;
+      }
+      await onGuardar(datos);
       onCerrar?.();
     } catch (e) {
       setError(e.message || 'No se pudo guardar la venta.');
@@ -138,8 +165,12 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
   return (
     <ModalGm
       abierto={abierto}
-      titulo="Nueva venta"
-      bajada="El plan de cuotas se arma solo con lo que cargues acá abajo."
+      titulo={editando ? 'Editar venta' : 'Nueva venta'}
+      bajada={
+        editando
+          ? 'Si cambiás el total, el anticipo, las cuotas o la primera fecha, el plan se rehace solo, respetando lo que ya esté cobrado.'
+          : 'El plan de cuotas se arma solo con lo que cargues acá abajo.'
+      }
       onCerrar={guardando ? undefined : onCerrar}
       ancho="max-w-3xl"
       pie={
@@ -147,7 +178,7 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
           <BotonGm variante="fantasma" onClick={onCerrar} disabled={guardando}>Cancelar</BotonGm>
           <BotonGm variante="solido" onClick={guardar} disabled={guardando}>
             {guardando ? <Loader2 size={16} className="animate-spin" /> : null}
-            {guardando ? 'Guardando…' : 'Guardar venta'}
+            {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Guardar venta'}
           </BotonGm>
         </>
       }
@@ -227,8 +258,12 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
           </Campo>
         </div>
 
+        <Campo etiqueta="Vendedor (opcional)">
+          <input value={f.vendedor} onChange={set('vendedor')} placeholder="Quién la cerró" className={INPUT} />
+        </Campo>
+
         {/* --------------------- el anticipo, si ya entró -------------------- */}
-        {r2(f.anticipoUsd) > 0 && (
+        {!editando && r2(f.anticipoUsd) > 0 && (
           <section className="rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3.5">
             <label className="flex items-center gap-2.5">
               <input
