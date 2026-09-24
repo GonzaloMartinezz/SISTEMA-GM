@@ -1,0 +1,135 @@
+From 7048a9cf201976b4b05023fe7fb469aba5830571 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 19:01:19 +0000
+Subject: [PATCH] =?UTF-8?q?M=C3=B3dulo=203=20(Seguimientos):=20completar?=
+ =?UTF-8?q?=20el=20=C3=BAnico=20endpoint=20que=20faltaba?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Auditado ítem por ítem contra las capturas:
+- Filtros de Proceso (pipeline): ya tenía alta/edición/baja de leads y
+  mover de etapa completos, no se tocó.
+- Avances: es de solo lectura por diseño (reconstruye el historial que
+  escribe un trigger), no necesita endpoint.
+- Respuestas Rápidas: ya tenía alta/edición/baja de plantillas
+  completo, no se tocó.
+- WhatsApp y Mailing: el envío ya registraba el mensaje
+  (registrarInteraccion), pero no había forma de marcar un mensaje
+  enviado como respondido — marcarRespondido ya existía en
+  leadsService pero no estaba conectado a nada. Se agregó el botón en
+  la columna "Respuesta" de "Lo que se mandó", con su función en el
+  contexto (marcarMensajeRespondido).
+
+Build (vite build) y chequeo de tipos (tsc --noEmit) sin errores.
+---
+ .../context/SeguimientosContext.jsx           | 16 ++++++++--
+ .../Seguimientos/views/MensajeriaView.jsx     | 31 +++++++++++++------
+ 2 files changed, 34 insertions(+), 13 deletions(-)
+
+diff --git a/src/modules/Seguimientos/context/SeguimientosContext.jsx b/src/modules/Seguimientos/context/SeguimientosContext.jsx
+index c6e3b4b..44aeb4a 100644
+--- a/src/modules/Seguimientos/context/SeguimientosContext.jsx
++++ b/src/modules/Seguimientos/context/SeguimientosContext.jsx
+@@ -19,7 +19,7 @@ import React, {
+ import {
+   listarLeads, listarHistorial, listarPlantillas, listarMensajesDeLeads,
+   moverLead, crearLead, actualizarLead, eliminarLead,
+-  registrarInteraccion, guardarPlantilla, eliminarPlantilla,
++  registrarInteraccion, marcarRespondido, guardarPlantilla, eliminarPlantilla,
+ } from '../services/leadsService';
+ import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
+ import { ETAPAS, ETAPAS_ID, getEtapa, DIAS_FRIO } from '../config/pipeline.config';
+@@ -119,6 +119,16 @@ export function SeguimientosProvider({ children }) {
+     setMensajes(await listarMensajesDeLeads());
+   }, []);
+ 
++  /** Marca (o desmarca) un mensaje ya enviado como respondido por el lead. */
++  const marcarMensajeRespondido = useCallback(async (mensajeId, valor) => {
++    setMensajes((prev) => prev.map((m) => (m.id === mensajeId ? { ...m, respondido: valor } : m)));
++    try {
++      await marcarRespondido(mensajeId, valor);
++    } catch (e) {
++      setMensajes(await listarMensajesDeLeads()); // se revierte si falla
++    }
++  }, []);
++
+   const guardarLead = useCallback(async (lead, esNuevo) => {
+     if (esNuevo) await crearLead(lead);
+     else await actualizarLead(lead.id, lead);
+@@ -198,14 +208,14 @@ export function SeguimientosProvider({ children }) {
+       busqueda, setBusqueda, etapasVisibles, toggleEtapa,
+       soloPrioridadAlta, setSoloPrioridadAlta, limpiarFiltros, hayFiltro,
+       metricas,
+-      recargar: cargar, cambiarEtapa, marcarContacto,
++      recargar: cargar, cambiarEtapa, marcarContacto, marcarMensajeRespondido,
+       guardarLead, borrarLead, guardarUnaPlantilla, borrarUnaPlantilla,
+     }),
+     [
+       leadsFiltrados, leads, historial, plantillas, mensajes, porCodigo,
+       cargando, error, ultimoCambio, busqueda, etapasVisibles,
+       soloPrioridadAlta, limpiarFiltros, hayFiltro, metricas,
+-      cargar, cambiarEtapa, marcarContacto, guardarLead, borrarLead,
++      cargar, cambiarEtapa, marcarContacto, marcarMensajeRespondido, guardarLead, borrarLead,
+       guardarUnaPlantilla, borrarUnaPlantilla, toggleEtapa,
+     ]
+   );
+diff --git a/src/modules/Seguimientos/views/MensajeriaView.jsx b/src/modules/Seguimientos/views/MensajeriaView.jsx
+index b6c6632..253111f 100644
+--- a/src/modules/Seguimientos/views/MensajeriaView.jsx
++++ b/src/modules/Seguimientos/views/MensajeriaView.jsx
+@@ -11,7 +11,7 @@
+ // ============================================================================
+ 
+ import React, { useMemo, useState } from 'react';
+-import { Mail, MessageCircle, Send, Inbox, Clock } from 'lucide-react';
++import { Check, Mail, MessageCircle, Send, Inbox, Clock } from 'lucide-react';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import Tabla from '../../../shared/gm-ui/Tabla';
+ import Chip from '../../../shared/gm-ui/Chip';
+@@ -36,7 +36,8 @@ const fechaHora = (v) =>
+   });
+ 
+ export default function MensajeriaView() {
+-  const { leads, mensajes, plantillas, porCodigo, cargando, marcarContacto } = useSeguimientos();
++  const { leads, mensajes, plantillas, porCodigo, cargando, marcarContacto, marcarMensajeRespondido } =
++    useSeguimientos();
+   const [mensaje, setMensaje] = useState(null);
+ 
+   const pendientes = useMemo(
+@@ -132,14 +133,24 @@ export default function MensajeriaView() {
+       clave: 'respondido',
+       titulo: 'Respuesta',
+       ancho: '11%',
+-      render: (m) =>
+-        m.respondido ? (
+-          <Chip tono="aqua" punto>
+-            Respondió
+-          </Chip>
+-        ) : (
+-          <span className="text-[12px] text-[var(--gm-texto-tenue)]">—</span>
+-        ),
++      render: (m) => (
++        <button
++          type="button"
++          title={m.respondido ? 'Marcar como sin respuesta' : 'Marcar como respondido'}
++          onClick={(e) => { e.stopPropagation(); marcarMensajeRespondido(m.id, !m.respondido); }}
++          className="inline-flex items-center gap-1 rounded-lg px-1.5 py-1 transition hover:bg-[var(--gm-superficie-fuerte)]"
++        >
++          {m.respondido ? (
++            <Chip tono="aqua" punto>
++              Respondió
++            </Chip>
++          ) : (
++            <span className="inline-flex items-center gap-1 text-[12px] text-[var(--gm-texto-tenue)]">
++              <Check size={12} /> marcar
++            </span>
++          )}
++        </button>
++      ),
+     },
+   ];
+ 
+-- 
+2.43.0
+

@@ -1,0 +1,170 @@
+From 67498f8ffb7d9a643dd716ca2649d776793581c0 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 22:33:16 +0000
+Subject: [PATCH 2/2] =?UTF-8?q?M=C3=B3dulo=202=20(Equipamientos):=20agrega?=
+ =?UTF-8?q?r=20gr=C3=A1fico=20de=20capital=20por=20rubro?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Pedido explícito de Gonzalo ("que armen gráficos con la información que
+hay"). Era el único módulo en uso sin ningún gráfico, a pesar de tener
+datos de sobra para uno: costo, precio, stock y margen por equipo. Se
+agrega un gráfico de barras en Base de Datos con el capital inmovilizado
+por rubro (Odontología / Veterinaria / Diagnóstico por Imagen), que abre
+la KPI "Capital inmovilizado" que ya existía como un solo número.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W1qZfyDka9sLfVW6Minixv
+---
+ .../basedatos/GraficoCapitalPorRubro.jsx      | 55 +++++++++++++++++++
+ .../Equipos/context/EquiposContext.jsx        | 21 ++++++-
+ src/modules/Equipos/views/BaseDatosView.jsx   | 13 ++++-
+ 3 files changed, 86 insertions(+), 3 deletions(-)
+ create mode 100644 src/modules/Equipos/components/basedatos/GraficoCapitalPorRubro.jsx
+
+diff --git a/src/modules/Equipos/components/basedatos/GraficoCapitalPorRubro.jsx b/src/modules/Equipos/components/basedatos/GraficoCapitalPorRubro.jsx
+new file mode 100644
+index 0000000..c322aa1
+--- /dev/null
++++ b/src/modules/Equipos/components/basedatos/GraficoCapitalPorRubro.jsx
+@@ -0,0 +1,55 @@
++// ============================================================================
++// SISTEMA GM · M-02 EQUIPAMIENTOS · CAPITAL INMOVILIZADO POR RUBRO
++// ----------------------------------------------------------------------------
++// La KPI de arriba ya suma el capital inmovilizado en un solo número; este
++// gráfico lo abre por rubro (Odontología, Veterinaria, Diagnóstico por
++// Imagen), que es la pregunta real a la hora de decidir dónde reponer y
++// dónde frenar la compra.
++// ============================================================================
++
++import React from 'react';
++import {
++  Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,
++} from 'recharts';
++import { EJE_CLARO, GRILLA_CLARA, SIN_ANIMACION, usd } from '../../../../shared/gm-ui/graficos';
++import { RAMPA } from '../../../../shared/gm-ui/tokens';
++
++export default function GraficoCapitalPorRubro({ datos = [], alto = 220 }) {
++  if (datos.length === 0 || datos.every((d) => d.inmovilizado === 0)) {
++    return (
++      <p className="py-10 text-center text-[13px] text-[var(--gm-texto-suave)]">
++        Todavía no hay stock cargado para mostrar el capital por rubro.
++      </p>
++    );
++  }
++
++  return (
++    <div style={{ height: alto }}>
++      <ResponsiveContainer width="100%" height="100%">
++        <BarChart data={datos} margin={{ top: 8, right: 8, bottom: 4, left: -8 }}>
++          <CartesianGrid {...GRILLA_CLARA} />
++          <XAxis dataKey="rubro" {...EJE_CLARO} />
++          <YAxis {...EJE_CLARO} tickFormatter={usd} width={64} />
++          <Tooltip content={<Globo />} cursor={{ fill: 'rgba(180,85,26,0.05)' }} />
++          <Bar dataKey="inmovilizado" radius={[4, 4, 0, 0]} maxBarSize={56} {...SIN_ANIMACION}>
++            {datos.map((d, i) => (
++              <Cell key={d.rubro} fill={RAMPA[i % RAMPA.length]} />
++            ))}
++          </Bar>
++        </BarChart>
++      </ResponsiveContainer>
++    </div>
++  );
++}
++
++function Globo({ active, payload }) {
++  if (!active || !payload?.length) return null;
++  const d = payload[0].payload;
++  return (
++    <div className="rounded-xl border border-[var(--gm-borde)] bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(26,26,24,0.3)]">
++      <p className="text-[12px] font-semibold text-[#2A2118]">{d.rubro}</p>
++      <p className="mt-1 text-[12px] text-[#6E6559]">Inmovilizado: {usd(d.inmovilizado)}</p>
++      <p className="text-[12px] text-[#948A7C]">{d.unidades} unidades en depósito</p>
++    </div>
++  );
++}
+diff --git a/src/modules/Equipos/context/EquiposContext.jsx b/src/modules/Equipos/context/EquiposContext.jsx
+index 6186f87..b06eff9 100644
+--- a/src/modules/Equipos/context/EquiposContext.jsx
++++ b/src/modules/Equipos/context/EquiposContext.jsx
+@@ -136,6 +136,23 @@ export function EquiposProvider({ children }) {
+     return [...mapa.entries()].map(([rubro, cantidad]) => ({ rubro, cantidad }));
+   }, [equipos]);
+ 
++  /**
++   * El mismo capital inmovilizado que ya se suma en la KPI, partido por
++   * rubro. Sirve para el gráfico de "Base de Datos": no alcanza con saber
++   * que hay US$ X trabados, importa saber en cuál de los tres rubros están.
++   */
++  const inmovilizadoPorRubro = useMemo(() => {
++    const mapa = new Map();
++    equipos.forEach((e) => {
++      const r = e.rubro || 'Sin rubro';
++      const actual = mapa.get(r) || { rubro: r, inmovilizado: 0, unidades: 0 };
++      actual.inmovilizado += e.inmovilizadoUsd;
++      actual.unidades += e.stock;
++      mapa.set(r, actual);
++    });
++    return [...mapa.values()].sort((a, b) => b.inmovilizado - a.inmovilizado);
++  }, [equipos]);
++
+   const resumen = useMemo(() => {
+     const inmovilizado = equipos.reduce((s, e) => s + e.inmovilizadoUsd, 0);
+     const potencial = equipos.reduce((s, e) => s + e.stock * e.precioUsd, 0);
+@@ -157,14 +174,14 @@ export function EquiposProvider({ children }) {
+   const valor = useMemo(
+     () => ({
+       equipos, specs, movimientos, cargando, error, ultimoCambio,
+-      specsPorEquipo, porRubro, resumen,
++      specsPorEquipo, porRubro, inmovilizadoPorRubro, resumen,
+       recargar: cargar,
+       altaEquipo, editarEquipo, bajaEquipo,
+       guardarFicha, borrarFicha, registrarMovimiento,
+     }),
+     [
+       equipos, specs, movimientos, cargando, error, ultimoCambio,
+-      specsPorEquipo, porRubro, resumen, cargar,
++      specsPorEquipo, porRubro, inmovilizadoPorRubro, resumen, cargar,
+       altaEquipo, editarEquipo, bajaEquipo, guardarFicha, borrarFicha, registrarMovimiento,
+     ]
+   );
+diff --git a/src/modules/Equipos/views/BaseDatosView.jsx b/src/modules/Equipos/views/BaseDatosView.jsx
+index a9f8035..f5bbcea 100644
+--- a/src/modules/Equipos/views/BaseDatosView.jsx
++++ b/src/modules/Equipos/views/BaseDatosView.jsx
+@@ -20,12 +20,15 @@ import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import { usd } from '../../../shared/gm-ui/graficos';
+ import FiltrosCategoria from '../components/basedatos/FiltrosCategoria';
+ import TablaEquipos from '../components/basedatos/TablaEquipos';
++import GraficoCapitalPorRubro from '../components/basedatos/GraficoCapitalPorRubro';
+ 
+ const texto = (e) =>
+   [e.codigo, e.nombre, e.marca, e.modelo, e.rubro, e.tipo].filter(Boolean).join(' ').toLowerCase();
+ 
+ export default function BaseDatosView() {
+-  const { equipos, porRubro, resumen, cargando, altaEquipo, editarEquipo, bajaEquipo } = useEquipos();
++  const {
++    equipos, porRubro, inmovilizadoPorRubro, resumen, cargando, altaEquipo, editarEquipo, bajaEquipo,
++  } = useEquipos();
+   const navigate = useNavigate();
+ 
+   const [busqueda, setBusqueda] = useState('');
+@@ -110,6 +113,14 @@ export default function BaseDatosView() {
+         />
+       </div>
+ 
++      {/* ------------------------- Capital por rubro --------------------------- */}
++      <Panel
++        titulo="Capital inmovilizado por rubro"
++        bajada="Dónde está trabada la plata del depósito, para saber dónde reponer y dónde frenar."
++      >
++        <GraficoCapitalPorRubro datos={inmovilizadoPorRubro} />
++      </Panel>
++
+       {/* ------------------------------ Catálogo ------------------------------ */}
+       <Panel
+         titulo="Catálogo de equipamiento"
+-- 
+2.43.0
+

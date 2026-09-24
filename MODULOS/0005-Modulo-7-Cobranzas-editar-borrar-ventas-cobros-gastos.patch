@@ -1,0 +1,798 @@
+From b8fb0093b2a9fab176fdd2e85cee463c682b46e5 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 20:37:01 +0000
+Subject: [PATCH 2/2] =?UTF-8?q?M=C3=B3dulo=207=20(Cobranzas):=20editar=20y?=
+ =?UTF-8?q?=20borrar=20ventas,=20cobros=20y=20gastos?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Decisión de Gonzalo: edición y baja real, no sólo asientos de
+corrección. Se agrega:
+
+- actualizarVenta/eliminarVenta en el servicio; borrar una venta usa
+  la nueva función gm_eliminar_venta en Supabase (borra cobros y
+  cuotas, desvincula los egresos sin borrarlos, todo en una
+  transacción) para no dejar la venta a medio borrar si algo falla.
+- Editar una venta rehace el plan de cuotas solo si cambia el total,
+  el anticipo, la cantidad de cuotas o la primera fecha, respetando
+  lo ya cobrado.
+- actualizarCobro/eliminarCobro y actualizarEgreso/eliminarEgreso,
+  con edición y baja desde la lista de movimientos de la Caja (sirve
+  tanto para cobros como para gastos, con confirmación y advertencia
+  en cada caso).
+- Validación agregada: elegir un cliente es obligatorio al cargar o
+  editar una venta (la base ya lo exige; el formulario no lo pedía).
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W1qZfyDka9sLfVW6Minixv
+---
+ .../Cobranzas/components/FichaVenta.jsx       |  14 +-
+ .../components/ModalEditarMovimiento.jsx      | 173 ++++++++++++++++++
+ .../Cobranzas/components/ModalVenta.jsx       |  63 +++++--
+ .../Cobranzas/context/CobranzasContext.jsx    |  36 ++++
+ .../Cobranzas/services/cobranzasService.js    | 165 +++++++++++++++++
+ src/modules/Cobranzas/views/CajaView.jsx      |  60 +++++-
+ src/modules/Cobranzas/views/VentasView.jsx    |  26 ++-
+ 7 files changed, 519 insertions(+), 18 deletions(-)
+ create mode 100644 src/modules/Cobranzas/components/ModalEditarMovimiento.jsx
+
+diff --git a/src/modules/Cobranzas/components/FichaVenta.jsx b/src/modules/Cobranzas/components/FichaVenta.jsx
+index bb5a2a8..ccc6995 100644
+--- a/src/modules/Cobranzas/components/FichaVenta.jsx
++++ b/src/modules/Cobranzas/components/FichaVenta.jsx
+@@ -11,7 +11,7 @@
+ 
+ import React from 'react';
+ import {
+-  Banknote, CalendarClock, Mail, MessageCircle, Phone, Receipt, X,
++  Banknote, CalendarClock, Mail, MessageCircle, Pencil, Phone, Receipt, Trash2, X,
+ } from 'lucide-react';
+ import Chip from '../../../shared/gm-ui/Chip';
+ import BotonGm from '../../../shared/gm-ui/BotonGm';
+@@ -31,7 +31,7 @@ const linkWhatsApp = (tel) => {
+   return `https://wa.me/${con54}`;
+ };
+ 
+-export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }) {
++export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar, onEditar, onEliminar }) {
+   if (!v) return null;
+ 
+   const estado = getEstadoVenta(v.estadoCobro);
+@@ -77,6 +77,16 @@ export default function FichaVenta({ venta: v, cuotas = [], onCerrar, onCobrar }
+           <Enlace href={tel ? `tel:${tel}` : null} icono={Phone} etiqueta="Llamar" />
+           <Enlace href={wa} icono={MessageCircle} etiqueta="WhatsApp" externo />
+           <Enlace href={v.email ? `mailto:${v.email}` : null} icono={Mail} etiqueta="Mail" />
++          {onEditar && (
++            <BotonGm variante="contorno" tamano="sm" icono={Pencil} onClick={() => onEditar(v)}>
++              Editar
++            </BotonGm>
++          )}
++          {onEliminar && (
++            <BotonGm variante="fantasma" tamano="sm" icono={Trash2} onClick={() => onEliminar(v)}>
++              Eliminar
++            </BotonGm>
++          )}
+         </div>
+ 
+         {/* ---------------------------- el saldo --------------------------- */}
+diff --git a/src/modules/Cobranzas/components/ModalEditarMovimiento.jsx b/src/modules/Cobranzas/components/ModalEditarMovimiento.jsx
+new file mode 100644
+index 0000000..e81156c
+--- /dev/null
++++ b/src/modules/Cobranzas/components/ModalEditarMovimiento.jsx
+@@ -0,0 +1,173 @@
++// ============================================================================
++// SISTEMA GM · M-07 · EDITAR UN MOVIMIENTO DE CAJA
++// ----------------------------------------------------------------------------
++// Un movimiento de la caja es, por debajo, un cobro (gm_cobros) o un gasto
++// (gm_egresos). Este modal edita cualquiera de los dos con el mismo formato,
++// mostrando sólo los campos que corresponden a cada tipo.
++//
++// Lo que NO se toca desde acá: a qué venta o cuota está vinculado el
++// movimiento. Ese vínculo es identidad, no un dato para corregir; si algo
++// se cobró contra la venta equivocada, se borra y se vuelve a cargar bien.
++// ============================================================================
++
++import React, { useEffect, useState } from 'react';
++import { AlertTriangle, Loader2 } from 'lucide-react';
++import ModalGm from '../../../shared/gm-ui/ModalGm';
++import BotonGm from '../../../shared/gm-ui/BotonGm';
++import { CATEGORIAS, MEDIOS, CONCEPTOS_COBRO } from '../config/cobranzas.config';
++
++const INPUT =
++  'h-11 w-full rounded-xl border border-[var(--gm-borde)] bg-white px-3.5 text-[14px] text-[#2A2118] outline-none transition placeholder:text-[var(--gm-texto-medio)] focus:border-[#2F6DA0] focus:ring-4 focus:ring-[#2F6DA0]/10';
++
++const r2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
++
++export default function ModalEditarMovimiento({ movimiento, onCerrar, onGuardar }) {
++  const [f, setF] = useState(null);
++  const [guardando, setGuardando] = useState(false);
++  const [error, setError] = useState('');
++
++  const esIngreso = movimiento?.flujo === 'ingreso';
++
++  useEffect(() => {
++    if (!movimiento) return;
++    setF({
++      fecha: movimiento.fecha || '',
++      montoUsd: String(movimiento.montoUsd ?? ''),
++      medio: movimiento.medio || 'transferencia',
++      comprobante: movimiento.comprobante || '',
++      concepto: esIngreso ? (movimiento.concepto || 'cuota') : (movimiento.concepto || ''),
++      categoria: movimiento.categoria || 'operativo',
++      nota: movimiento.nota || '',
++    });
++    setError('');
++  }, [movimiento, esIngreso]);
++
++  if (!movimiento || !f) return null;
++
++  const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }));
++
++  const guardar = async () => {
++    if (!(r2(f.montoUsd) > 0)) {
++      setError('El monto tiene que ser mayor a cero.');
++      return;
++    }
++    if (!esIngreso && !f.concepto.trim()) {
++      setError('Poné en qué se fue la plata.');
++      return;
++    }
++    setGuardando(true);
++    setError('');
++    try {
++      if (esIngreso) {
++        await onGuardar({
++          fecha: f.fecha,
++          montoUsd: r2(f.montoUsd),
++          medio: f.medio,
++          comprobante: f.comprobante.trim() || null,
++          concepto: f.concepto,
++          nota: f.nota.trim() || null,
++        });
++      } else {
++        await onGuardar({
++          fecha: f.fecha,
++          concepto: f.concepto.trim(),
++          categoria: f.categoria,
++          montoUsd: r2(f.montoUsd),
++          medio: f.medio,
++          comprobante: f.comprobante.trim() || null,
++          nota: f.nota.trim() || null,
++        });
++      }
++      onCerrar?.();
++    } catch (e) {
++      setError(e.message || 'No se pudo guardar el movimiento.');
++    } finally {
++      setGuardando(false);
++    }
++  };
++
++  return (
++    <ModalGm
++      abierto={Boolean(movimiento)}
++      titulo={esIngreso ? 'Editar cobro' : 'Editar gasto'}
++      bajada={
++        esIngreso
++          ? 'El vínculo con la venta y la cuota no cambia: sólo estos datos.'
++          : 'Cambiá lo que haga falta corregir de este gasto.'
++      }
++      onCerrar={guardando ? undefined : onCerrar}
++      ancho="max-w-lg"
++      pie={
++        <>
++          <BotonGm variante="fantasma" onClick={onCerrar} disabled={guardando}>Cancelar</BotonGm>
++          <BotonGm variante="solido" onClick={guardar} disabled={guardando}>
++            {guardando ? <Loader2 size={16} className="animate-spin" /> : null}
++            {guardando ? 'Guardando…' : 'Guardar cambios'}
++          </BotonGm>
++        </>
++      }
++    >
++      <div className="space-y-4">
++        {error && (
++          <p className="flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[#FBEAE0] px-3.5 py-2.5 text-[13px] text-[#A63A0C]">
++            <AlertTriangle size={14} className="mt-0.5 shrink-0" />
++            {error}
++          </p>
++        )}
++
++        {!esIngreso && (
++          <Campo etiqueta="En qué se fue">
++            <input value={f.concepto} onChange={set('concepto')} className={INPUT} />
++          </Campo>
++        )}
++
++        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
++          <Campo etiqueta="Monto USD">
++            <input type="number" min="0" step="0.01" value={f.montoUsd} onChange={set('montoUsd')} className={INPUT} />
++          </Campo>
++          <Campo etiqueta="Cuándo">
++            <input type="date" value={f.fecha} onChange={set('fecha')} className={INPUT} />
++          </Campo>
++        </div>
++
++        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
++          {esIngreso ? (
++            <Campo etiqueta="Qué es este pago">
++              <select value={f.concepto} onChange={set('concepto')} className={INPUT}>
++                {CONCEPTOS_COBRO.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
++              </select>
++            </Campo>
++          ) : (
++            <Campo etiqueta="Categoría">
++              <select value={f.categoria} onChange={set('categoria')} className={INPUT}>
++                {CATEGORIAS.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
++              </select>
++            </Campo>
++          )}
++          <Campo etiqueta="Cómo se pagó">
++            <select value={f.medio} onChange={set('medio')} className={INPUT}>
++              {MEDIOS.map((m) => <option key={m.id} value={m.id}>{m.nombre}</option>)}
++            </select>
++          </Campo>
++        </div>
++
++        <Campo etiqueta="Comprobante (opcional)">
++          <input value={f.comprobante} onChange={set('comprobante')} className={INPUT} />
++        </Campo>
++
++        <Campo etiqueta="Nota (opcional)">
++          <input value={f.nota} onChange={set('nota')} className={INPUT} />
++        </Campo>
++      </div>
++    </ModalGm>
++  );
++}
++
++function Campo({ etiqueta, children }) {
++  return (
++    <label className="block">
++      <span className="mb-1.5 block text-[12px] font-medium text-[#6E6559]">{etiqueta}</span>
++      {children}
++    </label>
++  );
++}
+diff --git a/src/modules/Cobranzas/components/ModalVenta.jsx b/src/modules/Cobranzas/components/ModalVenta.jsx
+index 7d9d45e..203d2fc 100644
+--- a/src/modules/Cobranzas/components/ModalVenta.jsx
++++ b/src/modules/Cobranzas/components/ModalVenta.jsx
+@@ -33,21 +33,40 @@ const masMeses = (iso, n) => {
+ const VACIO = {
+   clienteCodigo: '', equipoCodigo: '', detalle: '', fecha: '',
+   totalUsd: '', costoUsd: '', anticipoUsd: '', cuotas: '',
+-  primerVencimiento: '', interesPct: '0', nota: '',
++  primerVencimiento: '', interesPct: '0', nota: '', vendedor: '',
+   anticipoCobrado: true, medioAnticipo: 'transferencia', comprobanteAnticipo: '',
+ };
+ 
+-export default function ModalVenta({ abierto, clientes = [], equipos = [], onCerrar, onGuardar }) {
++export default function ModalVenta({ abierto, venta, clientes = [], equipos = [], onCerrar, onGuardar }) {
+   const [f, setF] = useState(VACIO);
+   const [guardando, setGuardando] = useState(false);
+   const [error, setError] = useState('');
++  const editando = Boolean(venta);
+ 
+   useEffect(() => {
+     if (!abierto) return;
+-    const hoy = hoyIso();
+-    setF({ ...VACIO, fecha: hoy, primerVencimiento: masMeses(hoy, 1) });
++    if (venta) {
++      setF({
++        ...VACIO,
++        clienteCodigo: venta.clienteCodigo || '',
++        equipoCodigo: venta.equipoCodigo || '',
++        detalle: venta.detalle || '',
++        fecha: venta.fecha || hoyIso(),
++        totalUsd: String(venta.totalUsd ?? ''),
++        costoUsd: String(venta.costoUsd ?? ''),
++        anticipoUsd: String(venta.anticipoUsd ?? ''),
++        cuotas: String(venta.cuotasPactadas || venta.cuotasTotal || ''),
++        primerVencimiento: venta.primerVencimiento || '',
++        interesPct: String(venta.interesPct ?? '0'),
++        nota: venta.nota || '',
++        vendedor: venta.vendedor || '',
++      });
++    } else {
++      const hoy = hoyIso();
++      setF({ ...VACIO, fecha: hoy, primerVencimiento: masMeses(hoy, 1) });
++    }
+     setError('');
+-  }, [abierto]);
++  }, [abierto, venta]);
+ 
+   const set = (k) => (e) =>
+     setF((x) => ({ ...x, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+@@ -96,6 +115,10 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+   const margenPct = r2(f.totalUsd) > 0 ? (margen / r2(f.totalUsd)) * 100 : 0;
+ 
+   const guardar = async () => {
++    if (!f.clienteCodigo) {
++      setError('Elegí un cliente.');
++      return;
++    }
+     if (!f.detalle.trim() && !f.equipoCodigo) {
+       setError('Poné qué vendiste.');
+       return;
+@@ -111,7 +134,7 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+     setGuardando(true);
+     setError('');
+     try {
+-      await onGuardar({
++      const datos = {
+         clienteCodigo: f.clienteCodigo || null,
+         equipoCodigo: f.equipoCodigo || null,
+         detalle: f.detalle.trim() || null,
+@@ -123,10 +146,14 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+         primerVencimiento: f.primerVencimiento || null,
+         interesPct: r2(f.interesPct),
+         nota: f.nota.trim() || null,
+-        anticipoCobrado: f.anticipoCobrado,
+-        medioAnticipo: f.medioAnticipo,
+-        comprobanteAnticipo: f.comprobanteAnticipo.trim() || null,
+-      });
++        vendedor: f.vendedor.trim() || null,
++      };
++      if (!editando) {
++        datos.anticipoCobrado = f.anticipoCobrado;
++        datos.medioAnticipo = f.medioAnticipo;
++        datos.comprobanteAnticipo = f.comprobanteAnticipo.trim() || null;
++      }
++      await onGuardar(datos);
+       onCerrar?.();
+     } catch (e) {
+       setError(e.message || 'No se pudo guardar la venta.');
+@@ -138,8 +165,12 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+   return (
+     <ModalGm
+       abierto={abierto}
+-      titulo="Nueva venta"
+-      bajada="El plan de cuotas se arma solo con lo que cargues acá abajo."
++      titulo={editando ? 'Editar venta' : 'Nueva venta'}
++      bajada={
++        editando
++          ? 'Si cambiás el total, el anticipo, las cuotas o la primera fecha, el plan se rehace solo, respetando lo que ya esté cobrado.'
++          : 'El plan de cuotas se arma solo con lo que cargues acá abajo.'
++      }
+       onCerrar={guardando ? undefined : onCerrar}
+       ancho="max-w-3xl"
+       pie={
+@@ -147,7 +178,7 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+           <BotonGm variante="fantasma" onClick={onCerrar} disabled={guardando}>Cancelar</BotonGm>
+           <BotonGm variante="solido" onClick={guardar} disabled={guardando}>
+             {guardando ? <Loader2 size={16} className="animate-spin" /> : null}
+-            {guardando ? 'Guardando…' : 'Guardar venta'}
++            {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Guardar venta'}
+           </BotonGm>
+         </>
+       }
+@@ -227,8 +258,12 @@ export default function ModalVenta({ abierto, clientes = [], equipos = [], onCer
+           </Campo>
+         </div>
+ 
++        <Campo etiqueta="Vendedor (opcional)">
++          <input value={f.vendedor} onChange={set('vendedor')} placeholder="Quién la cerró" className={INPUT} />
++        </Campo>
++
+         {/* --------------------- el anticipo, si ya entró -------------------- */}
+-        {r2(f.anticipoUsd) > 0 && (
++        {!editando && r2(f.anticipoUsd) > 0 && (
+           <section className="rounded-xl border border-[var(--gm-borde)] bg-[#FCFAF6] px-4 py-3.5">
+             <label className="flex items-center gap-2.5">
+               <input
+diff --git a/src/modules/Cobranzas/context/CobranzasContext.jsx b/src/modules/Cobranzas/context/CobranzasContext.jsx
+index 25a1ea8..a49b666 100644
+--- a/src/modules/Cobranzas/context/CobranzasContext.jsx
++++ b/src/modules/Cobranzas/context/CobranzasContext.jsx
+@@ -19,6 +19,8 @@ import {
+   listarVentas, listarCuotas, listarCaja, listarResultado,
+   listarClientes, listarEquipos, listarGastosRecurrentes,
+   crearVenta, registrarCobro, crearEgreso,
++  actualizarVenta, eliminarVenta, actualizarCobro, eliminarCobro,
++  actualizarEgreso, eliminarEgreso,
+ } from '../services/cobranzasService';
+ import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
+ import { cartera, deudaPorCliente, totales } from '../utils/finanzas';
+@@ -165,6 +167,38 @@ export function CobranzasProvider({ children }) {
+     return r;
+   }, [cargar]);
+ 
++  const editarVenta = useCallback(async (codigo, datos) => {
++    const r = await actualizarVenta(codigo, datos);
++    await cargar();
++    return r;
++  }, [cargar]);
++
++  const borrarVenta = useCallback(async (codigo) => {
++    await eliminarVenta(codigo);
++    if (ventaActiva === codigo) setVentaActiva(null);
++    await cargar();
++  }, [cargar, ventaActiva]);
++
++  const editarCobro = useCallback(async (codigo, datos) => {
++    await actualizarCobro(codigo, datos);
++    await cargar();
++  }, [cargar]);
++
++  const borrarCobro = useCallback(async (codigo) => {
++    await eliminarCobro(codigo);
++    await cargar();
++  }, [cargar]);
++
++  const editarEgreso = useCallback(async (codigo, datos) => {
++    await actualizarEgreso(codigo, datos);
++    await cargar();
++  }, [cargar]);
++
++  const borrarEgreso = useCallback(async (codigo) => {
++    await eliminarEgreso(codigo);
++    await cargar();
++  }, [cargar]);
++
+   const valor = useMemo(
+     () => ({
+       ventas, cuotas, movimientos, meses, clientes, equipos, gastos,
+@@ -175,6 +209,7 @@ export function CobranzasProvider({ children }) {
+       ventaActiva, setVentaActiva, ventaSeleccionada, cuotasDeLaVenta, cuotasPorVenta,
+       ventasFiltradas, resumenCartera, deudores, resumenPeriodo,
+       nuevaVenta, nuevoCobro, nuevoEgreso,
++      editarVenta, borrarVenta, editarCobro, borrarCobro, editarEgreso, borrarEgreso,
+     }),
+     [
+       ventas, cuotas, movimientos, meses, clientes, equipos, gastos,
+@@ -183,6 +218,7 @@ export function CobranzasProvider({ children }) {
+       ventaActiva, ventaSeleccionada, cuotasDeLaVenta, cuotasPorVenta,
+       ventasFiltradas, resumenCartera, deudores, resumenPeriodo,
+       nuevaVenta, nuevoCobro, nuevoEgreso,
++      editarVenta, borrarVenta, editarCobro, borrarCobro, editarEgreso, borrarEgreso,
+     ]
+   );
+ 
+diff --git a/src/modules/Cobranzas/services/cobranzasService.js b/src/modules/Cobranzas/services/cobranzasService.js
+index 4121a89..58cd6f6 100644
+--- a/src/modules/Cobranzas/services/cobranzasService.js
++++ b/src/modules/Cobranzas/services/cobranzasService.js
+@@ -385,6 +385,171 @@ export async function crearEgreso(e) {
+   return { codigo: data.codigo };
+ }
+ 
++/**
++ * Edita los datos de una venta ya cargada. Si el total, el anticipo, la
++ * cantidad de cuotas o la fecha de la primera cambian, el plan se rehace
++ * automáticamente (respetando las cuotas que ya tienen pagos) para que la
++ * venta y su plan nunca queden desincronizados.
++ */
++export async function actualizarVenta(codigo, v) {
++  if (modoDemo()) {
++    await demora(180);
++    return { codigo, cuotas: Number(v.cuotas) || 0 };
++  }
++
++  let clienteId = null;
++  if (v.clienteCodigo) {
++    const { data: c } = await supabase
++      .from('gm_clientes').select('id').eq('codigo', v.clienteCodigo).maybeSingle();
++    clienteId = c?.id || null;
++  }
++  if (!clienteId) throw new Error('Elegí un cliente para la venta.');
++
++  let equipoId = null;
++  if (v.equipoCodigo) {
++    const { data: e } = await supabase
++      .from('gm_equipos').select('id').eq('codigo', v.equipoCodigo).maybeSingle();
++    equipoId = e?.id || null;
++  }
++
++  const fila = {
++    cliente_id: clienteId,
++    equipo_id: equipoId,
++    detalle: v.detalle || null,
++    fecha: v.fecha,
++    total_usd: Number(v.totalUsd) || 0,
++    costo_usd: Number(v.costoUsd) || 0,
++    anticipo_usd: Number(v.anticipoUsd) || 0,
++    cuotas: Number(v.cuotas) || 0,
++    primer_vencimiento: v.primerVencimiento || null,
++    interes_pct: Number(v.interesPct) || 0,
++    vendedor: v.vendedor || null,
++    nota: v.nota || null,
++  };
++
++  const { error } = await supabase.from('gm_ventas').update(fila).eq('codigo', codigo);
++  if (error) throw new Error(error.message);
++
++  let cuotasActualizadas = 0;
++  if (fila.cuotas > 0) {
++    const { data: n, error: e2 } = await supabase.rpc('gm_generar_cuotas', {
++      p_venta: codigo,
++      p_reemplazar: true,
++    });
++    if (e2) throw new Error(e2.message);
++    cuotasActualizadas = Number(n) || 0;
++  }
++
++  return { codigo, cuotas: cuotasActualizadas };
++}
++
++/**
++ * Borra una venta y todo lo que depende de ella (cobros y cuotas). Los
++ * egresos que se habían vinculado a esta venta NO se borran, sólo pierden
++ * el vínculo: son gastos reales que ya salieron de la caja. Es irreversible,
++ * por eso vive en una única función de la base y no en pasos sueltos desde
++ * el frontend.
++ */
++export async function eliminarVenta(codigo) {
++  if (modoDemo()) {
++    await demora(150);
++    return true;
++  }
++  const { error } = await supabase.rpc('gm_eliminar_venta', { p_venta: codigo });
++  if (error) throw new Error(error.message);
++  return true;
++}
++
++// ---------------------------------------------------------------------------
++// Cobros y gastos individuales (editar / borrar un movimiento ya cargado)
++// ---------------------------------------------------------------------------
++
++const aCobro = (r) => ({
++  codigo: r.codigo,
++  ventaCodigo: r.venta_codigo,
++  cuotaCodigo: r.cuota_codigo || null,
++  fecha: r.fecha,
++  montoUsd: n0(r.monto_usd),
++  medio: r.medio,
++  comprobante: r.comprobante || null,
++  concepto: r.concepto,
++  nota: r.nota || null,
++});
++
++/** Todos los cobros registrados, para poder editarlos o borrarlos. */
++export async function listarCobros() {
++  if (modoDemo()) return [];
++  const { data, error } = await supabase
++    .from('gm_cobros')
++    .select('*')
++    .order('fecha', { ascending: false });
++  if (error) {
++    console.error('[cobranzas] listarCobros', error.message);
++    return [];
++  }
++  return (data || []).map(aCobro);
++}
++
++/**
++ * Edita un cobro ya registrado. Sólo toca esa fila: no reparte de nuevo la
++ * plata entre cuotas, porque el reparto original (hecho por gm_registrar_cobro)
++ * ya quedó guardado como filas separadas. El saldo de la cuota y de la venta
++ * se recalculan solos porque son vistas.
++ */
++export async function actualizarCobro(codigo, cambios) {
++  if (modoDemo()) return { codigo, ...cambios };
++  // Sólo se tocan las claves que llegan: así un editor liviano (como el de la
++  // caja) no corre el riesgo de vaciar el vínculo con la venta o la cuota,
++  // que ni siquiera muestra.
++  const fila = {};
++  if (cambios.fecha !== undefined) fila.fecha = cambios.fecha;
++  if (cambios.montoUsd !== undefined) fila.monto_usd = Number(cambios.montoUsd) || 0;
++  if (cambios.medio !== undefined) fila.medio = cambios.medio || 'transferencia';
++  if (cambios.comprobante !== undefined) fila.comprobante = cambios.comprobante || null;
++  if (cambios.concepto !== undefined) fila.concepto = cambios.concepto || 'cuota';
++  if (cambios.nota !== undefined) fila.nota = cambios.nota || null;
++  const { error } = await supabase.from('gm_cobros').update(fila).eq('codigo', codigo);
++  if (error) throw new Error(error.message);
++  return true;
++}
++
++export async function eliminarCobro(codigo) {
++  if (modoDemo()) return true;
++  const { error } = await supabase.from('gm_cobros').delete().eq('codigo', codigo);
++  if (error) throw new Error(error.message);
++  return true;
++}
++
++/** Edita un gasto (egreso) ya registrado. Nada depende de un egreso, así que
++ *  no hay ningún efecto en cascada. */
++export async function actualizarEgreso(codigo, e) {
++  if (modoDemo()) return { codigo, ...e };
++  // Igual que en el cobro: sólo se pisan las claves que llegan.
++  const fila = {};
++  if (e.fecha !== undefined) fila.fecha = e.fecha;
++  if (e.concepto !== undefined) fila.concepto = e.concepto;
++  if (e.categoria !== undefined) fila.categoria = e.categoria || 'operativo';
++  if (e.montoUsd !== undefined) fila.monto_usd = Number(e.montoUsd) || 0;
++  if (e.montoArs !== undefined) fila.monto_ars = e.montoArs ? Number(e.montoArs) : null;
++  if (e.tipoCambio !== undefined) fila.tipo_cambio = e.tipoCambio ? Number(e.tipoCambio) : null;
++  if (e.medio !== undefined) fila.medio = e.medio || 'transferencia';
++  if (e.comprobante !== undefined) fila.comprobante = e.comprobante || null;
++  if (e.proveedor !== undefined) fila.proveedor = e.proveedor || null;
++  if (e.gastoCodigo !== undefined) fila.gasto_codigo = e.gastoCodigo || null;
++  if (e.ventaCodigo !== undefined) fila.venta_codigo = e.ventaCodigo || null;
++  if (e.nota !== undefined) fila.nota = e.nota || null;
++  const { error } = await supabase.from('gm_egresos').update(fila).eq('codigo', codigo);
++  if (error) throw new Error(error.message);
++  return true;
++}
++
++export async function eliminarEgreso(codigo) {
++  if (modoDemo()) return true;
++  const { error } = await supabase.from('gm_egresos').delete().eq('codigo', codigo);
++  if (error) throw new Error(error.message);
++  return true;
++}
++
+ /** Rehace el plan de cuotas de una venta, respetando las que ya tienen pagos. */
+ export async function regenerarPlan(ventaCodigo) {
+   if (modoDemo()) {
+diff --git a/src/modules/Cobranzas/views/CajaView.jsx b/src/modules/Cobranzas/views/CajaView.jsx
+index a03c1c6..5a3193a 100644
+--- a/src/modules/Cobranzas/views/CajaView.jsx
++++ b/src/modules/Cobranzas/views/CajaView.jsx
+@@ -11,15 +11,19 @@
+ // ============================================================================
+ 
+ import React, { useMemo, useState } from 'react';
+-import { ArrowDownLeft, ArrowUpRight, Download, Plus, Wallet } from 'lucide-react';
++import {
++  ArrowDownLeft, ArrowUpRight, Download, Pencil, Plus, Trash2, Wallet,
++} from 'lucide-react';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import Chip from '../../../shared/gm-ui/Chip';
+ import BotonGm from '../../../shared/gm-ui/BotonGm';
+ import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
+ import FilaEstadisticas from '../../../shared/gm-ui/FilaEstadisticas';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
+ import { useCobranzas } from '../context/CobranzasContext';
+ import ModalEgreso from '../components/ModalEgreso';
++import ModalEditarMovimiento from '../components/ModalEditarMovimiento';
+ import { resumenCaja } from '../utils/finanzas';
+ import {
+   CATEGORIAS, getCategoria, getMedio, usd, fechaCorta, mesLargo, plural,
+@@ -35,11 +39,26 @@ const FLUJOS = [
+ export default function CajaView() {
+   const {
+     movimientos, cargando, mesVisible, setMesVisible, gastos, ventas, nuevoEgreso,
++    editarCobro, borrarCobro, editarEgreso, borrarEgreso,
+   } = useCobranzas();
+ 
+   const [flujo, setFlujo] = useState('todo');
+   const [categoria, setCategoria] = useState('todas');
+   const [cargandoGasto, setCargandoGasto] = useState(false);
++  const [editando, setEditando] = useState(null);
++  const [borrando, setBorrando] = useState(null);
++
++  const guardarEdicion = (datos) => (
++    editando.flujo === 'ingreso'
++      ? editarCobro(editando.codigo, datos)
++      : editarEgreso(editando.codigo, datos)
++  );
++
++  const confirmarBorrado = () => (
++    borrando.flujo === 'ingreso'
++      ? borrarCobro(borrando.codigo)
++      : borrarEgreso(borrando.codigo)
++  );
+ 
+   const delMes = useMemo(
+     () => movimientos.filter((m) => claveMes(m.fecha) === mesVisible),
+@@ -234,6 +253,25 @@ export default function CajaView() {
+                     >
+                       {esIngreso ? '+' : '−'} {usd(m.montoUsd)}
+                     </span>
++
++                    <span className="flex shrink-0 items-center gap-0.5">
++                      <button
++                        type="button"
++                        title="Editar"
++                        onClick={() => setEditando(m)}
++                        className="grid h-7 w-7 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++                      >
++                        <Pencil size={13} />
++                      </button>
++                      <button
++                        type="button"
++                        title="Eliminar"
++                        onClick={() => setBorrando(m)}
++                        className="grid h-7 w-7 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++                      >
++                        <Trash2 size={13} />
++                      </button>
++                    </span>
+                   </li>
+                 );
+               })}
+@@ -299,6 +337,26 @@ export default function CajaView() {
+         onCerrar={() => setCargandoGasto(false)}
+         onGuardar={nuevoEgreso}
+       />
++
++      <ModalEditarMovimiento
++        movimiento={editando}
++        onCerrar={() => setEditando(null)}
++        onGuardar={guardarEdicion}
++      />
++
++      <ConfirmarGm
++        abierto={Boolean(borrando)}
++        titulo={borrando?.flujo === 'ingreso' ? '¿Eliminar este cobro?' : '¿Eliminar este gasto?'}
++        detalle={borrando ? `${fechaCorta(borrando.fecha)} · ${borrando.concepto} · ${usd(borrando.montoUsd)}` : ''}
++        advertencia={
++          borrando?.flujo === 'ingreso'
++            ? 'La cuota o la venta a la que se había imputado este pago vuelve a mostrar ese saldo como pendiente. No se puede deshacer.'
++            : 'Este gasto deja de contarse en el resultado del mes. No se puede deshacer.'
++        }
++        textoBoton="Eliminar"
++        onCerrar={() => setBorrando(null)}
++        onConfirmar={confirmarBorrado}
++      />
+     </div>
+   );
+ }
+diff --git a/src/modules/Cobranzas/views/VentasView.jsx b/src/modules/Cobranzas/views/VentasView.jsx
+index 9808ef4..514e5df 100644
+--- a/src/modules/Cobranzas/views/VentasView.jsx
++++ b/src/modules/Cobranzas/views/VentasView.jsx
+@@ -18,6 +18,7 @@ import Chip from '../../../shared/gm-ui/Chip';
+ import BotonGm from '../../../shared/gm-ui/BotonGm';
+ import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
+ import FilaEstadisticas from '../../../shared/gm-ui/FilaEstadisticas';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
+ import { useCobranzas } from '../context/CobranzasContext';
+ import FilaVenta from '../components/FilaVenta';
+@@ -38,11 +39,13 @@ export default function VentasView() {
+     ventasFiltradas, ventas, clientes, equipos, cargando,
+     ventaActiva, setVentaActiva, ventaSeleccionada, cuotasDeLaVenta,
+     estadoFiltro, setEstadoFiltro, conteoPorEstado,
+-    resumenCartera, deudores, nuevoCobro, nuevaVenta,
++    resumenCartera, deudores, nuevoCobro, nuevaVenta, editarVenta, borrarVenta,
+   } = useCobranzas();
+ 
+   const [cobrando, setCobrando] = useState(false);
+   const [creando, setCreando] = useState(false);
++  const [editando, setEditando] = useState(null);
++  const [borrando, setBorrando] = useState(null);
+ 
+   // Si la venta abierta desaparece del filtro, se cierra la ficha en vez de
+   // quedar mostrando algo que ya no está en la lista de al lado.
+@@ -175,6 +178,8 @@ export default function VentasView() {
+                 cuotas={cuotasDeLaVenta}
+                 onCerrar={() => setVentaActiva(null)}
+                 onCobrar={() => setCobrando(true)}
++                onEditar={setEditando}
++                onEliminar={setBorrando}
+               />
+             </div>
+           ) : (
+@@ -244,6 +249,25 @@ export default function VentasView() {
+         onCerrar={() => setCreando(false)}
+         onGuardar={nuevaVenta}
+       />
++
++      <ModalVenta
++        abierto={Boolean(editando)}
++        venta={editando}
++        clientes={clientes}
++        equipos={equipos}
++        onCerrar={() => setEditando(null)}
++        onGuardar={(datos) => editarVenta(editando.codigo, datos)}
++      />
++
++      <ConfirmarGm
++        abierto={Boolean(borrando)}
++        titulo="¿Eliminar esta venta?"
++        detalle={borrando ? `${borrando.cliente} · ${borrando.codigo} · ${borrando.detalle}` : ''}
++        advertencia="Se borran también todas sus cuotas y todos los cobros que se le imputaron: el historial de esta venta deja de existir. Los gastos que se habían vinculado a ella (flete, instalación) no se borran, sólo quedan sin vincular. No se puede deshacer."
++        textoBoton="Eliminar venta"
++        onCerrar={() => setBorrando(null)}
++        onConfirmar={() => borrarVenta(borrando.codigo)}
++      />
+     </div>
+   );
+ }
+-- 
+2.43.0
+

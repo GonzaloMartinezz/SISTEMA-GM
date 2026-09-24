@@ -1,0 +1,543 @@
+From ed324f28af2c88ca364d70c60cdad2d1c39d87ce Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 22:33:10 +0000
+Subject: [PATCH 1/2] Sistema completo: que un fallo al leer nunca se disfrace
+ de "no hay datos"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Auditoría pedida por Gonzalo ("que no tenga ninguna falla"). Se encontró
+un patrón repetido en 9 archivos de servicio (35 lugares): si Supabase
+fallaba al leer, la función hacía console.error y devolvía [] / null / 0
+en silencio. El resultado es que un problema real de conexión se veía
+igual que "todavía no cargaste nada" — el usuario no tenía forma de
+distinguir un módulo vacío de un módulo roto.
+
+Cada listarX ahora relanza el error. Todos los contextos ya tenían el
+try/catch + banner de error armado (se verificó uno por uno antes de
+cambiar nada) — así que el fix es puro: mismos casos de éxito, los
+fallos ahora se ven en vez de esconderse. Se agregó además un .catch()
+al único punto donde una de estas funciones se llamaba suelta, sin
+contexto que la protegiera (el selector de clientes en Cuentas).
+
+Dos arreglos puntuales de más peso, encontrados en el mismo repaso:
+
+- crearVenta (Cobranzas): si la venta se guardaba pero fallaba la
+  generación del plan de cuotas, quedaba una venta financiada con cero
+  cuotas y el sistema decía "todo bien". Ahora avisa fuerte.
+- marcarContacto (Seguimientos): actualizaba el lead de forma optimista
+  y llamaba a registrarInteraccion() sin ningún try/catch — si fallaba,
+  el mensaje no quedaba guardado en la base pero la pantalla seguía
+  mostrando "contactado". Ahora revierte y avisa si no se pudo guardar.
+
+Build (`vite build` + `tsc --noEmit`) limpio.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W1qZfyDka9sLfVW6Minixv
+---
+ src/modules/Agenda/services/agendaService.js  | 10 +---
+ .../Clientes/services/mensajesService.js      |  5 +-
+ .../Cobranzas/services/cobranzasService.js    | 51 +++++++------------
+ .../Equipos/services/equiposService.js        | 15 ++----
+ src/modules/Mapa/services/mapaService.js      | 15 ++----
+ .../Notario/services/notarioService.js        | 20 ++------
+ src/modules/Notario/views/CuentasView.jsx     | 11 +++-
+ .../context/SeguimientosContext.jsx           | 11 ++--
+ .../Seguimientos/services/leadsService.js     | 29 +++--------
+ src/shared/agenda/agendaService.js            | 10 +---
+ src/shared/cuentas/cuentasService.js          | 15 ++----
+ 11 files changed, 61 insertions(+), 131 deletions(-)
+
+diff --git a/src/modules/Agenda/services/agendaService.js b/src/modules/Agenda/services/agendaService.js
+index 7755c3a..e9e1b26 100644
+--- a/src/modules/Agenda/services/agendaService.js
++++ b/src/modules/Agenda/services/agendaService.js
+@@ -96,10 +96,7 @@ export async function listarEventos(desde, hasta) {
+     .order('fecha')
+     .order('hora');
+ 
+-  if (error) {
+-    console.error('[agenda] listarEventos', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aEvento);
+ }
+ 
+@@ -185,10 +182,7 @@ export async function listarPendientes() {
+     .order('urgencia')
+     .order('modulo');
+ 
+-  if (error) {
+-    console.error('[agenda] listarPendientes', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aPendiente);
+ }
+ 
+diff --git a/src/modules/Clientes/services/mensajesService.js b/src/modules/Clientes/services/mensajesService.js
+index 27f54f8..f50486d 100644
+--- a/src/modules/Clientes/services/mensajesService.js
++++ b/src/modules/Clientes/services/mensajesService.js
+@@ -40,10 +40,7 @@ export async function listarMensajes({ desde, canal, limite = 300 } = {}) {
+   if (canal) q = q.eq('canal', canal);
+ 
+   const { data, error } = await q;
+-  if (error) {
+-    console.error('[mensajesService] listarMensajes:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aMensaje);
+ }
+ 
+diff --git a/src/modules/Cobranzas/services/cobranzasService.js b/src/modules/Cobranzas/services/cobranzasService.js
+index 58cd6f6..95325de 100644
+--- a/src/modules/Cobranzas/services/cobranzasService.js
++++ b/src/modules/Cobranzas/services/cobranzasService.js
+@@ -80,10 +80,7 @@ export async function listarVentas() {
+     .from('gm_v_ventas')
+     .select('*')
+     .order('fecha', { ascending: false });
+-  if (error) {
+-    console.error('[cobranzas] listarVentas', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aVenta);
+ }
+ 
+@@ -121,10 +118,7 @@ export async function listarCuotas() {
+     .from('gm_v_cuotas')
+     .select('*')
+     .order('vencimiento');
+-  if (error) {
+-    console.error('[cobranzas] listarCuotas', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aCuota);
+ }
+ 
+@@ -155,10 +149,7 @@ export async function listarCaja(desde, hasta) {
+   if (desde) q = q.gte('fecha', desde);
+   if (hasta) q = q.lte('fecha', hasta);
+   const { data, error } = await q.order('fecha', { ascending: false });
+-  if (error) {
+-    console.error('[cobranzas] listarCaja', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aMovimiento);
+ }
+ 
+@@ -193,10 +184,7 @@ export async function listarResultado() {
+     return RESULTADO_DEMO.map((m) => ({ ...m }));
+   }
+   const { data, error } = await supabase.from('gm_v_resultado').select('*').order('mes');
+-  if (error) {
+-    console.error('[cobranzas] listarResultado', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aMes);
+ }
+ 
+@@ -211,10 +199,7 @@ export async function listarClientes() {
+     .select('codigo, negocio, profesional_apellido, profesional_nombre, rubro, localidad')
+     .eq('activo', true)
+     .order('negocio');
+-  if (error) {
+-    console.error('[cobranzas] listarClientes', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map((r) => ({
+     codigo: r.codigo,
+     nombre: r.negocio,
+@@ -231,10 +216,7 @@ export async function listarEquipos() {
+     .select('codigo, nombre, marca, categoria, costo_usd, precio_usd')
+     .eq('activo', true)
+     .order('nombre');
+-  if (error) {
+-    console.error('[cobranzas] listarEquipos', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map((r) => ({
+     codigo: r.codigo,
+     nombre: r.nombre,
+@@ -252,10 +234,7 @@ export async function listarGastosRecurrentes() {
+     .select('codigo, concepto, categoria, periodicidad, monto_usd')
+     .eq('activo', true)
+     .order('concepto');
+-  if (error) {
+-    console.error('[cobranzas] listarGastosRecurrentes', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map((r) => ({
+     codigo: r.codigo,
+     concepto: r.concepto,
+@@ -314,8 +293,15 @@ export async function crearVenta(v) {
+       p_venta: data.codigo,
+       p_reemplazar: false,
+     });
+-    if (e2) console.error('[cobranzas] gm_generar_cuotas', e2.message);
+-    else cuotasCreadas = Number(n) || 0;
++    // La venta ya quedó creada (con código data.codigo) aunque esto falle: si se
++    // pactaron cuotas y no se generó el plan, es un problema serio y silencioso
++    // — mejor avisarlo fuerte que dejar una venta financiada sin plan de pago.
++    if (e2) {
++      throw new Error(
++        `La venta ${data.codigo} se guardó, pero no se pudo generar el plan de cuotas: ${e2.message}. Usá "Rehacer plan" en la ficha de la venta para reintentar.`
++      );
++    }
++    cuotasCreadas = Number(n) || 0;
+   }
+ 
+   // El anticipo pactado no es plata cobrada. Sólo se registra como cobro si el
+@@ -483,10 +469,7 @@ export async function listarCobros() {
+     .from('gm_cobros')
+     .select('*')
+     .order('fecha', { ascending: false });
+-  if (error) {
+-    console.error('[cobranzas] listarCobros', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aCobro);
+ }
+ 
+diff --git a/src/modules/Equipos/services/equiposService.js b/src/modules/Equipos/services/equiposService.js
+index 9bd3a91..7f873fa 100644
+--- a/src/modules/Equipos/services/equiposService.js
++++ b/src/modules/Equipos/services/equiposService.js
+@@ -44,10 +44,7 @@ export async function listarEquipos() {
+   if (modoDemo()) return [];
+ 
+   const { data, error } = await supabase.from('gm_v_stock').select('*').order('codigo');
+-  if (error) {
+-    console.error('[equiposService] listarEquipos:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aEquipo);
+ }
+ 
+@@ -60,10 +57,7 @@ export async function listarSpecs() {
+     .select('id, codigo, equipo_id, label, valor, orden, gm_equipos(codigo)')
+     .order('orden');
+ 
+-  if (error) {
+-    console.error('[equiposService] listarSpecs:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+ 
+   return (data || []).map((s) => ({
+     id: s.id,
+@@ -85,10 +79,7 @@ export async function listarMovimientos({ limite = 200 } = {}) {
+     .order('created_at', { ascending: false })
+     .limit(limite);
+ 
+-  if (error) {
+-    console.error('[equiposService] listarMovimientos:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+ 
+   return (data || []).map((m) => ({
+     id: m.id,
+diff --git a/src/modules/Mapa/services/mapaService.js b/src/modules/Mapa/services/mapaService.js
+index e8b89d4..adb48f1 100644
+--- a/src/modules/Mapa/services/mapaService.js
++++ b/src/modules/Mapa/services/mapaService.js
+@@ -52,10 +52,7 @@ export async function listarClientes() {
+     return CLIENTES_DEMO.map((c) => ({ ...c }));
+   }
+   const { data, error } = await supabase.from('gm_v_mapa_clientes').select('*').order('nombre');
+-  if (error) {
+-    console.error('[mapa] listarClientes', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aCliente);
+ }
+ 
+@@ -67,10 +64,7 @@ export async function contarSinCoordenadas() {
+     .select('id', { count: 'exact', head: true })
+     .eq('activo', true)
+     .is('latitud', null);
+-  if (error) {
+-    console.error('[mapa] contarSinCoordenadas', error.message);
+-    return 0;
+-  }
++  if (error) throw new Error(error.message);
+   return count || 0;
+ }
+ 
+@@ -109,9 +103,6 @@ export async function listarCompromisos(desde, hasta) {
+     .order('fecha')
+     .order('hora');
+ 
+-  if (error) {
+-    console.error('[mapa] listarCompromisos', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aCompromiso);
+ }
+diff --git a/src/modules/Notario/services/notarioService.js b/src/modules/Notario/services/notarioService.js
+index 37c590a..0861f05 100644
+--- a/src/modules/Notario/services/notarioService.js
++++ b/src/modules/Notario/services/notarioService.js
+@@ -72,10 +72,7 @@ export async function listarNotas() {
+     .select('*')
+     .order('created_at', { ascending: false });
+ 
+-  if (error) {
+-    console.error('[notario] listarNotas', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aNota);
+ }
+ 
+@@ -133,10 +130,7 @@ export async function listarEntidades() {
+     return ENTIDADES_DEMO.map((e) => ({ ...e }));
+   }
+   const { data, error } = await supabase.from('gm_v_entidades').select('*').order('entidad');
+-  if (error) {
+-    console.error('[notario] listarEntidades', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aEntidad);
+ }
+ 
+@@ -171,10 +165,7 @@ export async function listarBitacora(limite = 400) {
+     .order('fecha', { ascending: false })
+     .limit(limite);
+ 
+-  if (error) {
+-    console.error('[notario] listarBitacora', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aHecho);
+ }
+ 
+@@ -213,10 +204,7 @@ export async function listarCuentas() {
+     .select('*, gm_clientes(codigo, negocio)')
+     .order('numero');
+ 
+-  if (error) {
+-    console.error('[notario] listarCuentas', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aCuenta);
+ }
+ 
+diff --git a/src/modules/Notario/views/CuentasView.jsx b/src/modules/Notario/views/CuentasView.jsx
+index 6d2626c..bb214c8 100644
+--- a/src/modules/Notario/views/CuentasView.jsx
++++ b/src/modules/Notario/views/CuentasView.jsx
+@@ -81,9 +81,12 @@ export default function CuentasView() {
+   const [inactivando, setInactivando] = useState(null);
+   const [mostrarInactivas, setMostrarInactivas] = useState(false);
+   const [clientes, setClientes] = useState([]);
++  const [errorClientes, setErrorClientes] = useState('');
+ 
+   useEffect(() => {
+-    listarClientes().then(setClientes);
++    listarClientes()
++      .then(setClientes)
++      .catch((e) => setErrorClientes(e.message || 'No se pudo cargar la lista de clientes.'));
+   }, []);
+ 
+   const guardar = (form) => guardarCuenta(form, !editando?.numero);
+@@ -231,6 +234,12 @@ export default function CuentasView() {
+ 
+   return (
+     <div className="space-y-6">
++      {errorClientes && (
++        <p className="flex items-start gap-2 rounded-xl border border-[#EDCBB4] bg-[#FBEAE0] px-3.5 py-2.5 text-[13px] text-[#A63A0C]">
++          <TriangleAlert size={14} className="mt-0.5 shrink-0" />
++          No se pudo cargar la lista de clientes para el formulario: {errorClientes}
++        </p>
++      )}
+       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+         <TarjetaKpi
+           etiqueta="Cuentas activas"
+diff --git a/src/modules/Seguimientos/context/SeguimientosContext.jsx b/src/modules/Seguimientos/context/SeguimientosContext.jsx
+index 44aeb4a..597591e 100644
+--- a/src/modules/Seguimientos/context/SeguimientosContext.jsx
++++ b/src/modules/Seguimientos/context/SeguimientosContext.jsx
+@@ -115,9 +115,14 @@ export function SeguimientosProvider({ children }) {
+           : l
+       )
+     );
+-    await registrarInteraccion(codigo, datos);
+-    setMensajes(await listarMensajesDeLeads());
+-  }, []);
++    try {
++      await registrarInteraccion(codigo, datos);
++      setMensajes(await listarMensajesDeLeads());
++    } catch (e) {
++      setError(`No se pudo registrar el contacto con ${codigo}: ${e.message}`);
++      await cargar(); // se revierte el optimista: si no se guardó, no hay que mostrarlo como guardado
++    }
++  }, [cargar]);
+ 
+   /** Marca (o desmarca) un mensaje ya enviado como respondido por el lead. */
+   const marcarMensajeRespondido = useCallback(async (mensajeId, valor) => {
+diff --git a/src/modules/Seguimientos/services/leadsService.js b/src/modules/Seguimientos/services/leadsService.js
+index a3aacde..6558f72 100644
+--- a/src/modules/Seguimientos/services/leadsService.js
++++ b/src/modules/Seguimientos/services/leadsService.js
+@@ -85,10 +85,7 @@ export async function listarLeads() {
+     .select('*, gm_clientes(codigo)')
+     .order('codigo');
+ 
+-  if (error) {
+-    console.error('[seguimientos] listarLeads', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+ 
+   return (data || []).map((r) =>
+     aLead({
+@@ -182,10 +179,7 @@ export async function listarHistorial() {
+     .order('lead_codigo')
+     .order('desde');
+ 
+-  if (error) {
+-    console.error('[seguimientos] listarHistorial', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aTramo);
+ }
+ 
+@@ -213,10 +207,7 @@ export async function registrarInteraccion(codigo, { canal = 'WhatsApp', texto =
+     .update({ interacciones: (data?.interacciones || 0) + 1, ultimo_contacto: HOY() })
+     .eq('codigo', codigo);
+ 
+-  if (error) {
+-    console.error('[seguimientos] registrarInteraccion', error.message);
+-    return false;
+-  }
++  if (error) throw new Error(error.message);
+ 
+   if (texto) {
+     const { error: errMsg } = await supabase.from('gm_mensajes').insert({
+@@ -227,7 +218,9 @@ export async function registrarInteraccion(codigo, { canal = 'WhatsApp', texto =
+       asunto,
+       texto,
+     });
+-    if (errMsg) console.error('[seguimientos] registrarMensaje', errMsg.message);
++    // Si esto falla, el contacto ya quedó registrado en el lead pero el mensaje
++    // no quedó en el historial: se avisa igual, para que se vuelva a mandar.
++    if (errMsg) throw new Error(`Se registró el contacto pero no el mensaje: ${errMsg.message}`);
+   }
+ 
+   return true;
+@@ -255,10 +248,7 @@ export async function listarMensajesDeLeads(limite = 200) {
+     .order('fecha', { ascending: false })
+     .limit(limite);
+ 
+-  if (error) {
+-    console.error('[seguimientos] listarMensajesDeLeads', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aMensaje);
+ }
+ 
+@@ -293,10 +283,7 @@ export async function listarPlantillas() {
+     .eq('activa', true)
+     .order('codigo');
+ 
+-  if (error) {
+-    console.error('[seguimientos] listarPlantillas', error.message);
+-    return PLANTILLAS_DEMO.map((p) => ({ ...p }));
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aPlantilla);
+ }
+ 
+diff --git a/src/shared/agenda/agendaService.js b/src/shared/agenda/agendaService.js
+index 93a701f..26c1743 100644
+--- a/src/shared/agenda/agendaService.js
++++ b/src/shared/agenda/agendaService.js
+@@ -44,10 +44,7 @@ export async function listarEventos(fecha) {
+   if (fecha) q = q.eq('fecha', fecha);
+ 
+   const { data, error } = await q;
+-  if (error) {
+-    console.error('[agendaService] listarEventos:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return (data || []).map(aEvento);
+ }
+ 
+@@ -63,10 +60,7 @@ export async function listarClientesGeo() {
+     .eq('activo', true)
+     .not('latitud', 'is', null);
+ 
+-  if (error) {
+-    console.error('[agendaService] listarClientesGeo:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+ 
+   return (data || []).map((c) => ({
+     id: c.codigo,
+diff --git a/src/shared/cuentas/cuentasService.js b/src/shared/cuentas/cuentasService.js
+index 538fc17..03f6443 100644
+--- a/src/shared/cuentas/cuentasService.js
++++ b/src/shared/cuentas/cuentasService.js
+@@ -40,10 +40,7 @@ export async function listarCuentas() {
+     .select('id, titular, cuenta, comercial')
+     .order('id');
+ 
+-  if (error) {
+-    console.error('[cuentasService] listarCuentas:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return data || [];
+ }
+ 
+@@ -58,10 +55,7 @@ export async function obtenerCuenta(codigo) {
+   q = codigo ? q.eq('id', codigo) : q.order('id').limit(1);
+ 
+   const { data, error } = await q.maybeSingle();
+-  if (error) {
+-    console.error('[cuentasService] obtenerCuenta:', error.message);
+-    return null;
+-  }
++  if (error) throw new Error(error.message);
+   return data;
+ }
+ 
+@@ -136,10 +130,7 @@ export async function listarClientes({ rubro, busqueda } = {}) {
+   if (busqueda) q = q.or(`negocio.ilike.%${busqueda}%,profesional_apellido.ilike.%${busqueda}%`);
+ 
+   const { data, error } = await q;
+-  if (error) {
+-    console.error('[cuentasService] listarClientes:', error.message);
+-    return [];
+-  }
++  if (error) throw new Error(error.message);
+   return data || [];
+ }
+ 
+-- 
+2.43.0
+

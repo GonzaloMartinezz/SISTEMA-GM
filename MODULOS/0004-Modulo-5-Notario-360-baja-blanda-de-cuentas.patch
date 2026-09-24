@@ -1,0 +1,311 @@
+From ffa1a1f82880e61030e24d460fd1b7292eedf327 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 20:36:54 +0000
+Subject: [PATCH 1/2] =?UTF-8?q?M=C3=B3dulo=205=20(Notario=20360=C2=B0):=20?=
+ =?UTF-8?q?agregar=20baja=20blanda=20de=20cuentas?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Decisión de Gonzalo: inactivar en vez de borrar. Se agrega la columna
+gm_cuentas.activa (migración aplicada en Supabase) y las acciones
+inactivar/reactivar en la vista, con un filtro para mostrar las
+inactivas. El historial de la cuenta (domicilios, períodos, pagos,
+movimientos, llamados, notas, visitas) nunca se toca.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01W1qZfyDka9sLfVW6Minixv
+---
+ .../Notario/context/NotarioContext.jsx        |  14 ++-
+ .../Notario/services/notarioService.js        |  30 +++++
+ src/modules/Notario/views/CuentasView.jsx     | 112 ++++++++++++++----
+ 3 files changed, 131 insertions(+), 25 deletions(-)
+
+diff --git a/src/modules/Notario/context/NotarioContext.jsx b/src/modules/Notario/context/NotarioContext.jsx
+index 75bff14..6d9ac00 100644
+--- a/src/modules/Notario/context/NotarioContext.jsx
++++ b/src/modules/Notario/context/NotarioContext.jsx
+@@ -16,7 +16,7 @@ import React, {
+ import {
+   listarNotas, listarEntidades, listarBitacora, listarCuentas,
+   crearNota, actualizarNota, fijarNota, eliminarNota,
+-  crearCuenta, actualizarCuenta,
++  crearCuenta, actualizarCuenta, inactivarCuenta, reactivarCuenta,
+ } from '../services/notarioService';
+ import { supabase, isSupabaseConfigured } from '../../../services/supabaseClient';
+ 
+@@ -115,6 +115,16 @@ export function NotarioProvider({ children }) {
+     await cargar();
+   }, [cargar]);
+ 
++  const inactivarCuentaActual = useCallback(async (numero) => {
++    await inactivarCuenta(numero);
++    await cargar();
++  }, [cargar]);
++
++  const reactivarCuentaActual = useCallback(async (numero) => {
++    await reactivarCuenta(numero);
++    await cargar();
++  }, [cargar]);
++
+   const limpiarFiltros = useCallback(() => {
+     setBusqueda('');
+     setTiposVisibles([]);
+@@ -203,12 +213,14 @@ export function NotarioProvider({ children }) {
+       hayFiltro, limpiarFiltros,
+       resolver, notasDe, bitacoraDe,
+       recargar: cargar, guardarNota, alternarFijada, borrarNota, guardarCuenta,
++      inactivarCuenta: inactivarCuentaActual, reactivarCuenta: reactivarCuentaActual,
+     }),
+     [
+       notas, notasFiltradas, entidades, bitacora, cuentas, etiquetas,
+       cargando, error, ultimoCambio, busqueda, tiposVisibles, entidadesVisibles,
+       etiquetaActiva, hayFiltro, limpiarFiltros, resolver, notasDe, bitacoraDe,
+       cargar, guardarNota, alternarFijada, borrarNota, guardarCuenta,
++      inactivarCuentaActual, reactivarCuentaActual,
+     ]
+   );
+ 
+diff --git a/src/modules/Notario/services/notarioService.js b/src/modules/Notario/services/notarioService.js
+index cde3ed4..37c590a 100644
+--- a/src/modules/Notario/services/notarioService.js
++++ b/src/modules/Notario/services/notarioService.js
+@@ -203,6 +203,7 @@ const aCuenta = (r) => ({
+   convenio: r.convenio,
+   bloqueos: r.bloqueos,
+   avisos: r.avisos || [],
++  activa: r.activa !== false,
+ });
+ 
+ export async function listarCuentas() {
+@@ -259,3 +260,32 @@ export async function actualizarCuenta(numero, cambios) {
+   if (error) throw new Error(error.message);
+   return aCuenta(data);
+ }
++
++/**
++ * Baja "blanda": la cuenta y todo lo que cuelga de ella (domicilios,
++ * períodos, pagos, movimientos, llamados, notas, visitas) quedan intactos.
++ * Sólo deja de contarse como activa. Reactivar es la misma función al revés.
++ */
++export async function inactivarCuenta(numero) {
++  if (modoDemo()) return { numero, activa: false };
++  const { data, error } = await supabase
++    .from('gm_cuentas')
++    .update({ activa: false })
++    .eq('numero', numero)
++    .select('*, gm_clientes(codigo, negocio)')
++    .single();
++  if (error) throw new Error(error.message);
++  return aCuenta(data);
++}
++
++export async function reactivarCuenta(numero) {
++  if (modoDemo()) return { numero, activa: true };
++  const { data, error } = await supabase
++    .from('gm_cuentas')
++    .update({ activa: true })
++    .eq('numero', numero)
++    .select('*, gm_clientes(codigo, negocio)')
++    .single();
++  if (error) throw new Error(error.message);
++  return aCuenta(data);
++}
+diff --git a/src/modules/Notario/views/CuentasView.jsx b/src/modules/Notario/views/CuentasView.jsx
+index ab1624a..6d2626c 100644
+--- a/src/modules/Notario/views/CuentasView.jsx
++++ b/src/modules/Notario/views/CuentasView.jsx
+@@ -11,7 +11,9 @@
+ // ============================================================================
+ 
+ import React, { useEffect, useMemo, useState } from 'react';
+-import { Landmark, NotebookPen, Pencil, Plus, TriangleAlert, Users } from 'lucide-react';
++import {
++  Landmark, NotebookPen, Pencil, Plus, RotateCcw, TriangleAlert, Users, XCircle,
++} from 'lucide-react';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import Tabla from '../../../shared/gm-ui/Tabla';
+ import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
+@@ -19,6 +21,7 @@ import BotonGm from '../../../shared/gm-ui/BotonGm';
+ import Chip from '../../../shared/gm-ui/Chip';
+ import EstadoVacio from '../../../shared/gm-ui/EstadoVacio';
+ import FormularioGm from '../../../shared/gm-ui/FormularioGm';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import { ESTADO_COLOR } from '../../../shared/gm-ui/tokens';
+ import { useNotario } from '../context/NotarioContext';
+ import { listarClientes } from '../../../shared/cuentas/cuentasService';
+@@ -70,9 +73,13 @@ const fecha = (iso) =>
+   iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('es-AR') : '—';
+ 
+ export default function CuentasView() {
+-  const { cuentas, notas, busqueda, cargando, guardarCuenta } = useNotario();
++  const {
++    cuentas, notas, busqueda, cargando, guardarCuenta, inactivarCuenta, reactivarCuenta,
++  } = useNotario();
+   const [activa, setActiva] = useState(null);
+   const [editando, setEditando] = useState(null); // null | {} (alta) | cuenta (edición)
++  const [inactivando, setInactivando] = useState(null);
++  const [mostrarInactivas, setMostrarInactivas] = useState(false);
+   const [clientes, setClientes] = useState([]);
+ 
+   useEffect(() => {
+@@ -81,15 +88,26 @@ export default function CuentasView() {
+ 
+   const guardar = (form) => guardarCuenta(form, !editando?.numero);
+ 
++  const confirmarInactivar = async () => {
++    const c = inactivando;
++    setInactivando(null);
++    if (!c) return;
++    if (c.activa) await inactivarCuenta(c.numero);
++    else await reactivarCuenta(c.numero);
++  };
++
++  const inactivas = cuentas.filter((c) => !c.activa).length;
++
+   const filtradas = useMemo(() => {
++    const base = mostrarInactivas ? cuentas : cuentas.filter((c) => c.activa);
+     const q = busqueda.trim().toLowerCase();
+-    if (!q) return cuentas;
+-    return cuentas.filter((c) =>
++    if (!q) return base;
++    return base.filter((c) =>
+       [c.numero, c.cliente, c.estado, c.etapa, c.responsable]
+         .filter(Boolean)
+         .some((v) => String(v).toLowerCase().includes(q))
+     );
+-  }, [cuentas, busqueda]);
++  }, [cuentas, busqueda, mostrarInactivas]);
+ 
+   const notasDeCuenta = useMemo(() => {
+     const m = new Map();
+@@ -99,10 +117,11 @@ export default function CuentasView() {
+     return m;
+   }, [notas]);
+ 
+-  const enMora = cuentas.filter((c) => (c.estado || '').toUpperCase().includes('MORA'));
+-  const negociado = cuentas.reduce((a, c) => a + c.montoNegociado, 0);
+-  const progresoMedio = cuentas.length
+-    ? cuentas.reduce((a, c) => a + c.progreso, 0) / cuentas.length
++  const activas = cuentas.filter((c) => c.activa);
++  const enMora = activas.filter((c) => (c.estado || '').toUpperCase().includes('MORA'));
++  const negociado = activas.reduce((a, c) => a + c.montoNegociado, 0);
++  const progresoMedio = activas.length
++    ? activas.reduce((a, c) => a + c.progreso, 0) / activas.length
+     : 0;
+ 
+   const COLUMNAS = [
+@@ -112,8 +131,13 @@ export default function CuentasView() {
+       ancho: '24%',
+       render: (c) => (
+         <div className="min-w-0">
+-          <p className="truncate font-medium text-[var(--gm-texto)]">{c.cliente || 'Sin cliente'}</p>
+-          <p className="truncate font-mono text-[12px] text-[var(--gm-texto-suave)]">{c.numero}</p>
++          <p className={`truncate font-medium ${c.activa ? 'text-[var(--gm-texto)]' : 'text-[var(--gm-texto-suave)] line-through'}`}>
++            {c.cliente || 'Sin cliente'}
++          </p>
++          <p className="flex items-center gap-1.5 truncate font-mono text-[12px] text-[var(--gm-texto-suave)]">
++            {c.numero}
++            {!c.activa && <Chip tono="gris">Inactiva</Chip>}
++          </p>
+         </div>
+       ),
+     },
+@@ -181,16 +205,26 @@ export default function CuentasView() {
+     {
+       clave: 'acciones',
+       titulo: '',
+-      ancho: '40',
++      ancho: '76',
+       render: (c) => (
+-        <button
+-          type="button"
+-          title="Editar"
+-          onClick={(e) => { e.stopPropagation(); setEditando(c); }}
+-          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
+-        >
+-          <Pencil size={14} />
+-        </button>
++        <div className="flex items-center gap-1">
++          <button
++            type="button"
++            title="Editar"
++            onClick={(e) => { e.stopPropagation(); setEditando(c); }}
++            className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++          >
++            <Pencil size={14} />
++          </button>
++          <button
++            type="button"
++            title={c.activa ? 'Inactivar' : 'Reactivar'}
++            onClick={(e) => { e.stopPropagation(); setInactivando(c); }}
++            className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-suave)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++          >
++            {c.activa ? <XCircle size={14} /> : <RotateCcw size={14} />}
++          </button>
++        </div>
+       ),
+     },
+   ];
+@@ -198,7 +232,13 @@ export default function CuentasView() {
+   return (
+     <div className="space-y-6">
+       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+-        <TarjetaKpi etiqueta="Cuentas" valor={cuentas.length} detalle="en el padrón" icono={Landmark} tono="azul" />
++        <TarjetaKpi
++          etiqueta="Cuentas activas"
++          valor={activas.length}
++          detalle={inactivas ? `${inactivas} inactivada${inactivas === 1 ? '' : 's'}` : 'en el padrón'}
++          icono={Landmark}
++          tono="azul"
++        />
+         <TarjetaKpi
+           etiqueta="En mora"
+           valor={enMora.length}
+@@ -227,9 +267,20 @@ export default function CuentasView() {
+         bajada="Tocá una fila para ver su detalle y lo que tenés anotado de ella."
+         cuerpoClassName="p-0"
+         acciones={
+-          <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
+-            Nueva cuenta
+-          </BotonGm>
++          <div className="flex items-center gap-2">
++            {inactivas > 0 && (
++              <BotonGm
++                variante={mostrarInactivas ? 'contorno' : 'fantasma'}
++                tamano="sm"
++                onClick={() => setMostrarInactivas((v) => !v)}
++              >
++                {mostrarInactivas ? 'Ocultar inactivas' : `Ver ${inactivas} inactivada${inactivas === 1 ? '' : 's'}`}
++              </BotonGm>
++            )}
++            <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
++              Nueva cuenta
++            </BotonGm>
++          </div>
+         }
+       >
+         {cargando ? (
+@@ -322,6 +373,19 @@ export default function CuentasView() {
+         onGuardar={guardar}
+         textoBoton={editando?.numero ? 'Guardar cambios' : 'Crear cuenta'}
+       />
++
++      <ConfirmarGm
++        abierto={Boolean(inactivando)}
++        titulo={inactivando?.activa ? '¿Inactivar esta cuenta?' : '¿Reactivar esta cuenta?'}
++        detalle={inactivando ? `${inactivando.cliente || 'Sin cliente'} · ${inactivando.numero}` : ''}
++        advertencia={
++          inactivando?.activa
++            ? 'La cuenta deja de contar como activa en el padrón. Los domicilios, períodos, pagos, movimientos, llamados, notas y visitas se conservan tal cual y podés reactivarla cuando quieras.'
++            : 'La cuenta vuelve a contar como activa en el padrón.'
++        }
++        onCerrar={() => setInactivando(null)}
++        onConfirmar={confirmarInactivar}
++      />
+     </div>
+   );
+ }
+-- 
+2.43.0
+

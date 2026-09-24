@@ -1,0 +1,526 @@
+From 84e7e06911f91a5d958e06a69e6bc97464f08f1f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 23 Sep 2026 18:44:23 +0000
+Subject: [PATCH] =?UTF-8?q?M=C3=B3dulo=201=20(Clientes):=20completar=20los?=
+ =?UTF-8?q?=20endpoints=20faltantes=20de=20Seguimientos,=20Historial=20de?=
+ =?UTF-8?q?=20Mensajes=20y=20Agenda?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- Seguimientos: alta, edición y baja de oportunidades desde la tabla de
+  Interacciones recientes (crearLead/actualizarLead/eliminarLead, ya
+  existentes en leadsService, no estaban conectados a ningún botón).
+- Historial de Mensajes: alta de mensajes, marcar/desmarcar como
+  respondido y baja, usando registrarMensaje/marcarRespondido/
+  eliminarMensaje de mensajesService (ya existían, sin UI).
+- Agenda de Clientes: edición y baja de citas (actualizarEvento/
+  eliminarEvento de agendaService, ya existían, sin UI). El alta y el
+  marcar-realizado ya funcionaban.
+- Base de Datos e Informes y Estadísticas no se tocaron: el ABM de
+  clientes ya estaba completo y los informes son de solo lectura por
+  diseño.
+
+Todo pasa por Supabase directo (mismo patrón que ya usa el resto del
+módulo), sin tocar el esquema de la base.
+---
+ .../components/agenda/ListaDelDia.jsx         | 24 ++++-
+ .../components/mensajes/ListaMensajes.jsx     | 31 ++++++-
+ .../seguimientos/InteraccionesRecientes.jsx   | 33 ++++++-
+ .../Clientes/views/AgendaClientesView.jsx     | 49 ++++++++--
+ .../Clientes/views/HistorialMensajesView.jsx  | 91 ++++++++++++++++++-
+ .../Clientes/views/SeguimientosView.jsx       | 58 +++++++++++-
+ 6 files changed, 264 insertions(+), 22 deletions(-)
+
+diff --git a/src/modules/Clientes/components/agenda/ListaDelDia.jsx b/src/modules/Clientes/components/agenda/ListaDelDia.jsx
+index a21ba46..13d2600 100644
+--- a/src/modules/Clientes/components/agenda/ListaDelDia.jsx
++++ b/src/modules/Clientes/components/agenda/ListaDelDia.jsx
+@@ -7,7 +7,7 @@
+ // ============================================================================
+ 
+ import React from 'react';
+-import { CalendarCheck, CalendarPlus, Check, MapPin, Phone, Video } from 'lucide-react';
++import { CalendarCheck, CalendarPlus, Check, MapPin, Pencil, Phone, Trash2, Video } from 'lucide-react';
+ import Chip from '../../../../shared/gm-ui/Chip';
+ import EstadoVacio from '../../../../shared/gm-ui/EstadoVacio';
+ import { linkGoogleCalendar } from '../../../../shared/agenda/agendaService';
+@@ -15,7 +15,7 @@ import { linkGoogleCalendar } from '../../../../shared/agenda/agendaService';
+ const ICONO_TIPO = { visita: MapPin, llamada: Phone, reunion: Video };
+ const TONO_ESTADO = { realizado: 'aqua', pendiente: 'amarillo', cancelado: 'gris' };
+ 
+-export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
++export default function ListaDelDia({ eventos = [], onMarcarRealizado, onEditar, onEliminar }) {
+   if (!eventos.length) {
+     return (
+       <EstadoVacio
+@@ -76,6 +76,26 @@ export default function ListaDelDia({ eventos = [], onMarcarRealizado }) {
+                   <Check size={16} />
+                 </button>
+               )}
++              {onEditar && (
++                <button
++                  type="button"
++                  title="Editar"
++                  onClick={() => onEditar(e)}
++                  className="grid h-9 w-9 place-items-center rounded-xl text-[#948A7C] transition hover:bg-[#FBE5C8] dark:hover:bg-[#2A1608] hover:text-[#2F6DA0]"
++                >
++                  <Pencil size={15} />
++                </button>
++              )}
++              {onEliminar && (
++                <button
++                  type="button"
++                  title="Eliminar"
++                  onClick={() => onEliminar(e)}
++                  className="grid h-9 w-9 place-items-center rounded-xl text-[#948A7C] transition hover:bg-rose-500/10 hover:text-rose-500"
++                >
++                  <Trash2 size={15} />
++                </button>
++              )}
+             </div>
+           </li>
+         );
+diff --git a/src/modules/Clientes/components/mensajes/ListaMensajes.jsx b/src/modules/Clientes/components/mensajes/ListaMensajes.jsx
+index 49562d3..6f3f4bf 100644
+--- a/src/modules/Clientes/components/mensajes/ListaMensajes.jsx
++++ b/src/modules/Clientes/components/mensajes/ListaMensajes.jsx
+@@ -7,7 +7,9 @@
+ // ============================================================================
+ 
+ import React, { useMemo } from 'react';
+-import { ArrowDownLeft, ArrowUpRight, Mail, MessageCircle, MessagesSquare, Phone } from 'lucide-react';
++import {
++  ArrowDownLeft, ArrowUpRight, Check, Mail, MessageCircle, MessagesSquare, Phone, Trash2, Undo2,
++} from 'lucide-react';
+ import Avatar from '../../../../shared/gm-ui/Avatar';
+ import Chip from '../../../../shared/gm-ui/Chip';
+ import EstadoVacio from '../../../../shared/gm-ui/EstadoVacio';
+@@ -32,7 +34,7 @@ const tituloDia = (iso) => {
+ const hora = (iso) =>
+   iso ? new Date(iso).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) : '';
+ 
+-export default function ListaMensajes({ mensajes = [] }) {
++export default function ListaMensajes({ mensajes = [], onMarcarRespondido, onEliminar }) {
+   const grupos = useMemo(() => {
+     const mapa = new Map();
+     mensajes.forEach((m) => {
+@@ -76,6 +78,31 @@ export default function ListaMensajes({ mensajes = [] }) {
+                 >
+                   <Avatar nombre={m.cliente} tamano="md" />
+ 
++                  {(onMarcarRespondido || onEliminar) && (
++                    <div className="order-last flex shrink-0 flex-col items-end gap-1">
++                      {onMarcarRespondido && !recibido && (
++                        <button
++                          type="button"
++                          title={m.respondido ? 'Marcar como sin respuesta' : 'Marcar como respondido'}
++                          onClick={() => onMarcarRespondido(m)}
++                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++                        >
++                          {m.respondido ? <Undo2 size={14} /> : <Check size={14} />}
++                        </button>
++                      )}
++                      {onEliminar && (
++                        <button
++                          type="button"
++                          title="Eliminar"
++                          onClick={() => onEliminar(m)}
++                          className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-rose-500/10 hover:text-rose-500"
++                        >
++                          <Trash2 size={14} />
++                        </button>
++                      )}
++                    </div>
++                  )}
++
+                   <div className="min-w-0 flex-1">
+                     <div className="flex flex-wrap items-center gap-2">
+                       <span className="truncate text-[14px] font-medium text-[#2A2118] dark:text-[#F9FAFB]">{m.cliente}</span>
+diff --git a/src/modules/Clientes/components/seguimientos/InteraccionesRecientes.jsx b/src/modules/Clientes/components/seguimientos/InteraccionesRecientes.jsx
+index f1c92a9..dcecbbc 100644
+--- a/src/modules/Clientes/components/seguimientos/InteraccionesRecientes.jsx
++++ b/src/modules/Clientes/components/seguimientos/InteraccionesRecientes.jsx
+@@ -7,7 +7,7 @@
+ // ============================================================================
+ 
+ import React, { useMemo } from 'react';
+-import { Flame } from 'lucide-react';
++import { Flame, Pencil, Trash2 } from 'lucide-react';
+ import Tabla from '../../../../shared/gm-ui/Tabla';
+ import Chip from '../../../../shared/gm-ui/Chip';
+ import Avatar from '../../../../shared/gm-ui/Avatar';
+@@ -22,7 +22,7 @@ const temperatura = (dias = 0) => {
+   return { texto: 'Frío', tono: 'rosa' };
+ };
+ 
+-export default function InteraccionesRecientes({ leads = [], onVerLead }) {
++export default function InteraccionesRecientes({ leads = [], onVerLead, onEditar, onEliminar }) {
+   const filas = useMemo(
+     () => [...leads].sort((a, b) => (b.diasSinContacto || 0) - (a.diasSinContacto || 0)),
+     [leads]
+@@ -86,6 +86,35 @@ export default function InteraccionesRecientes({ leads = [], onVerLead }) {
+         );
+       },
+     },
++    {
++      clave: 'acciones',
++      titulo: '',
++      ancho: 84,
++      render: (l) => (
++        <div className="flex items-center justify-end gap-1">
++          {onEditar && (
++            <button
++              type="button"
++              title="Editar"
++              onClick={(e) => { e.stopPropagation(); onEditar(l); }}
++              className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-[var(--gm-superficie-fuerte)] hover:text-[var(--gm-texto)]"
++            >
++              <Pencil size={15} />
++            </button>
++          )}
++          {onEliminar && (
++            <button
++              type="button"
++              title="Eliminar"
++              onClick={(e) => { e.stopPropagation(); onEliminar(l); }}
++              className="grid h-8 w-8 place-items-center rounded-lg text-[var(--gm-texto-medio)] transition hover:bg-rose-500/10 hover:text-rose-500"
++            >
++              <Trash2 size={15} />
++            </button>
++          )}
++        </div>
++      ),
++    },
+   ];
+ 
+   return (
+diff --git a/src/modules/Clientes/views/AgendaClientesView.jsx b/src/modules/Clientes/views/AgendaClientesView.jsx
+index d1f6c48..42f6da7 100644
+--- a/src/modules/Clientes/views/AgendaClientesView.jsx
++++ b/src/modules/Clientes/views/AgendaClientesView.jsx
+@@ -10,12 +10,13 @@ import React, { useMemo, useState } from 'react';
+ import { CalendarDays, CalendarPlus, Download, MapPin, Phone } from 'lucide-react';
+ import { useClientes } from '../context/ClientesContext';
+ import {
+-  cambiarEstadoEvento, generarICS, guardarEvento,
++  actualizarEvento, cambiarEstadoEvento, eliminarEvento, generarICS, guardarEvento,
+ } from '../../../shared/agenda/agendaService';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import BotonGm from '../../../shared/gm-ui/BotonGm';
+ import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
+ import FormularioGm from '../../../shared/gm-ui/FormularioGm';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import CalendarioMes from '../components/agenda/CalendarioMes';
+ import ListaDelDia from '../components/agenda/ListaDelDia';
+ import ProximasInteracciones from '../components/seguimientos/ProximasInteracciones';
+@@ -32,6 +33,8 @@ export default function AgendaClientesView() {
+   });
+   const [dia, setDia] = useState(hoyISO);
+   const [alta, setAlta] = useState(false);
++  const [editando, setEditando] = useState(null); // evento a editar, o null
++  const [borrando, setBorrando] = useState(null);
+   const [locales, setLocales] = useState({}); // estados cambiados en esta sesión
+ 
+   const conEstado = useMemo(
+@@ -90,8 +93,15 @@ export default function AgendaClientesView() {
+     [clientes, dia]
+   );
+ 
+-  const crear = async (form) => {
+-    await guardarEvento({ ...form, duracion: Number(form.duracion) || 30 });
++  const guardar = async (form) => {
++    const cambios = { ...form, duracion: Number(form.duracion) || 30 };
++    if (editando?.id) await actualizarEvento(editando.id, cambios);
++    else await guardarEvento(cambios);
++    await recargar();
++  };
++
++  const eliminarActual = async () => {
++    await eliminarEvento(borrando.id);
+     await recargar();
+   };
+ 
+@@ -157,7 +167,12 @@ export default function AgendaClientesView() {
+           {cargando ? (
+             <p className="py-10 text-center text-[14px] text-[var(--gm-texto-medio)]">Cargando agenda…</p>
+           ) : (
+-            <ListaDelDia eventos={delDia} onMarcarRealizado={marcarRealizado} />
++            <ListaDelDia
++              eventos={delDia}
++              onMarcarRealizado={marcarRealizado}
++              onEditar={setEditando}
++              onEliminar={setBorrando}
++            />
+           )}
+         </Panel>
+       </div>
+@@ -167,13 +182,27 @@ export default function AgendaClientesView() {
+       </Panel>
+ 
+       <FormularioGm
+-        abierto={alta}
+-        titulo="Nueva cita"
+-        bajada="Queda cargada en la agenda del sistema y se puede pasar a Google Calendar desde la jornada."
++        abierto={alta || !!editando}
++        titulo={editando ? 'Editar cita' : 'Nueva cita'}
++        bajada={
++          editando
++            ? 'Los cambios se reflejan en el calendario y en la ficha del cliente.'
++            : 'Queda cargada en la agenda del sistema y se puede pasar a Google Calendar desde la jornada.'
++        }
+         campos={campos}
+-        onCerrar={() => setAlta(false)}
+-        onGuardar={crear}
+-        textoBoton="Agendar"
++        valores={editando || undefined}
++        onCerrar={() => { setAlta(false); setEditando(null); }}
++        onGuardar={guardar}
++        textoBoton={editando ? 'Guardar cambios' : 'Agendar'}
++      />
++
++      <ConfirmarGm
++        abierto={!!borrando}
++        detalle={borrando ? `Se va a eliminar la cita "${borrando.titulo}".` : ''}
++        advertencia="Esta acción no se puede deshacer."
++        textoBoton="Eliminar"
++        onCerrar={() => setBorrando(null)}
++        onConfirmar={eliminarActual}
+       />
+     </div>
+   );
+diff --git a/src/modules/Clientes/views/HistorialMensajesView.jsx b/src/modules/Clientes/views/HistorialMensajesView.jsx
+index 4e9e2da..0c52b07 100644
+--- a/src/modules/Clientes/views/HistorialMensajesView.jsx
++++ b/src/modules/Clientes/views/HistorialMensajesView.jsx
+@@ -7,13 +7,53 @@
+ // ============================================================================
+ 
+ import React, { useMemo, useState } from 'react';
+-import { Mail, MessageCircle, MessagesSquare, Phone, Clock } from 'lucide-react';
++import { Mail, MessageCircle, MessagesSquare, Phone, Clock, Plus } from 'lucide-react';
+ import { useClientes } from '../context/ClientesContext';
++import { registrarMensaje, marcarRespondido, eliminarMensaje } from '../services/mensajesService';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import Buscador from '../../../shared/gm-ui/Buscador';
++import BotonGm from '../../../shared/gm-ui/BotonGm';
++import FormularioGm from '../../../shared/gm-ui/FormularioGm';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
+ import ListaMensajes from '../components/mensajes/ListaMensajes';
+ 
++const CAMPOS_MENSAJE = (clientes) => [
++  {
++    clave: 'clienteId',
++    etiqueta: 'Cliente',
++    tipo: 'select',
++    ancho: 2,
++    requerido: true,
++    opciones: clientes.map((c) => ({ valor: c.id, texto: c.negocio })),
++  },
++  {
++    clave: 'canal',
++    etiqueta: 'Canal',
++    tipo: 'select',
++    requerido: true,
++    defecto: 'whatsapp',
++    opciones: [
++      { valor: 'whatsapp', texto: 'WhatsApp' },
++      { valor: 'mail', texto: 'Mail' },
++      { valor: 'llamada', texto: 'Llamada' },
++    ],
++  },
++  {
++    clave: 'direccion',
++    etiqueta: 'Sentido',
++    tipo: 'select',
++    requerido: true,
++    defecto: 'enviado',
++    opciones: [
++      { valor: 'enviado', texto: 'Enviado' },
++      { valor: 'recibido', texto: 'Recibido' },
++    ],
++  },
++  { clave: 'asunto', etiqueta: 'Asunto', tipo: 'texto', ancho: 2 },
++  { clave: 'texto', etiqueta: 'Mensaje', tipo: 'area', ancho: 2, requerido: true },
++];
++
+ const CANALES = [
+   { id: null, nombre: 'Todos' },
+   { id: 'whatsapp', nombre: 'WhatsApp' },
+@@ -44,10 +84,27 @@ function Pastilla({ activo, children, onClick }) {
+ }
+ 
+ export default function HistorialMensajesView() {
+-  const { mensajes, cargando } = useClientes();
++  const { mensajes, clientes, cargando, recargar } = useClientes();
+   const [canal, setCanal] = useState(null);
+   const [sentido, setSentido] = useState(null);
+   const [busqueda, setBusqueda] = useState('');
++  const [alta, setAlta] = useState(false);
++  const [borrando, setBorrando] = useState(null);
++
++  const enviar = async (form) => {
++    await registrarMensaje(form);
++    await recargar();
++  };
++
++  const toggleRespondido = async (mensaje) => {
++    await marcarRespondido(mensaje.id, !mensaje.respondido);
++    await recargar();
++  };
++
++  const eliminar = async () => {
++    await eliminarMensaje(borrando.id);
++    await recargar();
++  };
+ 
+   const filtrados = useMemo(() => {
+     const q = busqueda.trim().toLowerCase();
+@@ -91,6 +148,11 @@ export default function HistorialMensajesView() {
+         titulo="Bitácora de comunicaciones"
+         bajada={`${filtrados.length} de ${mensajes.length} registros visibles`}
+         cuerpoClassName="p-0"
++        acciones={
++          <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setAlta(true)}>
++            Nuevo mensaje
++          </BotonGm>
++        }
+       >
+         <div className="flex flex-col gap-4 border-b border-[var(--gm-divisor)] px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+           <div className="flex flex-wrap items-center gap-2">
+@@ -119,7 +181,11 @@ export default function HistorialMensajesView() {
+           {cargando ? (
+             <p className="py-10 text-center text-[14px] text-[var(--gm-texto-medio)]">Cargando historial…</p>
+           ) : (
+-            <ListaMensajes mensajes={filtrados} />
++            <ListaMensajes
++              mensajes={filtrados}
++              onMarcarRespondido={toggleRespondido}
++              onEliminar={setBorrando}
++            />
+           )}
+         </div>
+       </Panel>
+@@ -128,6 +194,25 @@ export default function HistorialMensajesView() {
+         <MessagesSquare size={13} />
+         Los envíos hechos desde el módulo de Seguimientos se registran acá automáticamente.
+       </p>
++
++      <FormularioGm
++        abierto={alta}
++        titulo="Nuevo mensaje"
++        bajada="Queda registrado en la bitácora del cliente elegido."
++        campos={CAMPOS_MENSAJE(clientes)}
++        onCerrar={() => setAlta(false)}
++        onGuardar={enviar}
++        textoBoton="Registrar"
++      />
++
++      <ConfirmarGm
++        abierto={!!borrando}
++        detalle={borrando ? `Se va a eliminar el mensaje con "${borrando.cliente}".` : ''}
++        advertencia="Esta acción no se puede deshacer."
++        textoBoton="Eliminar"
++        onCerrar={() => setBorrando(null)}
++        onConfirmar={eliminar}
++      />
+     </div>
+   );
+ }
+diff --git a/src/modules/Clientes/views/SeguimientosView.jsx b/src/modules/Clientes/views/SeguimientosView.jsx
+index bdb991b..16ff05e 100644
+--- a/src/modules/Clientes/views/SeguimientosView.jsx
++++ b/src/modules/Clientes/views/SeguimientosView.jsx
+@@ -11,11 +11,16 @@
+ // ============================================================================
+ 
+ import React, { useMemo, useState } from 'react';
+-import { Activity, DollarSign, Percent, Timer } from 'lucide-react';
++import { Activity, DollarSign, Percent, Plus, Timer } from 'lucide-react';
+ import { useClientes } from '../context/ClientesContext';
+ import { getEtapa } from '../../Seguimientos/config/pipeline.config';
++import { crearLead, actualizarLead, eliminarLead } from '../../Seguimientos/services/leadsService';
++import { CAMPOS_LEAD, aFormularioLead } from '../../Seguimientos/config/lead.form';
+ import Panel from '../../../shared/gm-ui/Panel';
+ import TarjetaKpi from '../../../shared/gm-ui/TarjetaKpi';
++import BotonGm from '../../../shared/gm-ui/BotonGm';
++import FormularioGm from '../../../shared/gm-ui/FormularioGm';
++import ConfirmarGm from '../../../shared/gm-ui/ConfirmarGm';
+ import { usd } from '../../../shared/gm-ui/graficos';
+ import EmbudoPipeline from '../components/seguimientos/EmbudoPipeline';
+ import ProximasInteracciones from '../components/seguimientos/ProximasInteracciones';
+@@ -24,8 +29,21 @@ import InteraccionesRecientes from '../components/seguimientos/InteraccionesReci
+ import FichaLeadPanel from '../components/seguimientos/FichaLeadPanel';
+ 
+ export default function SeguimientosView() {
+-  const { leads, eventos, cargando } = useClientes();
++  const { leads, eventos, cargando, recargar } = useClientes();
+   const [lead, setLead] = useState(null);
++  const [editando, setEditando] = useState(null); // null | {} (alta) | lead (edición)
++  const [borrando, setBorrando] = useState(null);
++
++  const guardarLead = async (form) => {
++    if (editando?.id) await actualizarLead(editando.id, form);
++    else await crearLead(form);
++    await recargar();
++  };
++
++  const eliminarLeadActual = async () => {
++    await eliminarLead(borrando.id);
++    await recargar();
++  };
+ 
+   const resumen = useMemo(() => {
+     const abiertos = leads.filter((l) => l.etapa !== 'cerrado');
+@@ -116,12 +134,46 @@ export default function SeguimientosView() {
+           titulo="Interacciones recientes"
+           bajada="Ordenadas por cuánto hace que no se toca la cuenta. Hacé clic en una fila para ver la ficha."
+           cuerpoClassName="p-0"
++          acciones={
++            <BotonGm variante="solido" tamano="sm" icono={Plus} onClick={() => setEditando({})}>
++              Nueva oportunidad
++            </BotonGm>
++          }
+         >
+-          <InteraccionesRecientes leads={leads} onVerLead={setLead} />
++          <InteraccionesRecientes
++            leads={leads}
++            onVerLead={setLead}
++            onEditar={setEditando}
++            onEliminar={setBorrando}
++          />
+         </Panel>
+       </div>
+ 
+       {lead && <FichaLeadPanel lead={lead} onCerrar={() => setLead(null)} />}
++
++      <FormularioGm
++        abierto={!!editando}
++        titulo={editando?.id ? 'Editar oportunidad' : 'Nueva oportunidad'}
++        bajada={
++          editando?.id
++            ? 'Los cambios impactan en el tablero de Seguimientos y en la ficha del cliente.'
++            : 'Cargá los datos de la oportunidad para sumarla al pipeline.'
++        }
++        campos={CAMPOS_LEAD}
++        valores={editando?.id ? aFormularioLead(editando) : undefined}
++        onCerrar={() => setEditando(null)}
++        onGuardar={guardarLead}
++        textoBoton={editando?.id ? 'Guardar cambios' : 'Crear oportunidad'}
++      />
++
++      <ConfirmarGm
++        abierto={!!borrando}
++        detalle={borrando ? `Se va a eliminar la oportunidad "${borrando.clinica}".` : ''}
++        advertencia="Se borra del pipeline junto con su historial de etapas. Esta acción no se puede deshacer."
++        textoBoton="Eliminar"
++        onCerrar={() => setBorrando(null)}
++        onConfirmar={eliminarLeadActual}
++      />
+     </div>
+   );
+ }
+-- 
+2.43.0
+
